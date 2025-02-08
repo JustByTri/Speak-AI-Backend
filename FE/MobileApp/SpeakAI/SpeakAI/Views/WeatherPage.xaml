@@ -1,0 +1,32 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SpeakAI.ViewModels"
+             x:Class="SpeakAI.Views.WeatherPage">
+
+    <ContentPage.BindingContext>
+        <local:WeatherViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="10">
+        <Label Text="Weather Forecast" 
+               FontSize="24" 
+               HorizontalOptions="Center" />
+
+        <Button Text="Refresh Weather"
+                Command="{Binding LoadWeatherCommand}" />
+
+        <CollectionView ItemsSource="{Binding WeatherData}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="5" BorderColor="Gray">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Date, StringFormat='Date: {0:yyyy-MM-dd}'}" FontSize="18" />
+                            <Label Text="{Binding Summary}" FontSize="16" />
+                            <Label Text="{Binding TemperatureC, StringFormat='Temp: {0}°C'}" FontSize="14" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>
