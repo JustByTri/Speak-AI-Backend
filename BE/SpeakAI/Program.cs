@@ -1,4 +1,7 @@
 
+using DAL.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace SpeakAI
 {
     public class Program
@@ -13,7 +16,8 @@ namespace SpeakAI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddDbContext<SpeakAIContext>(options =>
+           options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
