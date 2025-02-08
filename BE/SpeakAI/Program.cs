@@ -22,6 +22,12 @@ namespace SpeakAI
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
@@ -32,6 +38,7 @@ namespace SpeakAI
                               .AllowAnyHeader();
                     });
             });
+
             builder.Services.AddDbContext<SpeakAIContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
