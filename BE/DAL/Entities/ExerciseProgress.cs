@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class ExerciseProgress
+    public class ExerciseProgress : BaseEntity
     {
-        public int ExerciseProgressId { get; set; }
+    
         public decimal ProgressPoints { get; set; }
         public bool IsCompleted { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int EnrolledCourseId { get; set; }
-        public int ExerciseId { get; set; }
-        public int UserId { get; set; }
+ 
+        public Guid EnrolledCourseId { get; set; }
+        public Guid ExerciseId { get; set; }
+        public Guid UserId { get; set; }
 
         // Navigation properties
         public virtual EnrolledCourse EnrolledCourse { get; set; }

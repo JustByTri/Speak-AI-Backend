@@ -15,7 +15,7 @@ namespace DAL.Migrations
                 name: "Levels",
                 columns: table => new
                 {
-                    LevelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LevelName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MinPoint = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     MaxPoint = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -24,15 +24,14 @@ namespace DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Levels", x => x.LevelId);
+                    table.PrimaryKey("PK_Levels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
                 {
-                    CourseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CourseName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaxPoint = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
@@ -41,40 +40,38 @@ namespace DAL.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LevelId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LevelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Courses", x => x.CourseId);
+                    table.PrimaryKey("PK_Courses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Courses_Levels_LevelId",
                         column: x => x.LevelId,
                         principalTable: "Levels",
-                        principalColumn: "LevelId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserLevels",
                 columns: table => new
                 {
-                    UserLevelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Point = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     LevelName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LevelId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LevelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserLevels", x => x.UserLevelId);
+                    table.PrimaryKey("PK_UserLevels", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserLevels_Levels_LevelId",
                         column: x => x.LevelId,
                         principalTable: "Levels",
-                        principalColumn: "LevelId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -82,33 +79,30 @@ namespace DAL.Migrations
                 name: "Topics",
                 columns: table => new
                 {
-                    TopicId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TopicName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaxPoint = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
+                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Topics", x => x.TopicId);
+                    table.PrimaryKey("PK_Topics", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Topics_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -117,141 +111,132 @@ namespace DAL.Migrations
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserLevelId = table.Column<int>(type: "int", nullable: false)
+                    UserLevelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Users_UserLevels_UserLevelId",
                         column: x => x.UserLevelId,
                         principalTable: "UserLevels",
-                        principalColumn: "UserLevelId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Exercises",
                 columns: table => new
                 {
-                    ExerciseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaxPoint = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TopicId = table.Column<int>(type: "int", nullable: false)
+                    TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exercises", x => x.ExerciseId);
+                    table.PrimaryKey("PK_Exercises", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Exercises_Topics_TopicId",
                         column: x => x.TopicId,
                         principalTable: "Topics",
-                        principalColumn: "TopicId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "EnrolledCourses",
                 columns: table => new
                 {
-                    EnrolledCourseId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsCompleted = table.Column<bool>(type: "bit", nullable: false),
                     ProgressPoints = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EnrolledCourses", x => x.EnrolledCourseId);
+                    table.PrimaryKey("PK_EnrolledCourses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_EnrolledCourses_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_EnrolledCourses_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "ExerciseProgresses",
                 columns: table => new
                 {
-                    ExerciseProgressId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProgressPoints = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IsCompleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EnrolledCourseId = table.Column<int>(type: "int", nullable: false),
-                    ExerciseId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    EnrolledCourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExerciseProgresses", x => x.ExerciseProgressId);
+                    table.PrimaryKey("PK_ExerciseProgresses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ExerciseProgresses_EnrolledCourses_EnrolledCourseId",
                         column: x => x.EnrolledCourseId,
                         principalTable: "EnrolledCourses",
-                        principalColumn: "EnrolledCourseId");
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ExerciseProgresses_Exercises_ExerciseId",
                         column: x => x.ExerciseId,
                         principalTable: "Exercises",
-                        principalColumn: "ExerciseId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ExerciseProgresses_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "TopicProgresses",
                 columns: table => new
                 {
-                    TopicProgressId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProgressPoints = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IsCompleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EnrolledCourseId = table.Column<int>(type: "int", nullable: false),
-                    TopicId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    EnrolledCourseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TopicProgresses", x => x.TopicProgressId);
+                    table.PrimaryKey("PK_TopicProgresses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TopicProgresses_EnrolledCourses_EnrolledCourseId",
                         column: x => x.EnrolledCourseId,
                         principalTable: "EnrolledCourses",
-                        principalColumn: "EnrolledCourseId");
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TopicProgresses_Topics_TopicId",
                         column: x => x.TopicId,
                         principalTable: "Topics",
-                        principalColumn: "TopicId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TopicProgresses_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

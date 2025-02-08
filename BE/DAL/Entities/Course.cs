@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class Course
+    public class Course : BaseEntity
     {
-        public int CourseId { get; set; }
+     
         public string CourseName { get; set; }
         public string Description { get; set; }
         public decimal MaxPoint { get; set; }
@@ -17,8 +17,8 @@ namespace DAL.Entities
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LevelId { get; set; }
+
+        public Guid LevelId { get; set; }
 
         // Navigation properties
         public virtual Level Level { get; set; }
