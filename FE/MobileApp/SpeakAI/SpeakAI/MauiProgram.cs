@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using SpeakAI.Services;
+using SpeakAI.ViewModels;
 
 namespace SpeakAI
 {
@@ -18,7 +20,8 @@ namespace SpeakAI
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddSingleton<WeatherService>();
+            builder.Services.AddSingleton<WeatherViewModel>();
             return builder.Build();
         }
     }

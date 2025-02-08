@@ -2,7 +2,6 @@
 using BLL.Interface;
 using BLL.Services;
 using DAL.Data;
-using DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace SpeakAI
@@ -23,8 +22,18 @@ namespace SpeakAI
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    });
+            });
             builder.Services.AddDbContext<SpeakAIContext>(options =>
-           options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,7 +49,7 @@ namespace SpeakAI
 
 
             app.MapControllers();
-
+            app.UseCors("AllowAll");
             app.Run();
         }
     }
