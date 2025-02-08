@@ -39,7 +39,7 @@ namespace DAL.Data
             modelBuilder.Entity<Topic>().HasKey(u => u.Id);
             modelBuilder.Entity<UserLevel>().HasKey(u => u.Id); 
             modelBuilder.Entity<TopicProgress>().HasKey(u => u.Id);
-            modelBuilder.Entity<Level>().HasKey(u => u.Id); 
+  
 
 
             modelBuilder.Entity<Course>()
@@ -78,12 +78,7 @@ namespace DAL.Data
                 .Property(ul => ul.Point)
                 .HasPrecision(18, 2);
             // Cấu hình User và UserLevel
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.UserLevel)
-                .WithMany(ul => ul.Users)
-                .HasForeignKey(u => u.UserLevelId)
-                .OnDelete(DeleteBehavior.NoAction);
-
+    
             // Cấu hình Course và Level
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.Level)
@@ -155,6 +150,32 @@ namespace DAL.Data
                 .WithMany()
                 .HasForeignKey(ep => ep.EnrolledCourseId)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Level>().HasData(
+     new Level
+     {
+         LevelId = 1,
+         LevelName = "A0,A1",
+         MinPoint = 0,
+         MaxPoint = 100,
+    
+     },
+     new Level
+     {
+         LevelId = 2,
+         LevelName = "B1,B2",
+         MinPoint = 101,
+         MaxPoint = 200,
+   
+     },
+     new Level
+     {
+         LevelId = 3,
+         LevelName = "C1,B2",
+         MinPoint = 201,
+         MaxPoint = 300,
+     
+     }
+ );
         }
     }
 }

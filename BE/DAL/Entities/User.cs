@@ -10,17 +10,23 @@ namespace DAL.Entities
     {
        
         public string Username { get; set; }
-        public string Password { get; set; }
         public string Email { get; set; }
         public string FullName { get; set; }
         public DateTime Birthday { get; set; }
         public string Gender { get; set; }
         public bool Status { get; set; }
         public DateTime LastLogin { get; set; }
-     public Guid UserLevelId { get; set; }
+        public byte[] PasswordHash { get; set; } = new byte[32];
+        public byte[] PasswordSalt { get; set; } = new byte[32];
+        public bool IsPremium { get; set; }
+        public string? Otp { get; set; }
+        public DateTime? OtpExpiredTime { get; set; }
+        public bool IsVerified { get; set; }
+        public Guid? UserLevelId { get; set; }
+        public bool IsAdmin { get; set; } = false;
 
         // Navigation properties
-        public virtual UserLevel UserLevel { get; set; }
+        public virtual ICollection<UserLevel> UserLevel { get; set; }
         public virtual ICollection<EnrolledCourse> EnrolledCourses { get; set; }
         public virtual ICollection<TopicProgress> TopicProgresses { get; set; }
         public virtual ICollection<ExerciseProgress> ExerciseProgresses { get; set; }
