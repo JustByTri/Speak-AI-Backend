@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class Level
+    public class Level : BaseEntity
     {
-        public string LevelId { get; set; }
+       
         public string LevelName { get; set; }
         public decimal MinPoint { get; set; }
         public decimal MaxPoint { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
+      
 
       
         public virtual ICollection<UserLevel> UserLevels { get; set; }

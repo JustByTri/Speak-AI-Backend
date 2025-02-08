@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
-        public int UserId { get; set; }
+       
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
@@ -17,7 +17,7 @@ namespace DAL.Entities
         public string Gender { get; set; }
         public bool Status { get; set; }
         public DateTime LastLogin { get; set; }
-        public DateTime CreatedAt { get; set; }
+     public Guid UserLevelId { get; set; }
 
         // Navigation properties
         public virtual UserLevel UserLevel { get; set; }

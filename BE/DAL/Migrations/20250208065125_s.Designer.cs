@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(SpeakAIContext))]
-    [Migration("20250208062759_s")]
+    [Migration("20250208065125_s")]
     partial class s
     {
         /// <inheritdoc />
@@ -27,11 +27,9 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Course", b =>
                 {
-                    b.Property<int>("CourseId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CourseName")
                         .IsRequired()
@@ -56,9 +54,8 @@ namespace DAL.Migrations
                     b.Property<bool>("IsPremium")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LevelId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("LevelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("MaxPoint")
                         .HasPrecision(18, 2)
@@ -67,7 +64,7 @@ namespace DAL.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("CourseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LevelId");
 
@@ -76,14 +73,12 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.EnrolledCourse", b =>
                 {
-                    b.Property<int>("EnrolledCourseId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrolledCourseId"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -98,10 +93,10 @@ namespace DAL.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("EnrolledCourseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
@@ -112,11 +107,9 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Exercise", b =>
                 {
-                    b.Property<int>("ExerciseId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExerciseId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -135,13 +128,13 @@ namespace DAL.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TopicId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ExerciseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("TopicId");
 
@@ -150,20 +143,18 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.ExerciseProgress", b =>
                 {
-                    b.Property<int>("ExerciseProgressId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExerciseProgressId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EnrolledCourseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EnrolledCourseId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ExerciseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
@@ -172,10 +163,10 @@ namespace DAL.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ExerciseProgressId");
+                    b.HasKey("Id");
 
                     b.HasIndex("EnrolledCourseId");
 
@@ -188,8 +179,9 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Level", b =>
                 {
-                    b.Property<string>("LevelId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -209,21 +201,19 @@ namespace DAL.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("LevelId");
+                    b.HasKey("Id");
 
                     b.ToTable("Levels");
                 });
 
             modelBuilder.Entity("DAL.Entities.Topic", b =>
                 {
-                    b.Property<int>("TopicId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TopicId"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -245,7 +235,7 @@ namespace DAL.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("TopicId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
@@ -254,17 +244,15 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.TopicProgress", b =>
                 {
-                    b.Property<int>("TopicProgressId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TopicProgressId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EnrolledCourseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("EnrolledCourseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
@@ -273,16 +261,16 @@ namespace DAL.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("TopicId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("TopicProgressId");
+                    b.HasKey("Id");
 
                     b.HasIndex("EnrolledCourseId");
 
@@ -295,11 +283,9 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2");
@@ -329,14 +315,14 @@ namespace DAL.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserLevelId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserLevelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserLevelId");
 
@@ -345,18 +331,15 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.UserLevel", b =>
                 {
-                    b.Property<int>("UserLevelId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserLevelId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LevelId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("LevelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LevelName")
                         .IsRequired()
@@ -369,7 +352,7 @@ namespace DAL.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserLevelId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LevelId");
 
@@ -381,7 +364,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Level", "Level")
                         .WithMany("Courses")
                         .HasForeignKey("LevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Level");
@@ -392,7 +375,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Course", "Course")
                         .WithMany("EnrolledCourses")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.User", "User")
@@ -411,7 +394,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Topic", "Topic")
                         .WithMany("Exercises")
                         .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Topic");
@@ -428,7 +411,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Exercise", "Exercise")
                         .WithMany("ExerciseProgresses")
                         .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.User", "User")
@@ -449,7 +432,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Course", "Course")
                         .WithMany("Topics")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -466,7 +449,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.Topic", "Topic")
                         .WithMany("TopicProgresses")
                         .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DAL.Entities.User", "User")
@@ -487,7 +470,7 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.UserLevel", "UserLevel")
                         .WithMany("Users")
                         .HasForeignKey("UserLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("UserLevel");

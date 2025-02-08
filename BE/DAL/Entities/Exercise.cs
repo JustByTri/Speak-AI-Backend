@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace DAL.Entities
 {
-    public class Exercise
+    public class Exercise : BaseEntity
     {
-        public int ExerciseId { get; set; }
+
         public string Content { get; set; }
         public decimal MaxPoint { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int TopicId { get; set; }
+     
+        public Guid TopicId { get; set; }
 
         // Navigation properties
         public virtual Topic Topic { get; set; }
