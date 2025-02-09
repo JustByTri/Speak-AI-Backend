@@ -1,6 +1,7 @@
 
 using BLL.Interface;
 using BLL.Services;
+using BLL.Services.BLL.Services;
 using DAL.Data;
 using DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace SpeakAI
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
-
+            builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddHttpContextAccessor();
