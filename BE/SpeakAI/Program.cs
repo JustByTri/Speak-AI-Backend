@@ -24,11 +24,9 @@ namespace SpeakAI
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
 
-       
+            builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
-            builder.Services.AddScoped<IEmailService, EmailService>();
-
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",

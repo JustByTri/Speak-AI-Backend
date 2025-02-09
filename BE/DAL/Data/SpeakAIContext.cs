@@ -24,8 +24,9 @@ namespace DAL.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<EnrolledCourse> EnrolledCourses { get; set; }
         public DbSet<TopicProgress> TopicProgresses { get; set; }
-        public DbSet<ExerciseProgress> ExerciseProgresses { get; set; }
+        public DbSet<ExerciseProgress> ExerciseProgresses { get; set; } 
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,6 +40,7 @@ namespace DAL.Data
             modelBuilder.Entity<Topic>().HasKey(u => u.Id);
             modelBuilder.Entity<UserLevel>().HasKey(u => u.Id); 
             modelBuilder.Entity<TopicProgress>().HasKey(u => u.Id);
+            modelBuilder.Entity<RefreshToken>().HasKey(u => u.Id);
   
 
 
