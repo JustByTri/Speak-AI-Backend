@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SpeakAI.Services.Interfaces
 {
-    public interface IAuthService
+    public interface IUserService
     {
-        Task<ResponseDTO> SignUpAsCustomer(UserDTO userDTO);
+        Task<ResponseDTO> SignUpCustomer(UserDTO userDTO);
     }
 }

@@ -108,6 +108,7 @@
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"
+                    IsEnabled="{Binding IsNotProcessing}"
                     Command="{Binding SignUpCommand}"/>
 
             <!-- Sign In Navigation -->

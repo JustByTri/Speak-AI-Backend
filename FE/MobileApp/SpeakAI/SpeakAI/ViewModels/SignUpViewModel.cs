@@ -1,4 +1,5 @@
 ﻿using SpeakAI.Services.DTO;
+using SpeakAI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,8 +10,9 @@ using System.Windows.Input;
 
 namespace SpeakAI.ViewModels
 {
-    public class SignUpViewModel : INotifyPropertyChanged
+    public partial class SignUpViewModel : INotifyPropertyChanged
     {
+        private readonly IUserService _userService;
         private string _username;
         private string _email;
         private string _fullName;
@@ -19,6 +21,7 @@ namespace SpeakAI.ViewModels
         private string _password;
         private string _confirmPassword;
         private string _notificationMessage;
+        private bool _isProcessing;
         public event PropertyChangedEventHandler PropertyChanged;
         public string Username
         {
@@ -66,52 +69,100 @@ namespace SpeakAI.ViewModels
             get => _notificationMessage;
             set { _notificationMessage = value; OnPropertyChanged(nameof(NotificationMessage)); }
         }
+        public bool IsProcessing
+        {
+            get => _isProcessing;
+            set { _isProcessing = value; OnPropertyChanged(nameof(IsProcessing)); }
+        }
         public ICommand SignUpCommand { get; }
         public ICommand SignInCommand { get; }
-        public SignUpViewModel()
+        public SignUpViewModel(IUserService userService)
         {
-            SignUpCommand = new Command(OnSignUp);
-            SignInCommand = new Command(OnSignIn);
+            _userService = userService;
+            SignUpCommand = new Command(async () => await OnSignUp(), () => !IsProcessing);
+            SignInCommand = new Command(async () => await OnSignIn());
         }
-        private async void OnSignIn()
+        private async Task OnSignIn()
         {
             await Application.Current.MainPage.Navigation.PopAsync();
         }
-        private async void OnSignUp()
+        private async Task OnSignUp()
         {
-            if (string.IsNullOrWhiteSpace(Username) ||
-                string.IsNullOrWhiteSpace(Email) ||
-                string.IsNullOrWhiteSpace(FullName) ||
-                string.IsNullOrWhiteSpace(Gender) ||
-                string.IsNullOrWhiteSpace(Password) ||
-                string.IsNullOrWhiteSpace(ConfirmPassword))
+            if (IsProcessing) return;
+            IsProcessing = true;
+            ((Command)SignUpCommand).ChangeCanExecute();
+
+            try
             {
-                NotificationMessage = "All fields are required.";
-                return;
+                if (string.IsNullOrWhiteSpace(Username) ||
+                    string.IsNullOrWhiteSpace(Email) ||
+                    string.IsNullOrWhiteSpace(FullName) ||
+                    string.IsNullOrWhiteSpace(Gender) ||
+                    string.IsNullOrWhiteSpace(Password) ||
+                    string.IsNullOrWhiteSpace(ConfirmPassword))
+                {
+                    NotificationMessage = "All fields are required.";
+                    return;
+                }
+
+                if (Password != ConfirmPassword)
+                {
+                    NotificationMessage = "Passwords do not match.";
+                    return;
+                }
+
+                var newUser = new UserDTO
+                {
+                    username = Username.Trim(),
+                    password = Password,
+                    confirmedPassword = ConfirmPassword,
+                    email = Email.Trim(),
+                    fullName = FullName.Trim(),
+                    birthday = Birthday.ToString("yyyy-MM-dd"),
+                    gender = Gender
+                };
+
+                var response = await _userService.SignUpCustomer(newUser);
+
+                if (response.IsSuccess)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Success", "Signed up successfully!", "OK");
+
+                    ResetFormFields();
+
+                    await Task.Delay(1500);
+
+                    await Application.Current.MainPage.Navigation.PopAsync();
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", $"Signup failed: {response.Message}", "OK");
+                }
             }
-
-            if (Password != ConfirmPassword)
+            catch (Exception ex)
             {
-                NotificationMessage = "Passwords do not match.";
-                return;
+                await Application.Current.MainPage.DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
-
-            var newUser = new UserDTO
+            finally
             {
-                username = Username,
-                password = Password,
-                confirmedPassword = ConfirmPassword,
-                email = Email,
-                fullName = FullName,
-                birthday = Birthday.ToString(),
-                gender = Gender
-            };
-
-            NotificationMessage = "Account created successfully!";
+                IsProcessing = false;
+                ((Command)SignUpCommand).ChangeCanExecute();
+            }
         }
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private void ResetFormFields()
+        {
+            Username = string.Empty;
+            Email = string.Empty;
+            FullName = string.Empty;
+            Birthday = DateTime.Today;
+            Gender = string.Empty;
+            Password = string.Empty;
+            ConfirmPassword = string.Empty;
         }
     }
 }
