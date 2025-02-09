@@ -2,6 +2,7 @@
 using BLL.Interface;
 using BLL.Services;
 using DAL.Data;
+using DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace SpeakAI
@@ -23,7 +24,7 @@ namespace SpeakAI
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
 
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+       
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
             builder.Services.AddScoped<IEmailService, EmailService>();

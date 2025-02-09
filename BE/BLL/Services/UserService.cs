@@ -213,7 +213,8 @@ namespace BLL.Services
                 await _unitofWork.User.AddAsync(newuser);
                 await _unitofWork.UserLevel.AddAsync(userLevell);
                 result = await _unitofWork.SaveChangeAsync();
-                //_emailService.SendWelcomeEmail(model.Email, model.UserName, EmailSubject.WelcomeEmailSubject);
+                _emailService.SendWelcomeEmail(model.Email, model.UserName, EmailSubject.WelcomeEmailSubject);
+              
                 return result;
             }
             return result;
