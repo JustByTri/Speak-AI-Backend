@@ -8,10 +8,11 @@ public partial class LoginPage : ContentPage
 	}
     private async void OnCreateAccountClicked(object sender, EventArgs e)
     {
+        await Navigation.PushAsync(new SignUpPage());
     }
 
     private async void OnSignInClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new AppShell());
+        await DisplayAlert("Notification", "Comming soon!", "Done" );
     }
 }

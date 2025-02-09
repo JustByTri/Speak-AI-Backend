@@ -6,14 +6,8 @@
              Title="Login"
              Background="White">
     <VerticalStackLayout Padding="30" Spacing="15">
-        <!-- Heading -->
         <Label Text="Explore now" FontSize="28" FontAttributes="Bold"/>
-        <Image Source="bg.gif"
-            HeightRequest="100" 
-            HorizontalOptions="Center" 
-            IsAnimationPlaying="True" />
         
-        <!-- Google Sign-Up Button -->
         <Button Text="Sign up with Google"
                 ImageSource="google_icon.svg"
                 BackgroundColor="White"
