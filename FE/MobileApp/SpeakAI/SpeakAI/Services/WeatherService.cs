@@ -12,7 +12,7 @@ public class WeatherService
     {
         _httpClient = new HttpClient
         {
-            BaseAddress = new Uri("http://172.16.28.103:7288/")
+            BaseAddress = new Uri("http://192.168.14.133:7288/")
         };
     }
 

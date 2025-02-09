@@ -12,6 +12,6 @@ public partial class LoginPage : ContentPage
 
     private async void OnSignInClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new LoginPage());
+        await Navigation.PushAsync(new AppShell());
     }
 }
