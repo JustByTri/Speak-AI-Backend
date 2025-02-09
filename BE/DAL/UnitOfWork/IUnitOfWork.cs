@@ -18,6 +18,7 @@ namespace DAL.UnitOfWork
         IEnrolledCourseRepository EnrolledCourse { get; }
         ITopicProgressRepository TopicProgress { get; }
         IExerciseProgressRepository ExerciseProgress { get; }
+        IRefreshTokenRepository RefreshToken { get; }
 
         void Dispose();
         Task<bool> SaveChangeAsync();

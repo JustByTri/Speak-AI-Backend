@@ -1,4 +1,5 @@
 ﻿using DAL.Data;
+using DAL.Entities;
 using DAL.IRepositories;
 using DAL.Repositories;
 using System;
@@ -25,6 +26,7 @@ namespace DAL.UnitOfWork
             EnrolledCourse = new EnrolledCourseRepository(_context);
             TopicProgress = new TopicProgressRepository(_context);
             ExerciseProgress = new ExerciseProgressRepository(_context);
+            RefreshToken = new RefreshTokenRepository(_context);    
         }
 
         public ICourseRepository Course { get; private set; }
@@ -36,6 +38,8 @@ namespace DAL.UnitOfWork
         public IEnrolledCourseRepository EnrolledCourse { get; private set; }
         public ITopicProgressRepository TopicProgress { get; private set; }
         public IExerciseProgressRepository ExerciseProgress { get; private set; }
+
+        public IRefreshTokenRepository RefreshToken { get; private set; }
 
         public void Dispose()
         {

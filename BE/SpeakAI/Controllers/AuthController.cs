@@ -16,20 +16,60 @@ namespace Api_InnerShop.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        
+        private readonly ILoginService _loginService;
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
 
-        public AuthController( IUserService userService, IEmailService emailService)
+        public AuthController(ILoginService loginService, IUserService userService, IEmailService emailService)
         {
-          
+            _loginService = loginService;
             _userService = userService;
             _emailService = emailService;
         }
+        [HttpPost("sign-in")]
+        public IActionResult Login(LoginRequestDTO loginRequestDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, 500, false, ModelState));
+            }
+            var result = _loginService.Login(loginRequestDTO);
+            if (result != null)
+            {
+                return Ok(new ResponseDTO(AuthNotificationMessage.LoginSuccessfully, 201, true, result));
+            }
+            return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, 400, false));
+        }
+        [HttpPost("refresh-token")]
+        public IActionResult GetNewTokenFromRefreshToken([FromBody] RequestTokenDTO tokenDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _loginService.RefreshAccessToken(tokenDTO);
+                if (result == null || string.IsNullOrEmpty(result.AccessToken))
+                {
+                    return BadRequest(new ResponseDTO(MessageErrorInRefreshToken.CommonError, 400, false, result));
+                }
+                return Ok(new ResponseDTO(MessageErrorInRefreshToken.Successfully, 201, true, result));
+            }
+            return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, 500, false));
+        }
+        [HttpPost("logout")]
+        public IActionResult Logout([FromBody] LogOutDTO logoutDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _loginService.Logout(logoutDTO.UserId);
+                return Ok(result);
+            }
+            else
+            {
+                return Ok(new ResponseDTO(AuthNotificationMessage.LogOutFailed, 400, false));
+            }
+        }
 
 
-       
-      
+
 
 
         /// <summary>
