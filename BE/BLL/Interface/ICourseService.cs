@@ -39,5 +39,13 @@ namespace BLL.Interface
         Task<ResponseDTO> AddExerciseToTopicAsync(Guid topicId, CreateExerciseDTO exerciseDto);
         Task<ResponseDTO> UpdateExerciseAsync(Guid exerciseId, UpdateExerciseDTO exerciseDto);
         Task<ResponseDTO> DeleteExerciseAsync(Guid exerciseId);
+        /// <summary>
+        /// Enroll Course
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="courseId"></param>
+        /// <returns></returns>
+        Task<ResponseDTO> EnrollCourseAsync(Guid userId, Guid courseId);
+        Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId);
     }
 }
