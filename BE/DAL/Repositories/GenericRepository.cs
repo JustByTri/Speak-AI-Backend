@@ -1,4 +1,5 @@
 ﻿using DAL.Data;
+using DAL.Entities;
 using DAL.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -128,6 +129,12 @@ namespace DAL.Repositories
                 query = query.Include(include);
             }
             return await query.FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<TopicProgress>> GetByEnrolledCourseAsync(Guid enrolledCourseId)
+        {
+            return await _context.TopicProgresses
+                .Where(tp => tp.EnrolledCourseId == enrolledCourseId)
+                .ToListAsync();
         }
     }
 }

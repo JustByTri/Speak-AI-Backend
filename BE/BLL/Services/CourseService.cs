@@ -336,6 +336,117 @@ namespace BLL.Services
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
+            
+            public async Task<ResponseDTO> EnrollCourseAsync(Guid userId, Guid courseId)
+            {
+                try
+                {
+                    var user = await _unitOfWork.User.GetByIdAsync(userId);
+                    var courseResponse = await GetCourseByIdAsync(courseId);
+
+                    if (user == null || !courseResponse.IsSuccess)
+                        return new ResponseDTO("User or course not found", 404, false);
+
+                    var enrolledCourse = new EnrolledCourse
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId,
+                        CourseId = courseId,
+                        IsCompleted = false,
+                        ProgressPoints = 0,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+
+                    await _unitOfWork.EnrolledCourse.AddAsync(enrolledCourse);
+
+                    
+                    var topics = await _unitOfWork.Topic.GetAllByListAsync(t => t.CourseId == courseId && !t.IsDeleted);
+                    foreach (var topic in topics)
+                    {
+                        var topicResponse = await GetTopicByIdAsync(topic.Id);
+                        if (!topicResponse.IsSuccess) continue;
+
+                        var topicProgress = new TopicProgress
+                        {
+                            Id = Guid.NewGuid(),
+                            EnrolledCourseId = enrolledCourse.Id,
+                            TopicId = topic.Id,
+                            UserId = userId,
+                            ProgressPoints = 0,
+                            IsCompleted = false,
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        };
+                        await _unitOfWork.TopicProgress.AddAsync(topicProgress);
+
+                        
+                        var exercises = await _unitOfWork.Exercise.GetAllByListAsync(e => e.TopicId == topic.Id && !e.IsDeleted);
+                        foreach (var exercise in exercises)
+                        {
+                            var exerciseResponse = await GetExerciseByIdAsync(exercise.Id);
+                            if (!exerciseResponse.IsSuccess) continue;
+
+                            var exerciseProgress = new ExerciseProgress
+                            {
+                                Id = Guid.NewGuid(),
+                                EnrolledCourseId = enrolledCourse.Id,
+                                ExerciseId = exercise.Id,
+                                UserId = userId,
+                                ProgressPoints = 0,
+                                IsCompleted = false,
+                                CreatedAt = DateTime.UtcNow
+                            };
+                            await _unitOfWork.ExerciseProgress.AddAsync(exerciseProgress);
+                        }
+                    }
+
+                    await _unitOfWork.SaveChangeAsync();
+                    return new ResponseDTO("Enrolled successfully", 201, true);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
+            public async Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId)
+            {
+                try
+                {
+                    var enrolledCourse = await _unitOfWork.EnrolledCourse.GetByIdAsync(enrolledCourseId);
+                    if (enrolledCourse == null)
+                        return new ResponseDTO("Not found", 404, false);
+
+                    var course = await _unitOfWork.Course.GetByIdAsync(enrolledCourse.CourseId);
+                    var topicsProgress = await _unitOfWork.TopicProgress.GetByEnrolledCourseAsync(enrolledCourseId);
+
+                    var enrolledCourseDetails = new EnrolledCourseDetailsDTO
+                    {
+                        Course = new CourseDTO
+                        {
+                            Id = course.Id,
+                            CourseName = course.CourseName,
+                            Description = course.Description,
+                            MaxPoint = course.MaxPoint,
+                            IsFree = course.IsFree,
+                            IsActive = course.IsActive,
+                            LevelId = course.LevelId
+                        },
+                        Progress = enrolledCourse.ProgressPoints,
+                        Topics = topicsProgress.Select(tp => new TopicProgressDTO
+                        {
+                            Id = tp.TopicId,
+                            Progress = tp.ProgressPoints
+                        }).ToList()
+                    };
+
+                    return new ResponseDTO("Success", 200, true, enrolledCourseDetails);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
         }
     }
 }

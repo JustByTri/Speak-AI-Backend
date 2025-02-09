@@ -99,5 +99,19 @@ namespace SpeakAI.Controllers
             var response = await _courseService.DeleteExerciseAsync(id);
             return StatusCode(response.StatusCode, response);
         }
+        [HttpPost("{courseId}/enroll")]
+        public async Task<IActionResult> Enroll(Guid courseId, [FromBody] Guid userId)
+        {
+            var result = await _courseService.EnrollCourseAsync(userId, courseId);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet("enrolled/{enrolledCourseId}")]
+        public async Task<IActionResult> GetEnrolledDetails(Guid enrolledCourseId)
+        {
+            var result = await _courseService.GetEnrolledCourseDetailsAsync(enrolledCourseId);
+            return StatusCode(result.StatusCode, result);
+        }
+
     }
 }
