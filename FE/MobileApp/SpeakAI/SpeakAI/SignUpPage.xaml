@@ -2,27 +2,23 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SpeakAI.SignUpPage"
-             Title="Sign Up"
-             BackgroundColor="#F8F9FA">
-
-    <!-- Background Gradient -->
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#b3ffab" Offset="0"/>
-            <GradientStop Color="#12fff7" Offset="1"/>
-        </LinearGradientBrush>
-    </ContentPage.Background>
-
+             Title="Sign Up">
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="25">
-
-            <!-- Header -->
-            <Label Text="Sign Up"
-                   FontSize="30"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   TextColor="MidnightBlue"/>
-
+            <StackLayout Orientation="Horizontal"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Spacing="15">
+                <Image Source="e_learning.png"
+                    WidthRequest="100"
+                    HeightRequest="100"
+                    Aspect="AspectFit"/>
+                <Label Text="Create an Account"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"
+                    TextColor="#0A1A3A"/>
+            </StackLayout>
             <!-- Input Fields -->
             <VerticalStackLayout Spacing="15">
                 <Entry x:Name="Username" 
@@ -104,7 +100,8 @@
             <!-- Sign Up Button -->
             <Button Text="Sign Up" 
                     FontSize="20"
-                    BackgroundColor="#0056b3"
+                    BackgroundColor="#4B0082"
+                    FontAttributes="Bold"
                     TextColor="White"
                     CornerRadius="10"
                     HeightRequest="50"
@@ -113,12 +110,10 @@
 
             <!-- Sign In Navigation -->
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label Text="Already a member?"
-                       TextColor="#555555"
-                       FontSize="16"/>
+                <Label Text="Already has an account?"
+                      TextColor="DarkGray" FontSize="14"/>
                 <Label Text=" Sign In"
-                       TextColor="#0056b3"
-                       FontAttributes="Bold">
+                       TextColor="MediumPurple" FontSize="14" FontAttributes="Bold">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SignInCommand}"/>
                     </Label.GestureRecognizers>
