@@ -447,6 +447,19 @@ namespace BLL.Services
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
+
+            public async Task<ResponseDTO> GetAllCoursesAsync()
+            {
+                try
+                {
+                    var listCourse =  await _unitOfWork.Course.GetAllByListAsync(c => true && c.IsDeleted == false);
+                    return new ResponseDTO("Success", 200, true, listCourse);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ namespace SpeakAI.ViewModels
     public partial class SignInViewModel : INotifyPropertyChanged
     {
         private readonly ILoginService _loginService;
+        private readonly IUserService _userService;
         private string _username;
         private string _password;
         private bool _isProcessing;
@@ -44,10 +45,17 @@ namespace SpeakAI.ViewModels
         }
         public event PropertyChangedEventHandler? PropertyChanged;
         public ICommand SignInCommand { get; }
-        public SignInViewModel(ILoginService loginService)
+        public ICommand SignUpCommand { get; }
+        public SignInViewModel(ILoginService loginService, IUserService userService)
         {
             _loginService = loginService;
+            _userService = userService;
             SignInCommand = new Command(async () => await OnSignIn(), () => !IsProcessing);
+            SignUpCommand = new Command(async () =>  await OnSignUp(userService));
+        }
+        private async Task OnSignUp(IUserService userService)
+        {
+            await Application.Current.MainPage.Navigation.PushAsync(new SignUpPage(userService));
         }
         private async Task OnSignIn()
         {
