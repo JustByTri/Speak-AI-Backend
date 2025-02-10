@@ -1,14 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import BookingDashboard from "./pages/BookingDashboard";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/dashboard" element={<AdminDashboard />} />
+        <Route path="/dashboard" element={<BookingDashboard />} />
         {/* Thêm các routes khác nếu cần */}
-        <Route path="/" element={<AdminDashboard />} />{" "}
+        <Route path="/" element={<BookingDashboard />} />{" "}
         {/* Redirect trang chủ đến dashboard */}
+        <Route path="/login" element={<LoginPage />} />{" "}
       </Routes>
     </Router>
   );
