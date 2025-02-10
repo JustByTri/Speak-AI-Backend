@@ -28,11 +28,12 @@ namespace SpeakAI
 #endif
             builder.Services.AddSingleton<HttpClient>(sp =>
             {
-                return new HttpClient { BaseAddress = new Uri("http://192.168.1.4:7288/") };
+                return new HttpClient { BaseAddress = new Uri("http://192.168.1.11:7288/") };
             });
             builder.Services.AddSingleton<IWeatherService, WeatherService>();
             builder.Services.AddSingleton<IUserService, UserService>();
             builder.Services.AddSingleton<ILoginService, LoginService>();
+            builder.Services.AddSingleton<HttpService>();
             builder.Services.AddSingleton<SignInViewModel>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<MainPage>();

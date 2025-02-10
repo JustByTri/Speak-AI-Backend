@@ -50,8 +50,8 @@
                              CornerRadius="25" BackgroundColor="White" />
             </HorizontalStackLayout>
 
-            <HorizontalStackLayout HorizontalOptions="Center">
-                <Label Text="Don't have an account? " TextColor="DarkGray" FontSize="14"/>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                <Label Text="Don't have an account?" TextColor="DarkGray" FontSize="14"/>
                 <Label Text="Sign Up" TextColor="MediumPurple" FontSize="14" FontAttributes="Bold">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SignUpCommand}"/>
