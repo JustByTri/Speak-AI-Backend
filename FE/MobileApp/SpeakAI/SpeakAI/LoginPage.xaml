@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SpeakAI.LoginPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Start">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#b3ffab" Offset="0"/>
+            <GradientStop Color="#12fff7" Offset="1"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="15">
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Image Source="e_learning.png"
+                    HeightRequest="100"
+                    WidthRequest="100"
+                    Aspect="AspectFit"/>
+                <Label Text="SpeakAI"
+                    FontSize="36"
+                    FontAttributes="Bold"
+                    TextColor="#1877F2"
+                    FontFamily="OpenSansBold"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,5,0,0"
+                    VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <Label HorizontalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Hear the insights, " 
+                                FontSize="18"
+                                FontFamily="OpenSansSemiBold"
+                                TextColor="#FF6F61"/>
+                        <Span Text="see the difference" 
+                                FontSize="18"
+                                FontFamily="OpenSansSemiBold"
+                                TextColor="#1877F2"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Entry x:Name="Username" Text="{Binding Username}" Placeholder="Username" FontSize="14" HeightRequest="50" PlaceholderColor="Gray" BackgroundColor="Transparent" Margin="5,0"/>
+
+            <Entry x:Name="Password" Text="{Binding Password}" Placeholder="Password" IsPassword="True" FontSize="14" PlaceholderColor="Gray" BackgroundColor="Transparent" HeightRequest="50" Margin="5,0"/>
+            <Label Text="{Binding NotificationMessage}"
+                TextColor="Red"
+                FontSize="16"
+                HorizontalOptions="Center"/>
+            <Button Text="Sign in"
+                TextColor="White"
+                FontSize="18"
+                FontAttributes="Bold"
+                CornerRadius="30"
+                HeightRequest="50"
+                Padding="12"
+                IsEnabled="{Binding IsNotProcessing}"
+                Command="{Binding SignInCommand}">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#1877F2" Offset="0.0"/>
+                        <GradientStop Color="#166FE5" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+
+
+            <Button Text="Sign up with Google"
+             ImageSource="google_icon.svg"
+             BackgroundColor="White"
+             BorderColor="Gray"
+             BorderWidth="1"
+             TextColor="Black"
+             CornerRadius="30"
+             HeightRequest="50"/>
+
+            <!-- Apple Sign-Up Button -->
+            <Button Text="Sign up with Apple"
+             ImageSource="apple_icon.svg"
+             BackgroundColor="White"
+             BorderColor="Gray"
+             BorderWidth="1"
+             TextColor="Black"
+             CornerRadius="30"
+             HeightRequest="50"/>
+
+            <!-- OR Separator -->
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <BoxView HeightRequest="1" BackgroundColor="Gray" HorizontalOptions="FillAndExpand"/>
+                <Label Text="  or  " TextColor="Gray"/>
+                <BoxView HeightRequest="1" BackgroundColor="Gray" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+
+            <!-- Create Account Button -->
+            <Button Text="Create account"
+                TextColor="Black"
+                FontSize="12" 
+                BackgroundColor="Transparent"
+                BorderColor="Black"
+                BorderWidth="1"
+                CornerRadius="20"
+                HeightRequest="40"
+                Clicked="OnCreateAccountClicked"/>
+
+                <!-- Terms & Privacy -->
+            <Label Text="By signing up, you agree to the Terms of Service and Privacy Policy, including Cookie Use."
+                FontSize="12"
+                TextColor="Gray"
+                HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -2,22 +2,22 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using SpeakAI.Models;
-using SpeakAI.Services;
+using SpeakAI.Services.Interfaces;
+using SpeakAI.Services.Models;
 
 namespace SpeakAI.ViewModels;
 
 public class WeatherViewModel : INotifyPropertyChanged
 {
-    private readonly WeatherService _weatherService;
+    private readonly IWeatherService _weatherService;
     public ObservableCollection<WeatherForecast> WeatherData { get; } = new();
     public ICommand LoadWeatherCommand { get; }
 
-    public WeatherViewModel()
+    public WeatherViewModel(IWeatherService weatherService)
     {
-        _weatherService = new WeatherService();
+        _weatherService = weatherService;
         LoadWeatherCommand = new Command(async () => await LoadWeather());
-        _ = LoadWeather(); // Auto-load data on init
+        _ = LoadWeather();
     }
 
     private async Task LoadWeather()
