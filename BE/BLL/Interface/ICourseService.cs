@@ -47,5 +47,6 @@ namespace BLL.Interface
         /// <returns></returns>
         Task<ResponseDTO> EnrollCourseAsync(Guid userId, Guid courseId);
         Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId);
+        Task<ResponseDTO> GetAllCoursesAsync();
     }
 }
