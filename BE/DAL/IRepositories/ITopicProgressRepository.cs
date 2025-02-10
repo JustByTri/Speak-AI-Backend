@@ -9,5 +9,6 @@ namespace DAL.IRepositories
 {
     public interface ITopicProgressRepository : IGenericRepository<TopicProgress>
     {
+      
     }
 }

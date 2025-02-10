@@ -13,7 +13,7 @@ namespace DAL.Entities
         public string Description { get; set; }
         public decimal MaxPoint { get; set; }
         public bool IsFree { get; set; }
-public bool IsLock { get; set; }
+        public bool IsLock { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; }
         public DateTime UpdatedAt { get; set; }

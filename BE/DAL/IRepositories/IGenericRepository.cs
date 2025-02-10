@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -26,5 +27,6 @@ namespace DAL.IRepositories
         Task<T> GetByConditionAsync(Expression<Func<T, bool>> expression);
         T GetByCondition(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> FindProductAsync(Expression<Func<T, bool>> expression);
+        Task<IEnumerable<TopicProgress>> GetByEnrolledCourseAsync(Guid enrolledCourseId);
     }
 }
