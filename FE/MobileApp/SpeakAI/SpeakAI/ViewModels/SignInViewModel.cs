@@ -78,7 +78,7 @@ namespace SpeakAI.ViewModels
 
                     await Task.Delay(1500);
 
-                    await Application.Current.MainPage.Navigation.PushAsync(new AppShell());
+                    Application.Current.MainPage = new AppShell();
                 }
                 else
                 {
