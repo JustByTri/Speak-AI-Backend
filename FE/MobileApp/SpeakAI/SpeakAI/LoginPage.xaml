@@ -42,10 +42,13 @@
                 </Label.FormattedText>
             </Label>
 
-            <Entry Placeholder="Username" FontSize="14" HeightRequest="50" PlaceholderColor="Gray" BackgroundColor="Transparent" Margin="5,0"/>
+            <Entry x:Name="Username" Text="{Binding Username}" Placeholder="Username" FontSize="14" HeightRequest="50" PlaceholderColor="Gray" BackgroundColor="Transparent" Margin="5,0"/>
 
-            <Entry Placeholder="Password" IsPassword="True" FontSize="14" PlaceholderColor="Gray" BackgroundColor="Transparent" HeightRequest="50" Margin="5,0"/>
-
+            <Entry x:Name="Password" Text="{Binding Password}" Placeholder="Password" IsPassword="True" FontSize="14" PlaceholderColor="Gray" BackgroundColor="Transparent" HeightRequest="50" Margin="5,0"/>
+            <Label Text="{Binding NotificationMessage}"
+                TextColor="Red"
+                FontSize="16"
+                HorizontalOptions="Center"/>
             <Button Text="Sign in"
                 TextColor="White"
                 FontSize="18"
@@ -53,7 +56,8 @@
                 CornerRadius="30"
                 HeightRequest="50"
                 Padding="12"
-                Clicked="OnSignInClicked">
+                IsEnabled="{Binding IsNotProcessing}"
+                Command="{Binding SignInCommand}">
                 <Button.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                         <GradientStop Color="#1877F2" Offset="0.0"/>
