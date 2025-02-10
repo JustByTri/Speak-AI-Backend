@@ -25,13 +25,13 @@
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
         <Tab Title="Study" Icon="study_icon.png">
-            <ShellContent ContentTemplate="{DataTemplate views:WeatherPage}" />
+            <ShellContent ContentTemplate="{DataTemplate views:StudyPage}" />
         </Tab>
         <Tab Title="AI Tutor" Icon="ai_icon.png">
-            <ShellContent ContentTemplate="{DataTemplate views:WeatherPage}" />
+            <ShellContent ContentTemplate="{DataTemplate views:AITutorPage}" />
         </Tab>
         <Tab Title="Profile" Icon="profile_icon.png">
-            <ShellContent ContentTemplate="{DataTemplate views:WeatherPage}" />
+            <ShellContent ContentTemplate="{DataTemplate views:ProfilePage}" />
         </Tab>
     </TabBar>
 </Shell>

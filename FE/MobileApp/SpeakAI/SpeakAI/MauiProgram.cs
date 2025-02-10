@@ -33,6 +33,7 @@ namespace SpeakAI
             builder.Services.AddSingleton<IWeatherService, WeatherService>();
             builder.Services.AddSingleton<IUserService, UserService>();
             builder.Services.AddSingleton<ILoginService, LoginService>();
+            builder.Services.AddSingleton<HttpService>();
             builder.Services.AddSingleton<SignInViewModel>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<MainPage>();
