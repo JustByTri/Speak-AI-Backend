@@ -125,13 +125,14 @@ namespace SpeakAI.Controllers
         {
             try
             {
-                var courses = await _courseService.GetAllCourses(search);
+                var courses = await _courseService.GetAllCoursesAsync();
                 return Ok(new ResponseDTO(
-                    message: "Courses retrieved successfully",
-                    statusCode: 200,
-                    success: true,
-                    result: courses
-                ));
+                        message: "Search results retrieved successfully",
+                        statusCode: 200,
+                        success: true,
+                        result: courses
+                    ));
+
             }
             catch (Exception ex)
             {
@@ -141,6 +142,7 @@ namespace SpeakAI.Controllers
                     success: false
                 ));
             }
+       
         }
 
         [HttpGet("search")]
