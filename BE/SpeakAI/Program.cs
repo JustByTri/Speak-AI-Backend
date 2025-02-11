@@ -27,6 +27,7 @@ namespace SpeakAI
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAIService, AIService>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options =>
             {

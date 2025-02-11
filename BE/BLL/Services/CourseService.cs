@@ -479,7 +479,12 @@ namespace BLL.Services
 
                     await _unitOfWork.SaveChangeAsync();
                     return new ResponseDTO("Updated successfully", 200, true);
-
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
 
             public async Task<ResponseDTO> GetAllCoursesAsync()
             {
