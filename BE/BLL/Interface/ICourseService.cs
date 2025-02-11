@@ -56,5 +56,6 @@ namespace BLL.Interface
         /// <returns></returns>
         Task<IEnumerable<Course>> GetAllCourses(string search = "");
         Task<IEnumerable<Course>> SearchCourses(string keyword);
+        Task<ResponseDTO> GetAllCoursesAsync();
     }
 }
