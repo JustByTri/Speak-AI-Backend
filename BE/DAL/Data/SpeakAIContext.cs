@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -24,6 +25,7 @@ namespace DAL.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<EnrolledCourse> EnrolledCourses { get; set; }
         public DbSet<TopicProgress> TopicProgresses { get; set; }
+        [NotNull]
         public DbSet<ExerciseProgress> ExerciseProgresses { get; set; } 
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }

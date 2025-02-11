@@ -136,5 +136,38 @@ namespace DAL.Repositories
                 .Where(tp => tp.EnrolledCourseId == enrolledCourseId)
                 .ToListAsync();
         }
+        public async Task<ExerciseProgress> GetByUserAndExerciseAsync(Guid userId, Guid exerciseId)
+        {
+             var entity = await _context.ExerciseProgresses
+                .FirstOrDefaultAsync(ep => ep.UserId == userId && ep.ExerciseId == exerciseId);
+          if (entity !=null)
+            {
+                return entity;
+            }
+            return null;
+        }
+        public async Task<List<ExerciseProgress>> GetByUserAndTopicAsyncz(Guid userId, Guid topicId)
+        {
+            return await _context.ExerciseProgresses
+                .Include(ep => ep.Exercise)
+                .Where(ep => ep.UserId == userId
+                    && ep.Exercise.TopicId == topicId
+                    && !ep.Exercise.IsDeleted)
+                .ToListAsync(); 
+        }
+        public async Task<TopicProgress> GetByUserAndTopicAsync(Guid userId, Guid topicId)
+        {
+            return await _context.TopicProgresses
+                .FirstOrDefaultAsync(tp =>
+                    tp.UserId == userId &&
+                    tp.TopicId == topicId
+                ); 
+        }
+        public async Task<IEnumerable<Exercise>> GetByTopicIdAsync(Guid topicId)
+        {
+            return await _context.Exercises
+                .Where(e => e.TopicId == topicId && !e.IsDeleted)
+                .ToListAsync();
+        }
     }
 }

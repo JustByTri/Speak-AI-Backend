@@ -3,6 +3,7 @@ using Common.DTO;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using DTO.DTO;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,116 +92,116 @@ namespace BLL.Services
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
-                public async Task<ResponseDTO> GetCourseByIdAsync(Guid courseId)
+            public async Task<ResponseDTO> GetCourseByIdAsync(Guid courseId)
+            {
+                try
                 {
-                    try
-                    {
-                        var course = await _unitOfWork.Course.GetByIdAsync(courseId);
-                        if (course == null)
-                            return new ResponseDTO("Not Found ", 404, false);
+                    var course = await _unitOfWork.Course.GetByIdAsync(courseId);
+                    if (course == null)
+                        return new ResponseDTO("Not Found ", 404, false);
 
-                        return new ResponseDTO("Get Course Successfully", 200, true, course);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new ResponseDTO($"Error: {ex.Message}", 500, false);
-                    }
+                    return new ResponseDTO("Get Course Successfully", 200, true, course);
                 }
-
-                public async Task<ResponseDTO> UpdateCourseAsync(Guid courseId, UpdateCourseDTO courseDto)
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        var course = await _unitOfWork.Course.GetByIdAsync(courseId);
-                        if (course == null)
-                            return new ResponseDTO("Not found course", 404, false);
-
-                        course.CourseName = courseDto.CourseName;
-                        course.Description = courseDto.Description;
-                        course.MaxPoint = courseDto.MaxPoint;
-                        course.IsFree = courseDto.IsFree;
-                        course.LevelId = courseDto.LevelId;
-                        course.UpdatedAt = DateTime.UtcNow;
-
-                        await _unitOfWork.Course.UpdateAsync(course);
-                        await _unitOfWork.SaveChangeAsync();
-
-                        return new ResponseDTO("Update course successfully", 200, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new ResponseDTO($"Error: {ex.Message}", 500, false);
-                    }
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
+            }
 
-                public async Task<ResponseDTO> DeleteCourseAsync(Guid courseId)
+            public async Task<ResponseDTO> UpdateCourseAsync(Guid courseId, UpdateCourseDTO courseDto)
+            {
+                try
                 {
-                    try
-                    {
-                        var course = await _unitOfWork.Course.GetByIdAsync(courseId);
-                        if (course == null)
-                            return new ResponseDTO("Not found course", 404, false);
+                    var course = await _unitOfWork.Course.GetByIdAsync(courseId);
+                    if (course == null)
+                        return new ResponseDTO("Not found course", 404, false);
 
-                        course.IsDeleted = true;
-                        course.UpdatedAt = DateTime.UtcNow;
+                    course.CourseName = courseDto.CourseName;
+                    course.Description = courseDto.Description;
+                    course.MaxPoint = courseDto.MaxPoint;
+                    course.IsFree = courseDto.IsFree;
+                    course.LevelId = courseDto.LevelId;
+                    course.UpdatedAt = DateTime.UtcNow;
 
-                         await _unitOfWork.Course.UpdateAsync(course);
-                        await _unitOfWork.SaveChangeAsync();
+                    await _unitOfWork.Course.UpdateAsync(course);
+                    await _unitOfWork.SaveChangeAsync();
 
-                        return new ResponseDTO("Delete successfully", 200, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new ResponseDTO($"Error: {ex.Message}", 500, false);
-                    }
+                    return new ResponseDTO("Update course successfully", 200, true);
                 }
-
-                // Topic operations
-                public async Task<ResponseDTO> GetTopicByIdAsync(Guid topicId)
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        var topic = await _unitOfWork.Topic.GetByIdAsync(topicId);
-                        if (topic == null)
-                            return new ResponseDTO("Not found the topic", 404, false);
-
-                        return new ResponseDTO("Get topic successfully", 200, true, topic);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new ResponseDTO($"Error: {ex.Message}", 500, false);
-                    }
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
+            }
 
-                public async Task<ResponseDTO> AddTopicToCourseAsync(Guid courseId, CreateTopicDTO topicDto)
+            public async Task<ResponseDTO> DeleteCourseAsync(Guid courseId)
+            {
+                try
                 {
-                    try
-                    {
-                        var course = await _unitOfWork.Course.GetByIdAsync(courseId);
-                        if (course == null)
-                            return new ResponseDTO("Not found the course", 404, false);
+                    var course = await _unitOfWork.Course.GetByIdAsync(courseId);
+                    if (course == null)
+                        return new ResponseDTO("Not found course", 404, false);
 
-                        var topic = new Topic
-                        {
-                            Id = Guid.NewGuid(),
-                            TopicName = topicDto.TopicName,
-                            CourseId = courseId,
-                            IsDeleted = false,
-                            IsActive = true,
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow
-                        };
+                    course.IsDeleted = true;
+                    course.UpdatedAt = DateTime.UtcNow;
 
-                        await _unitOfWork.Topic.AddAsync(topic);
-                        await _unitOfWork.SaveChangeAsync();
+                    await _unitOfWork.Course.UpdateAsync(course);
+                    await _unitOfWork.SaveChangeAsync();
 
-                        return new ResponseDTO("Add successfully", 201, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new ResponseDTO($"Error: {ex.Message}", 500, false);
-                    }
+                    return new ResponseDTO("Delete successfully", 200, true);
                 }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
+
+            // Topic operations
+            public async Task<ResponseDTO> GetTopicByIdAsync(Guid topicId)
+            {
+                try
+                {
+                    var topic = await _unitOfWork.Topic.GetByIdAsync(topicId);
+                    if (topic == null)
+                        return new ResponseDTO("Not found the topic", 404, false);
+
+                    return new ResponseDTO("Get topic successfully", 200, true, topic);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
+
+            public async Task<ResponseDTO> AddTopicToCourseAsync(Guid courseId, CreateTopicDTO topicDto)
+            {
+                try
+                {
+                    var course = await _unitOfWork.Course.GetByIdAsync(courseId);
+                    if (course == null)
+                        return new ResponseDTO("Not found the course", 404, false);
+
+                    var topic = new Topic
+                    {
+                        Id = Guid.NewGuid(),
+                        TopicName = topicDto.TopicName,
+                        CourseId = courseId,
+                        IsDeleted = false,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+
+                    await _unitOfWork.Topic.AddAsync(topic);
+                    await _unitOfWork.SaveChangeAsync();
+
+                    return new ResponseDTO("Add successfully", 201, true);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
+            }
 
             public async Task<ResponseDTO> UpdateTopicAsync(Guid topicId, UpdateTopicDTO topicDto)
             {
@@ -215,7 +216,7 @@ namespace BLL.Services
                     topic.IsDeleted = topicDto.IsDeleted;
                     topic.UpdatedAt = DateTime.UtcNow;
 
-                     await _unitOfWork.Topic.UpdateAsync(topic);
+                    await _unitOfWork.Topic.UpdateAsync(topic);
                     await _unitOfWork.SaveChangeAsync();
 
                     return new ResponseDTO("Update topic successfully", 200, true);
@@ -275,7 +276,7 @@ namespace BLL.Services
                     var exercise = new Exercise
                     {
                         Id = Guid.NewGuid(),
-                     Content = exerciseDto.Content, 
+                        Content = exerciseDto.Content,
                         TopicId = topicId,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
@@ -336,7 +337,7 @@ namespace BLL.Services
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
-            
+
             public async Task<ResponseDTO> EnrollCourseAsync(Guid userId, Guid courseId)
             {
                 try
@@ -360,7 +361,7 @@ namespace BLL.Services
 
                     await _unitOfWork.EnrolledCourse.AddAsync(enrolledCourse);
 
-                    
+
                     var topics = await _unitOfWork.Topic.GetAllByListAsync(t => t.CourseId == courseId && !t.IsDeleted);
                     foreach (var topic in topics)
                     {
@@ -380,7 +381,7 @@ namespace BLL.Services
                         };
                         await _unitOfWork.TopicProgress.AddAsync(topicProgress);
 
-                        
+
                         var exercises = await _unitOfWork.Exercise.GetAllByListAsync(e => e.TopicId == topic.Id && !e.IsDeleted);
                         foreach (var exercise in exercises)
                         {
@@ -448,18 +449,77 @@ namespace BLL.Services
                 }
             }
 
+            public async Task<ResponseDTO> SubmitExerciseAsync(Guid exerciseId, Guid userId, decimal earnedPoints)
+            {
+                try
+                {
+                    var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
+                    var exerciseProgress = await _unitOfWork.ExerciseProgress.GetByUserAndExerciseAsync(userId, exerciseId);
+                    if (exercise == null || exerciseProgress == null)
+                        return new ResponseDTO("Not found", 404, false);
+
+                  
+                    exerciseProgress.ProgressPoints += earnedPoints;
+                    exerciseProgress.IsCompleted = (exerciseProgress.ProgressPoints >= exercise.MaxPoint);
+                    await _unitOfWork.ExerciseProgress.UpdateAsync(exerciseProgress);
+
+            
+                    var allExerciseProgressInTopic = await _unitOfWork.ExerciseProgress.GetByUserAndTopicAsyncz(userId, exercise.TopicId);
+
+                  
+                    var totalPoints = allExerciseProgressInTopic.Sum(ep => ep.ProgressPoints); 
+
+                  
+                    var topicProgress = await _unitOfWork.TopicProgress.GetByUserAndTopicAsync(userId, exercise.TopicId);
+                    var topic = await _unitOfWork.Topic.GetByIdAsync(exercise.TopicId);
+
+                    topicProgress.ProgressPoints = totalPoints;
+                    topicProgress.IsCompleted = (totalPoints >= topic.MaxPoint);
+                    await _unitOfWork.TopicProgress.UpdateAsync(topicProgress); 
+
+                    await _unitOfWork.SaveChangeAsync();
+                    return new ResponseDTO("Updated successfully", 200, true);
+
+
             public async Task<ResponseDTO> GetAllCoursesAsync()
             {
                 try
                 {
                     var listCourse =  await _unitOfWork.Course.GetAllByListAsync(c => true && c.IsDeleted == false);
                     return new ResponseDTO("Success", 200, true, listCourse);
+
                 }
                 catch (Exception ex)
                 {
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
+
+            public async Task<IEnumerable<Course>> GetAllCourses(string search = "")
+            {
+                var query = _unitOfWork.Course.GetAll()
+                    .Where(c => !c.IsDeleted);
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    query = query.Where(c =>
+                        c.CourseName.Contains(search) ||
+                        c.Description.Contains(search)
+                    );
+                }
+
+                return await query.ToListAsync();
+            }
+
+            public async Task<IEnumerable<Course>> SearchCourses(string keyword)
+            {
+                return await _unitOfWork.Course
+                    .FindAll(c =>
+                        c.CourseName.Contains(keyword) ||
+                        c.Description.Contains(keyword))
+                    .ToListAsync();
+            }
+
         }
     }
 }
