@@ -48,6 +48,7 @@ namespace BLL.Interface
         /// <returns></returns>
         Task<ResponseDTO> EnrollCourseAsync(Guid userId, Guid courseId);
         Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId);
+
         Task<ResponseDTO> SubmitExerciseAsync(Guid exerciseId, Guid userId, decimal earnedPoints);
         /// <summary>
         /// search and get all course
@@ -56,5 +57,8 @@ namespace BLL.Interface
         /// <returns></returns>
         Task<IEnumerable<Course>> GetAllCourses(string search = "");
         Task<IEnumerable<Course>> SearchCourses(string keyword);
+
+        Task<ResponseDTO> GetAllCoursesAsync();
+
     }
 }

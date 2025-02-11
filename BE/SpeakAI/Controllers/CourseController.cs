@@ -113,6 +113,7 @@ namespace SpeakAI.Controllers
             var result = await _courseService.GetEnrolledCourseDetailsAsync(enrolledCourseId);
             return StatusCode(result.StatusCode, result);
         }
+
         [HttpPost("exercises/{exerciseId}/submit")]
         public async Task<IActionResult> SubmitExercise(Guid exerciseId, [FromBody] SubmitExerciseDTO dto)
         {
@@ -172,6 +173,14 @@ namespace SpeakAI.Controllers
                     success: false
                 ));
             }
+        }
+
+
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllCourses()
+        {
+            var result = await _courseService.GetAllCoursesAsync();
+            return StatusCode(result.StatusCode, result);
         }
 
 

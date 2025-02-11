@@ -448,6 +448,7 @@ namespace BLL.Services
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
+
             public async Task<ResponseDTO> SubmitExerciseAsync(Guid exerciseId, Guid userId, decimal earnedPoints)
             {
                 try
@@ -478,12 +479,22 @@ namespace BLL.Services
 
                     await _unitOfWork.SaveChangeAsync();
                     return new ResponseDTO("Updated successfully", 200, true);
+
+
+            public async Task<ResponseDTO> GetAllCoursesAsync()
+            {
+                try
+                {
+                    var listCourse =  await _unitOfWork.Course.GetAllByListAsync(c => true && c.IsDeleted == false);
+                    return new ResponseDTO("Success", 200, true, listCourse);
+
                 }
                 catch (Exception ex)
                 {
                     return new ResponseDTO($"Error: {ex.Message}", 500, false);
                 }
             }
+
             public async Task<IEnumerable<Course>> GetAllCourses(string search = "")
             {
                 var query = _unitOfWork.Course.GetAll()
@@ -508,6 +519,7 @@ namespace BLL.Services
                         c.Description.Contains(keyword))
                     .ToListAsync();
             }
+
         }
     }
 }
