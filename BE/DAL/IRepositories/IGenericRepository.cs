@@ -1,4 +1,5 @@
 ﻿using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +29,10 @@ namespace DAL.IRepositories
         T GetByCondition(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> FindProductAsync(Expression<Func<T, bool>> expression);
         Task<IEnumerable<TopicProgress>> GetByEnrolledCourseAsync(Guid enrolledCourseId);
+        Task<ExerciseProgress> GetByUserAndExerciseAsync(Guid userId, Guid exerciseId);
+        Task<List<ExerciseProgress>> GetByUserAndTopicAsyncz(Guid userId, Guid topicId);
+        Task<TopicProgress> GetByUserAndTopicAsync(Guid userId, Guid topicId);
+       
+        Task<IEnumerable<Exercise>> GetByTopicIdAsync(Guid topicId);
     }
 }

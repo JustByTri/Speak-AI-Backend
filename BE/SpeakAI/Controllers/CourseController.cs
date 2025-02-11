@@ -1,5 +1,6 @@
 ﻿using BLL.Interface;
 using Common.DTO;
+using DTO.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace SpeakAI.Controllers
             _courseService = courseService;
         }
 
-    
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourse(Guid id)
         {
@@ -52,7 +53,7 @@ namespace SpeakAI.Controllers
             return StatusCode(response.StatusCode, response);
         }
         [HttpPost]
-    public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDTO courseDto)
+        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDTO courseDto)
         {
             var response = await _courseService.CreateCourseWithTopicsAndExercisesAsync(courseDto);
             return StatusCode(response.StatusCode, response);
@@ -112,6 +113,67 @@ namespace SpeakAI.Controllers
             var result = await _courseService.GetEnrolledCourseDetailsAsync(enrolledCourseId);
             return StatusCode(result.StatusCode, result);
         }
+        [HttpPost("exercises/{exerciseId}/submit")]
+        public async Task<IActionResult> SubmitExercise(Guid exerciseId, [FromBody] SubmitExerciseDTO dto)
+        {
+            var result = await _courseService.SubmitExerciseAsync(exerciseId, dto.UserId, dto.EarnedPoints);
+            return StatusCode(result.StatusCode, result);
+        }
+        [HttpGet("getallcourse")]
+        public async Task<IActionResult> GetAllCourses([FromQuery] string search = "")
+        {
+            try
+            {
+                var courses = await _courseService.GetAllCourses(search);
+                return Ok(new ResponseDTO(
+                    message: "Courses retrieved successfully",
+                    statusCode: 200,
+                    success: true,
+                    result: courses
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseDTO(
+                    message: $"Internal server error: {ex.Message}",
+                    statusCode: 500,
+                    success: false
+                ));
+            }
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCourses([FromQuery] string keyword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    return BadRequest(new ResponseDTO(
+                        message: "Search keyword is required",
+                        statusCode: 400,
+                        success: false
+                    ));
+                }
+
+                var courses = await _courseService.SearchCourses(keyword);
+                return Ok(new ResponseDTO(
+                    message: "Search results retrieved successfully",
+                    statusCode: 200,
+                    success: true,
+                    result: courses
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResponseDTO(
+                    message: $"Internal server error: {ex.Message}",
+                    statusCode: 500,
+                    success: false
+                ));
+            }
+        }
+
 
     }
 }
