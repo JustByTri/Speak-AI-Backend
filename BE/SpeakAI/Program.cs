@@ -29,6 +29,7 @@ namespace SpeakAI
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.AddScoped<IPremiumSubscriptionService, PremiumSubscriptionService>();
             builder.Services.AddScoped<ChatHub>();
             builder.Services.AddSignalR();
             builder.Services.AddHttpContextAccessor();

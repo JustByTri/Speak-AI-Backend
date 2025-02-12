@@ -90,5 +90,59 @@ namespace BLL.Services
 
             client.Send(mailMessage);
         }
-    }
+        /// <summary>
+        /// Send confirmation email after successful Premium upgrade
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <param name="userName"></param>
+        public void SendPremiumConfirmationEmail(string userEmail, string userName)
+        {
+            var sendEmail = _configuration.GetSection("SendEmailAccount")["Email"];
+            var subject = "Welcome to Premium Membership!";
+            var htmlBody = EmailTemplate.PremiumUpgradeTemplate(userName, subject);
+
+            MailMessage mailMessage = new MailMessage(sendEmail, userEmail, subject, htmlBody);
+            mailMessage.IsBodyHtml = true;
+
+            var smtpServer = _configuration.GetSection("SendEmailAccount")["SmtpServer"];
+            int.TryParse(_configuration.GetSection("SendEmailAccount")["Port"], out int port);
+            var userNameEmail = _configuration.GetSection("SendEmailAccount")["UserName"];
+            var password = _configuration.GetSection("SendEmailAccount")["Password"];
+
+            SmtpClient client = new SmtpClient(smtpServer, port);
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(userNameEmail, password);
+            client.EnableSsl = true;
+            client.Send(mailMessage);
+        }
+
+        /// <summary>
+        /// Send receipt email after Premium purchase
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <param name="userName"></param>
+        /// <param name="amount"></param>
+        /// <param name="orderId"></param>
+        public void SendPremiumPurchaseReceiptEmail(string userEmail, string userName, decimal amount, string orderId)
+        {
+            var sendEmail = _configuration.GetSection("SendEmailAccount")["Email"];
+            var subject = "Premium Subscription Purchase Receipt";
+            var htmlBody = EmailTemplate.PremiumReceiptTemplate(userName, amount, orderId, subject);
+
+            MailMessage mailMessage = new MailMessage(sendEmail, userEmail, subject, htmlBody);
+            mailMessage.IsBodyHtml = true;
+
+            var smtpServer = _configuration.GetSection("SendEmailAccount")["SmtpServer"];
+            int.TryParse(_configuration.GetSection("SendEmailAccount")["Port"], out int port);
+            var userNameEmail = _configuration.GetSection("SendEmailAccount")["UserName"];
+            var password = _configuration.GetSection("SendEmailAccount")["Password"];
+
+            SmtpClient client = new SmtpClient(smtpServer, port);
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(userNameEmail, password);
+            client.EnableSsl = true;
+            client.Send(mailMessage);
+        }
+    
+}
 }
