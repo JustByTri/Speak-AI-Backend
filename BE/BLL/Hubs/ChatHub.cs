@@ -27,15 +27,7 @@ namespace BLL.Hubs
             var userId = await _unitOfWork.User.GetByIdAsync(chatHubDTO.UserId);
             _aiService.SetCurrentTopic(chatHubDTO.TopicId);
             var response = await _aiService.ProcessConversationAsync(chatHubDTO.Message);
-            if (response == null || response.BotResponse == null)
-            {
-                // Xử lý lỗi hoặc trả về giá trị mặc định
-                return "Không thể tạo phản hồi.";
-            }
 
-
-
-        
             return response.BotResponse;
         }
     }

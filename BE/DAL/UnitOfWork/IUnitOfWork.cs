@@ -20,6 +20,7 @@ namespace DAL.UnitOfWork
         IExerciseProgressRepository ExerciseProgress { get; }
         IRefreshTokenRepository RefreshToken { get; }
         IChatRepository ChatMessages { get; }
+        IOrderRepository Order { get; }
         void Dispose();
         Task<bool> SaveChangeAsync();
         bool SaveChange();
