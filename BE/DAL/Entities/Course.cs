@@ -17,9 +17,10 @@ namespace DAL.Entities
         public bool IsDeleted { get; set; }
         public bool IsActive { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool IsPremium { get; set; }
 
         public int LevelId { get; set; }
-
+        public int DisplayOrder { get; set; }
         // Navigation properties
         public virtual Level Level { get; set; }
         public virtual ICollection<EnrolledCourse> EnrolledCourses { get; set; }

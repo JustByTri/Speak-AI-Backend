@@ -21,6 +21,7 @@ namespace DAL.Entities
         public bool IsPremium { get; set; }
         public string? Otp { get; set; }
         public DateTime? OtpExpiredTime { get; set; }
+        public DateTime? PremiumExpiredTime { get; set; }
         public bool IsVerified { get; set; }
         public Guid? UserLevelId { get; set; }
         public bool IsAdmin { get; set; } = false;
@@ -30,5 +31,7 @@ namespace DAL.Entities
         public virtual ICollection<EnrolledCourse> EnrolledCourses { get; set; }
         public virtual ICollection<TopicProgress> TopicProgresses { get; set; }
         public virtual ICollection<ExerciseProgress> ExerciseProgresses { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Order > Order { get; set; }
     }
 }

@@ -29,6 +29,9 @@ namespace DAL.Data
         public DbSet<ExerciseProgress> ExerciseProgresses { get; set; } 
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Order > Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }    
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -153,6 +156,28 @@ namespace DAL.Data
                 .HasOne(ep => ep.EnrolledCourse)
                 .WithMany()
                 .HasForeignKey(ep => ep.EnrolledCourseId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Order>()
+             .Property(o => o.TotalAmount)
+             .HasPrecision(18, 2); 
+
+            modelBuilder.Entity<OrderDetail>()
+                .Property(od => od.TotalPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Amount)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Transaction>()
+       .HasOne(t => t.User)
+       .WithMany(u => u.Transactions)
+       .HasForeignKey(t => t.UserId)
+       .OnDelete(DeleteBehavior.NoAction); 
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Order)
+                .WithMany(o => o.Transactions)
+                .HasForeignKey(t => t.OrderId)
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Level>().HasData(
      new Level

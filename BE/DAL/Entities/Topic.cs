@@ -16,7 +16,7 @@ namespace DAL.Entities
         public DateTime UpdatedAt { get; set; }
       
         public Guid CourseId { get; set; }
-
+        public int DisplayOrder { get; set; }
         // Navigation properties
         public virtual Course Course { get; set; }
         public virtual ICollection<Exercise> Exercises { get; set; }
