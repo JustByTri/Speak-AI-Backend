@@ -32,6 +32,7 @@ namespace DAL.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Order > Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }    
+        public DbSet<ChatMessages> ChatMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

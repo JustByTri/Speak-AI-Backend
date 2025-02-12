@@ -34,5 +34,6 @@ namespace DAL.IRepositories
         Task<TopicProgress> GetByUserAndTopicAsync(Guid userId, Guid topicId);
        
         Task<IEnumerable<Exercise>> GetByTopicIdAsync(Guid topicId);
+        Task<IEnumerable<ChatMessages>> GetByUserIdAsync(Guid userId);
     }
 }
