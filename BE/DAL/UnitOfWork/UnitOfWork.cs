@@ -26,7 +26,8 @@ namespace DAL.UnitOfWork
             EnrolledCourse = new EnrolledCourseRepository(_context);
             TopicProgress = new TopicProgressRepository(_context);
             ExerciseProgress = new ExerciseProgressRepository(_context);
-            RefreshToken = new RefreshTokenRepository(_context);    
+            RefreshToken = new RefreshTokenRepository(_context);  
+            ChatMessages = new ChatRepository(_context);
         }
 
         public ICourseRepository Course { get; private set; }
@@ -40,6 +41,7 @@ namespace DAL.UnitOfWork
         public IExerciseProgressRepository ExerciseProgress { get; private set; }
 
         public IRefreshTokenRepository RefreshToken { get; private set; }
+        public IChatRepository ChatMessages { get; private set; }
 
         public void Dispose()
         {

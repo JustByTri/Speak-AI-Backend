@@ -1,4 +1,5 @@
 
+using BLL.Hubs;
 using BLL.Interface;
 using BLL.Services;
 using BLL.Services.BLL.Services;
@@ -28,6 +29,8 @@ namespace SpeakAI
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.AddScoped<ChatHub>();
+            builder.Services.AddSignalR();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options =>
             {
@@ -54,7 +57,7 @@ namespace SpeakAI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.MapHub<ChatHub>("/chatHub");
 
             app.MapControllers();
             app.UseCors("AllowAll");

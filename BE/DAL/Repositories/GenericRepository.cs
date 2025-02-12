@@ -169,5 +169,10 @@ namespace DAL.Repositories
                 .Where(e => e.TopicId == topicId && !e.IsDeleted)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<ChatMessages>> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.ChatMessages.Where(tp => tp.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace DAL.UnitOfWork
         ITopicProgressRepository TopicProgress { get; }
         IExerciseProgressRepository ExerciseProgress { get; }
         IRefreshTokenRepository RefreshToken { get; }
-
+        IChatRepository ChatMessages { get; }
         void Dispose();
         Task<bool> SaveChangeAsync();
         bool SaveChange();
