@@ -136,6 +136,10 @@ namespace DAL.Repositories
                 .Where(tp => tp.EnrolledCourseId == enrolledCourseId)
                 .ToListAsync();
         }
+        public async Task<IEnumerable<EnrolledCourse>> GetEnrolledCourseByUserIdAsync(Guid UserId)
+        {
+            return await _context.EnrolledCourses.Where(tp => tp.UserId == UserId).ToListAsync();
+        }
         public async Task<ExerciseProgress> GetByUserAndExerciseAsync(Guid userId, Guid exerciseId)
         {
              var entity = await _context.ExerciseProgresses
