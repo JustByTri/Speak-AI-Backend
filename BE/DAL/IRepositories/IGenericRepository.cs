@@ -35,5 +35,6 @@ namespace DAL.IRepositories
        
         Task<IEnumerable<Exercise>> GetByTopicIdAsync(Guid topicId);
         Task<IEnumerable<ChatMessages>> GetByUserIdAsync(Guid userId);
+        Task<IEnumerable<EnrolledCourse>> GetEnrolledCourseByUserIdAsync(Guid UserId);
     }
 }

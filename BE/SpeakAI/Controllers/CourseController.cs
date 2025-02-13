@@ -184,6 +184,12 @@ namespace SpeakAI.Controllers
             var result = await _courseService.GetAllCoursesAsync();
             return StatusCode(result.StatusCode, result);
         }
+        [HttpGet("id")]
+        public async Task<IActionResult> GetEnrollcourseByUserId (Guid Userid)
+        {
+            var result = await _courseService.GetByEnrollcoursebyUserID(Userid);
+            return StatusCode(result.StatusCode, result);
+        }
 
 
     }

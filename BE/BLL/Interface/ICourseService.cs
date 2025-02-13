@@ -49,7 +49,7 @@ namespace BLL.Interface
         Task<ResponseDTO> EnrollCourseAsync(Guid userId, Guid courseId);
         Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId);
         Task<ResponseDTO> GetAllCoursesAsync();
-
+        Task<ResponseDTO> GetByEnrollcoursebyUserID(Guid userId);
     
 
         Task<ResponseDTO> SubmitExerciseAsync(Guid exerciseId, Guid userId, decimal earnedPoints);
