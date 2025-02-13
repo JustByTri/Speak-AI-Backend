@@ -29,7 +29,7 @@ namespace SpeakAI
 #endif
             builder.Services.AddSingleton<HttpClient>(sp =>
             {
-                return new HttpClient { BaseAddress = new Uri("http://sai.runasp.net/") };
+                return new HttpClient { BaseAddress = new Uri("http://192.168.1.11:7288/") };
             });
             /* API Services */
             builder.Services.AddSingleton<IUserService, UserService>();
@@ -48,7 +48,7 @@ namespace SpeakAI
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<AppShell>();
             builder.Services.AddTransient<SignUpPage>();
-
+            builder.Services.AddTransient<CoursePage>();
             return builder.Build();
         }
     }

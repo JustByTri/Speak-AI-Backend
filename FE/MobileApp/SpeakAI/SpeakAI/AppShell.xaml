@@ -24,6 +24,9 @@
         <Tab Title="Home" Icon="home_icon.png">
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
+        <Tab Title="Explore" Icon="explore_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate views:CoursePage}" />
+        </Tab>
         <Tab Title="Study" Icon="study_icon.png">
             <ShellContent ContentTemplate="{DataTemplate views:StudyPage}" />
         </Tab>
