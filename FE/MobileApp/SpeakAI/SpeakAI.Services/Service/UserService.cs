@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SpeakAI.Services.DTO;
 using SpeakAI.Services.Interfaces;
 using SpeakAI.Services.Models;
 using SpeakAI.Services.Service;
@@ -14,8 +13,8 @@ public class UserService : IUserService
     {
         _httpService = httpService;
     }
-    public async Task<ResponseDTO> SignUpCustomer(UserDTO userDTO)
+    public async Task<ResponseModel> SignUpCustomer(UserModel userModel)
     {
-        return await _httpService.PostAsync<UserDTO, ResponseDTO>("api/auth/sign-up-customer", userDTO);
+        return await _httpService.PostAsync<UserModel, ResponseModel>("api/auth/sign-up-customer", userModel);
     }
 }

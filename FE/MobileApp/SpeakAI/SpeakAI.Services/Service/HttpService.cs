@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SpeakAI.Services.DTO; // Ensure your DTOs are in the correct namespace
 
 namespace SpeakAI.Services.Service
 {

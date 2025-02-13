@@ -1,5 +1,4 @@
-﻿using SpeakAI.Services.DTO;
-using SpeakAI.Services.Models;
+﻿using SpeakAI.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,6 @@ namespace SpeakAI.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<ResponseDTO> SignUpCustomer(UserDTO userDTO);
+        Task<ResponseModel> SignUpCustomer(UserModel userModel);
     }
 }

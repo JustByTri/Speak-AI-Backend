@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SpeakAI.Services.Interfaces
 {
-    public interface IWeatherService
+    public interface ICourseService
     {
-        Task<List<WeatherForecast>> GetWeatherAsync();
+        Task<List<CourseModel>> GetAllCourses();
     }
 }

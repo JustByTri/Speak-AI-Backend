@@ -302,7 +302,7 @@ namespace BLL.Services
                     if (exercise == null || exercise.IsDeleted)
                         return new ResponseDTO("Not found", 404, false);
 
-                    exercise.Content  =  exerciseDto.Content;
+                    exercise.Content = exerciseDto.Content;
                     exercise.UpdatedAt = DateTime.UtcNow;
 
                     await _unitOfWork.Exercise.UpdateAsync(exercise);
@@ -458,34 +458,40 @@ namespace BLL.Services
                     if (exercise == null || exerciseProgress == null)
                         return new ResponseDTO("Not found", 404, false);
 
-                  
+
                     exerciseProgress.ProgressPoints += earnedPoints;
                     exerciseProgress.IsCompleted = (exerciseProgress.ProgressPoints >= exercise.MaxPoint);
                     await _unitOfWork.ExerciseProgress.UpdateAsync(exerciseProgress);
 
-            
+
                     var allExerciseProgressInTopic = await _unitOfWork.ExerciseProgress.GetByUserAndTopicAsyncz(userId, exercise.TopicId);
 
-                  
-                    var totalPoints = allExerciseProgressInTopic.Sum(ep => ep.ProgressPoints); 
 
-                  
+                    var totalPoints = allExerciseProgressInTopic.Sum(ep => ep.ProgressPoints);
+
+
                     var topicProgress = await _unitOfWork.TopicProgress.GetByUserAndTopicAsync(userId, exercise.TopicId);
                     var topic = await _unitOfWork.Topic.GetByIdAsync(exercise.TopicId);
 
                     topicProgress.ProgressPoints = totalPoints;
                     topicProgress.IsCompleted = (totalPoints >= topic.MaxPoint);
-                    await _unitOfWork.TopicProgress.UpdateAsync(topicProgress); 
+                    await _unitOfWork.TopicProgress.UpdateAsync(topicProgress);
 
                     await _unitOfWork.SaveChangeAsync();
                     return new ResponseDTO("Updated successfully", 200, true);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, true);
+                }
+            }
 
 
             public async Task<ResponseDTO> GetAllCoursesAsync()
             {
                 try
                 {
-                    var listCourse =  await _unitOfWork.Course.GetAllByListAsync(c => true && c.IsDeleted == false);
+                    var listCourse = await _unitOfWork.Course.GetAllByListAsync(c => true && c.IsDeleted == false);
                     return new ResponseDTO("Success", 200, true, listCourse);
 
                 }
@@ -523,5 +529,4 @@ namespace BLL.Services
         }
     }
 }
-       
-    
+

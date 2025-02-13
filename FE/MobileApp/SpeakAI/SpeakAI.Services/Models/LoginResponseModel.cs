@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SpeakAI.Services.DTO
+namespace SpeakAI.Services.Models
 {
-    public class LoginResponseDTO
+    public class LoginResponseModel
     {
         [JsonPropertyName("statusCode")]
         public int StatusCode { get; set; }
@@ -19,6 +19,6 @@ namespace SpeakAI.Services.DTO
         public bool IsSuccess { get; set; }
 
         [JsonPropertyName("result")]
-        public LoginResultDTO Result { get; set; }
+        public LoginResultModel Result { get; set; }
     }
 }

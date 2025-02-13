@@ -6,6 +6,7 @@ using SpeakAI.Services.Interfaces;
 using SpeakAI.Services.Service;
 using SpeakAI.ViewModels;
 using SpeakAI.Views;
+using System.Net;
 
 namespace SpeakAI
 {
@@ -28,20 +29,25 @@ namespace SpeakAI
 #endif
             builder.Services.AddSingleton<HttpClient>(sp =>
             {
-                return new HttpClient { BaseAddress = new Uri("http://192.168.1.11:7288/") };
+                return new HttpClient { BaseAddress = new Uri("http://sai.runasp.net/") };
             });
-            builder.Services.AddSingleton<IWeatherService, WeatherService>();
+            /* API Services */
             builder.Services.AddSingleton<IUserService, UserService>();
             builder.Services.AddSingleton<ILoginService, LoginService>();
+            builder.Services.AddSingleton<ICourseService, CourseService>();
             builder.Services.AddSingleton<HttpService>();
+
+            /* View Model Logic */
+            builder.Services.AddSingleton<StudyViewModel>();
             builder.Services.AddSingleton<SignInViewModel>();
+            builder.Services.AddSingleton<SignUpViewModel>();
+
+            /* View Page */
+            builder.Services.AddTransient<StudyPage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<AppShell>();
             builder.Services.AddTransient<SignUpPage>();
-            builder.Services.AddSingleton<SignUpViewModel>();
-            builder.Services.AddSingleton<WeatherViewModel>();
-            builder.Services.AddTransient<WeatherPage>();
 
             return builder.Build();
         }

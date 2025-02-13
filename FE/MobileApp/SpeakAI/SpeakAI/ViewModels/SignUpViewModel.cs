@@ -1,5 +1,4 @@
-﻿using SpeakAI.Services.DTO;
-using SpeakAI.Services.Interfaces;
+﻿using SpeakAI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using SpeakAI.Services.Models;
 
 namespace SpeakAI.ViewModels
 {
@@ -111,7 +111,7 @@ namespace SpeakAI.ViewModels
                     return;
                 }
 
-                var newUser = new UserDTO
+                var newUser = new UserModel
                 {
                     username = Username.Trim(),
                     password = Password,

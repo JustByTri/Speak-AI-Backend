@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpeakAI.Services.DTO
+namespace SpeakAI.Services.Models
 {
-    public class LoginRequestDTO
+    public class LoginRequestModel
     {
         public string username { get; set; }
         public string password { get; set; }

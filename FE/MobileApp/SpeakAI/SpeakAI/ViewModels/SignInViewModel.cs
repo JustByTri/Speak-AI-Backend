@@ -1,5 +1,5 @@
-﻿using SpeakAI.Services.DTO;
-using SpeakAI.Services.Interfaces;
+﻿using SpeakAI.Services.Interfaces;
+using SpeakAI.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,7 +70,7 @@ namespace SpeakAI.ViewModels
                     NotificationMessage = "All fields are required.";
                     return;
                 }
-                var user = new LoginRequestDTO
+                var user = new LoginRequestModel
                 {
                     username = Username,
                     password = Password,

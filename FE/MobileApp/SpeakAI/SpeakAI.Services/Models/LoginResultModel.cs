@@ -5,12 +5,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SpeakAI.Services.DTO
+namespace SpeakAI.Services.Models
 {
-    public class LoginResultDTO
+    public class LoginResultModel
     {
         [JsonPropertyName("user")]
-        public UserDTO User { get; set; }
+        public UserModel User { get; set; }
 
         [JsonPropertyName("accessToken")]
         public string AccessToken { get; set; }

@@ -1,5 +1,4 @@
-﻿using SpeakAI.Services.DTO;
-using SpeakAI.Services.Interfaces;
+﻿using SpeakAI.Services.Interfaces;
 using SpeakAI.Services.Models;
 using System;
 using System.Collections.Generic;
@@ -18,9 +17,9 @@ namespace SpeakAI.Services.Service
         {
             _httpService = httpService;
         }
-        public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseModel> Login(LoginRequestModel loginRequestModel)
         {
-            var result = await _httpService.PostAsync<LoginRequestDTO, LoginResponseDTO>("api/auth/sign-in", loginRequestDTO);
+            var result = await _httpService.PostAsync<LoginRequestModel, LoginResponseModel>("api/auth/sign-in", loginRequestModel);
 
             if (result != null && result.IsSuccess && result.Result != null)
             {

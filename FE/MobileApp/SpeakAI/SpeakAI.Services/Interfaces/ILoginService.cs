@@ -1,5 +1,4 @@
-﻿using SpeakAI.Services.DTO;
-using SpeakAI.Services.Models;
+﻿using SpeakAI.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,6 @@ namespace SpeakAI.Services.Interfaces
 {
     public interface ILoginService
     {
-        Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
+        Task<LoginResponseModel> Login(LoginRequestModel loginRequestModel);
     }
 }
