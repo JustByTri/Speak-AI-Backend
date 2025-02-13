@@ -1,22 +1,13 @@
-// const API_URL = process.env.REACT_APP_API_URL
-const API_URL = "http://localhost:3000/api";
+import axiosInstance from "../api/axiosConfig";
+
 export const loginUser = async (credentials) => {
   try {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    });
-
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
-
-    const data = await response.json();
-    return data;
+    const response = await axiosInstance.post("/auth/sign-in", credentials);
+    return response.data;
   } catch (error) {
-    throw new Error(error.message || "An error occurred during login");
+    if (error.response) {
+      throw new Error(error.response.data.message || "Login Failed");
+    }
+    throw error;
   }
 };

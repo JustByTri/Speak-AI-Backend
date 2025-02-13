@@ -6,11 +6,9 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<BookingDashboard />} />
-        {/* Thêm các routes khác nếu cần */}
-        <Route path="/" element={<BookingDashboard />} />{" "}
-        {/* Redirect trang chủ đến dashboard */}
-        <Route path="/login" element={<LoginPage />} />{" "}
       </Routes>
     </Router>
   );
