@@ -12,7 +12,7 @@ import {
 const menuItems = [
   { icon: Home, label: "Dashboard", path: "/" },
   { icon: Calendar, label: "Bookings", path: "/bookings" },
-  { icon: Users, label: "Customers", path: "/customers" },
+  { icon: Users, label: "Courses", path: "/courses" },
   { icon: CreditCard, label: "Payments", path: "/payments" },
   { icon: BarChart2, label: "Reports", path: "/reports" },
   { icon: Settings, label: "Settings", path: "/settings" },
