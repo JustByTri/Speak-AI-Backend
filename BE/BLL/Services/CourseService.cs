@@ -27,31 +27,57 @@ namespace BLL.Services
             {
                 try
                 {
+             
+                    if (courseDto.MaxPoint % 1 != 0)
+                    {
+                        return new ResponseDTO("Total course score must be an integer", 400, false);
+                    }
+                    int maxPoint = (int)courseDto.MaxPoint;
 
-                    var totalTopics = courseDto.Topics.Count;
-                    var pointPerTopic = Math.Round(courseDto.MaxPoint / totalTopics, 2);
+                    int totalTopics = courseDto.Topics.Count;
+                    if (totalTopics == 0 || maxPoint % totalTopics != 0)
+                    {
+                        return new ResponseDTO(
+                            $"The number of topics must be a divisor of {maxPoint}",
+                            400,
+                            false
+                        );
+                    }
+                    int pointPerTopic = maxPoint / totalTopics;
 
+         
                     var course = new Course
                     {
                         Id = Guid.NewGuid(),
                         CourseName = courseDto.CourseName,
                         Description = courseDto.Description,
-                        MaxPoint = courseDto.MaxPoint,
+                        MaxPoint = maxPoint,
                         IsFree = courseDto.IsFree,
+                        IsPremium = courseDto.IsPremium,
                         LevelId = courseDto.LevelId,
                         IsDeleted = false,
                         IsActive = true,
                         UpdatedAt = DateTime.UtcNow,
                         CreatedAt = DateTime.UtcNow
                     };
-
                     await _unitOfWork.Course.AddAsync(course);
 
+       
                     foreach (var topicDto in courseDto.Topics)
                     {
-                        var totalExercises = topicDto.Exercises.Count;
-                        var pointPerExercise = Math.Round(pointPerTopic / totalExercises, 2);
+                        
+                        int totalExercises = topicDto.Exercises.Count;
+                        if (totalExercises == 0 || pointPerTopic % totalExercises != 0)
+                        {
+                            return new ResponseDTO(
+                                $"Number of exercises in the topic'{topicDto.TopicName}' must be the wish of {pointPerTopic}",
+                                400,
+                                false
+                            );
+                        }
+                        int pointPerExercise = pointPerTopic / totalExercises;
 
+                        
                         var topic = new Topic
                         {
                             Id = Guid.NewGuid(),
@@ -63,9 +89,9 @@ namespace BLL.Services
                             CreatedAt = DateTime.UtcNow,
                             CourseId = course.Id
                         };
-
                         await _unitOfWork.Topic.AddAsync(topic);
 
+                 
                         foreach (var exerciseDto in topicDto.Exercises)
                         {
                             var exercise = new Exercise
@@ -79,13 +105,12 @@ namespace BLL.Services
                                 CreatedAt = DateTime.UtcNow,
                                 TopicId = topic.Id
                             };
-
                             await _unitOfWork.Exercise.AddAsync(exercise);
                         }
                     }
 
                     await _unitOfWork.SaveChangeAsync();
-                    return new ResponseDTO("Create course successfully", 201, true);
+                    return new ResponseDTO("Create a successful course", 201, true);
                 }
                 catch (Exception ex)
                 {
@@ -524,7 +549,19 @@ namespace BLL.Services
                         c.Description.Contains(keyword))
                     .ToListAsync();
             }
+            public async Task<ResponseDTO> GetByEnrollcoursebyUserID(Guid userId)
+            {
+                try
+                {
+                    var enrollCourse = await _unitOfWork.EnrolledCourse.GetEnrolledCourseByUserIdAsync(userId);
+                    return new ResponseDTO("Get EnrollCourse Successfully", 200, true, enrollCourse);
+                }
+                catch(Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                }
 
+            }
         }
     }
 }
