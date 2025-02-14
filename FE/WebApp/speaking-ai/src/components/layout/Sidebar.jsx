@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Home,
   Calendar,
@@ -19,7 +20,8 @@ const menuItems = [
 ];
 
 const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState(location.pathname);
 
   return (
     <div className="w-64 h-screen bg-gray-900 text-white fixed left-0 top-0">
@@ -29,22 +31,23 @@ const Sidebar = () => {
         </h1>
         <nav>
           {menuItems.map((item, index) => (
-            <div
+            <Link
               key={index}
+              to={item.path}
               className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer 
                 transition-all duration-300 ease-in-out transform hover:scale-105
                 ${
-                  activeItem === item.label
+                  activeItem === item.path
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "hover:bg-gray-800"
                 }`}
-              onClick={() => setActiveItem(item.label)}
+              onClick={() => setActiveItem(item.path)}
             >
               <item.icon className="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" />
               <span className="transition-colors duration-300">
                 {item.label}
               </span>
-            </div>
+            </Link>
           ))}
         </nav>
       </div>
