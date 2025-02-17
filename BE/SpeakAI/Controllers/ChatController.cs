@@ -9,7 +9,7 @@ using OpenAI.Chat;
 
 namespace SpeakAI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/chats")]
     [ApiController]
     public class ChatController : ControllerBase
     {

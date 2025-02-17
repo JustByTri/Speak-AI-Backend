@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SpeakAI.Controllers
 {
+    [Route("api/premium")]
+    [ApiController]
     public class PremiumController : ControllerBase
     {
         private readonly IPremiumSubscriptionService _premiumService;

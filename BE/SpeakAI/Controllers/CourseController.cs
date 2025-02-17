@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SpeakAI.Controllers
 {
-    [Route("api/[controller]")]
+    
+    [Route("api/courses")]
     [ApiController]
     public class CourseController : ControllerBase
     {
@@ -81,7 +82,7 @@ namespace SpeakAI.Controllers
             return Ok(response);
         }
 
-        [HttpPost("{topicId}/exercise")]
+        [HttpPost("topics/{topicId}/exercises")]
         public async Task<IActionResult> AddExercise(Guid topicId, [FromBody] CreateExerciseDTO exerciseDto)
         {
             var response = await _courseService.AddExerciseToTopicAsync(topicId, exerciseDto);
@@ -101,49 +102,25 @@ namespace SpeakAI.Controllers
             var response = await _courseService.DeleteExerciseAsync(id);
             return Ok(response);
         }
-        [HttpPost("{courseId}/enroll")]
+        [HttpPost("{courseId}/enrollments")]
         public async Task<IActionResult> Enroll(Guid courseId, [FromBody] Guid userId)
         {
             var result = await _courseService.EnrollCourseAsync(userId, courseId);
            return Ok(result);
         }
 
-        [HttpGet("enrolled/{enrolledCourseId}")]
+        [HttpGet("enrollments/{enrolledCourseId}")]
         public async Task<IActionResult> GetEnrolledDetails(Guid enrolledCourseId)
         {
             var result = await _courseService.GetEnrolledCourseDetailsAsync(enrolledCourseId);
            return Ok(result);
         }
 
-        [HttpPost("exercises/{exerciseId}/submit")]
+        [HttpPost("exercises/{exerciseId}/submissions")]
         public async Task<IActionResult> SubmitExercise(Guid exerciseId, [FromBody] SubmitExerciseDTO dto)
         {
             var result = await _courseService.SubmitExerciseAsync(exerciseId, dto.UserId, dto.EarnedPoints);
            return Ok(result);
-        }
-        [HttpGet("getallcourse")]
-        public async Task<IActionResult> GetAllCourses([FromQuery] string search = "")
-        {
-            try
-            {
-                var courses = await _courseService.GetAllCoursesAsync();
-                return Ok(new ResponseDTO(
-                        message: "Search results retrieved successfully",
-                        statusCode:  StatusCodeEnum.OK,
-                        success: true,
-                        result: courses
-                    ));
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ResponseDTO(
-                    message: $"Internal server error: {ex.Message}",
-                    statusCode: StatusCodeEnum.InteralServerError,
-                    success: false
-                ));
-            }
-       
         }
 
         [HttpGet("search")]
@@ -179,13 +156,13 @@ namespace SpeakAI.Controllers
         }
 
 
-        [HttpGet("get-all")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCourses()
         {
             var result = await _courseService.GetAllCoursesAsync();
            return Ok(result);
         }
-        [HttpGet("id")]
+        [HttpGet("user/{userId}/enrolled-courses")]
         public async Task<IActionResult> GetEnrollcourseByUserId (Guid Userid)
         {
             var result = await _courseService.GetByEnrollcoursebyUserID(Userid);
@@ -199,7 +176,7 @@ namespace SpeakAI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("check-enrollment")]
+        [HttpGet("users/{userId}/courses/{courseId}/enrollment-status")]
         public async Task<IActionResult> CheckEnrollment(Guid userId, Guid courseId)
         {
             var response = await _courseService.CheckUserEnrollmentAsync(userId, courseId);

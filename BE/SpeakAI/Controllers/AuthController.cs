@@ -27,7 +27,12 @@ namespace Api_InnerShop.Controllers
             _userService = userService;
             _emailService = emailService;
         }
-        [HttpPost("sign-in")]
+        /// <summary>
+        /// Authenticates a user and returns a JWT token
+        /// </summary>
+        /// <param name="loginRequestDTO"></param>
+        /// <returns></returns>
+        [HttpPost("tokens")]
         public IActionResult Login(LoginRequestDTO loginRequestDTO)
         {
             if (!ModelState.IsValid)
@@ -41,7 +46,12 @@ namespace Api_InnerShop.Controllers
             }
             return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, StatusCodeEnum.NotFound, false));
         }
-        [HttpPost("refresh-token")]
+        /// <summary>
+        /// Generates a new access token using a valid refresh token
+        /// </summary>
+        /// <param name="tokenDTO"></param>
+        /// <returns></returns>
+        [HttpPost("tokens/refresh")]
         public IActionResult GetNewTokenFromRefreshToken([FromBody] RequestTokenDTO tokenDTO)
         {
             if (ModelState.IsValid)
@@ -55,6 +65,11 @@ namespace Api_InnerShop.Controllers
             }
             return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, StatusCodeEnum.InteralServerError, false));
         }
+        /// <summary>
+        /// Logs out a user by invalidating their tokens
+        /// </summary>
+        /// <param name="logoutDTO"></param>
+        /// <returns></returns>
         [HttpPost("logout")]
         public IActionResult Logout([FromBody] LogOutDTO logoutDTO)
         {
@@ -78,7 +93,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost("sign-up-customer")]
+        [HttpPost("register/customer")]
         [ProducesResponseType(200, Type = typeof(ResponseDTO))]
         [ProducesResponseType(500)]
         public async Task<IActionResult> SignUpAsCustomer([FromBody] SignUpCustomerDTOResquest model)
@@ -120,7 +135,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        [HttpPost("forgot-password")]
+        [HttpPost("password/forgot")]
         public IActionResult ForgotPassword(string email)
         {
             var result = _userService.ForgotPassword(email);
@@ -132,7 +147,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("reset-password")]
+        [HttpPost("password/reset")]
         public IActionResult ResetPassword(ForgotPasswordModelDTO request)
         {
             var validationResult = _userService.CheckValidationForgotPassword(request);
@@ -158,7 +173,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpPost("verify-user-by-otp")]
+        [HttpPost("verify/otp")]
         public IActionResult VerifyUser(string userId, string otpCode)
         {
             var parseUserId = _userService.ParseUserIdToGuid(userId);

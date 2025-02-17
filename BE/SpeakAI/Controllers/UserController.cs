@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Api_InnerShop.Controllers
 {
-    [Route("api/user-management")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -24,7 +24,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpGet("user/{userId}")]
+        [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserByUserId(Guid userId)
         {
             var user = await _userService.GetUserResponseDtoByUserId(userId);
