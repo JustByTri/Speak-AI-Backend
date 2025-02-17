@@ -1,5 +1,6 @@
 ﻿using BLL.Interface;
 using Common.DTO;
+using Common.Enum;
 using Common.Message.AuthMessage;
 using Common.Message.EmailMessage;
 using Common.Message.GlobalMessage;
@@ -31,14 +32,14 @@ namespace Api_InnerShop.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, 500, false, ModelState));
+                return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, StatusCodeEnum.InteralServerError, false, ModelState));
             }
             var result = _loginService.Login(loginRequestDTO);
             if (result != null)
             {
-                return Ok(new ResponseDTO(AuthNotificationMessage.LoginSuccessfully, 201, true, result));
+                return Ok(new ResponseDTO(AuthNotificationMessage.LoginSuccessfully, StatusCodeEnum.Created, true, result));
             }
-            return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, 400, false));
+            return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, StatusCodeEnum.NotFound, false));
         }
         [HttpPost("refresh-token")]
         public IActionResult GetNewTokenFromRefreshToken([FromBody] RequestTokenDTO tokenDTO)
@@ -48,11 +49,11 @@ namespace Api_InnerShop.Controllers
                 var result = _loginService.RefreshAccessToken(tokenDTO);
                 if (result == null || string.IsNullOrEmpty(result.AccessToken))
                 {
-                    return BadRequest(new ResponseDTO(MessageErrorInRefreshToken.CommonError, 400, false, result));
+                    return BadRequest(new ResponseDTO(MessageErrorInRefreshToken.CommonError, StatusCodeEnum.NotFound, false, result));
                 }
-                return Ok(new ResponseDTO(MessageErrorInRefreshToken.Successfully, 201, true, result));
+                return Ok(new ResponseDTO(MessageErrorInRefreshToken.Successfully, StatusCodeEnum.Created, true, result));
             }
-            return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, 500, false));
+            return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, StatusCodeEnum.InteralServerError, false));
         }
         [HttpPost("logout")]
         public IActionResult Logout([FromBody] LogOutDTO logoutDTO)
@@ -64,7 +65,7 @@ namespace Api_InnerShop.Controllers
             }
             else
             {
-                return Ok(new ResponseDTO(AuthNotificationMessage.LogOutFailed, 400, false));
+                return Ok(new ResponseDTO(AuthNotificationMessage.LogOutFailed, StatusCodeEnum.NotFound, false));
             }
         }
 
@@ -78,8 +79,8 @@ namespace Api_InnerShop.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("sign-up-customer")]
-        [ProducesResponseType(201, Type = typeof(ResponseDTO))]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(200, Type = typeof(ResponseDTO))]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> SignUpAsCustomer([FromBody] SignUpCustomerDTOResquest model)
         {
             try
@@ -94,19 +95,19 @@ namespace Api_InnerShop.Controllers
 
                 if (addNewCustomer)
                 {
-                    var response = new ResponseDTO(AuthNotificationMessage.SignUpSuccessfully, 201, true);
+                    var response = new ResponseDTO(AuthNotificationMessage.SignUpSuccessfully, StatusCodeEnum.Created, true);
                     return Ok(response);
                 }
                 else
                 {
-                    var response = new ResponseDTO(AuthNotificationMessage.SignUpUnsuccessfully, 400, true);
+                    var response = new ResponseDTO(AuthNotificationMessage.SignUpUnsuccessfully, StatusCodeEnum.NotFound, true);
                     return BadRequest(response);
                 }
 
             }
             catch (Exception ex)
             {
-                var response = new ResponseDTO(ex.Message, 400, false);
+                var response = new ResponseDTO(ex.Message, StatusCodeEnum.NotFound, false);
                 return BadRequest(response);
             }
         }
@@ -145,11 +146,11 @@ namespace Api_InnerShop.Controllers
 
             if (result.IsSuccess)
             {
-                return StatusCode(201, new ResponseDTO(AuthNotificationMessage.PasswordUpdate, 201, true));
+                return StatusCode(201, new ResponseDTO(AuthNotificationMessage.PasswordUpdate, StatusCodeEnum.Created, true));
             }
             else
             {
-                return BadRequest(new ResponseDTO(AuthNotificationMessage.ResetPassword, 400, false));
+                return BadRequest(new ResponseDTO(AuthNotificationMessage.ResetPassword, StatusCodeEnum.NotFound, false));
             }
         }
         /// <summary>
@@ -163,39 +164,39 @@ namespace Api_InnerShop.Controllers
             var parseUserId = _userService.ParseUserIdToGuid(userId);
             if (parseUserId == Guid.Empty)
             {
-                return BadRequest(new ResponseDTO(ValidationErrorMessage.WrongFormatUserId, 400, false));
+                return BadRequest(new ResponseDTO(ValidationErrorMessage.WrongFormatUserId, StatusCodeEnum.NotFound, false));
             }
 
             var checkUserExist = _userService.CheckUserExistByUserId(parseUserId);
             if (!checkUserExist)
             {
-                return BadRequest(new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false));
+                return BadRequest(new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.NotFound, false));
             }
 
             var checkUserVerifiedStatus = _userService.CheckUserVerifiedStatus(parseUserId);
             if (checkUserVerifiedStatus)
             {
-                return BadRequest(new ResponseDTO(AuthNotificationMessage.UserIsVerified, 400, false));
+                return BadRequest(new ResponseDTO(AuthNotificationMessage.UserIsVerified, StatusCodeEnum.NotFound, false));
             }
 
             var checkOtp = _userService.CheckOTP(parseUserId, otpCode);
             if (!checkOtp)
             {
-                return BadRequest(new ResponseDTO(AuthNotificationMessage.OtpInccorect, 400, false));
+                return BadRequest(new ResponseDTO(AuthNotificationMessage.OtpInccorect, StatusCodeEnum.NotFound, false));
             }
 
             var checkOTPExpired = _userService.CheckOTPExpired(parseUserId);
             if (checkOTPExpired)
             {
-                return BadRequest(new ResponseDTO(AuthNotificationMessage.OtpExpired, 400, false));
+                return BadRequest(new ResponseDTO(AuthNotificationMessage.OtpExpired, StatusCodeEnum.NotFound, false));
             }
 
             var result = _userService.VerifyUser(parseUserId);
             if (!result)
             {
-                return BadRequest(new ResponseDTO(AuthNotificationMessage.VerifyUnsuccessfully, 500, false));
+                return BadRequest(new ResponseDTO(AuthNotificationMessage.VerifyUnsuccessfully, StatusCodeEnum.InteralServerError, false));
             }
-            return Ok(new ResponseDTO(AuthNotificationMessage.VerifySuccessfully, 201, true));
+            return Ok(new ResponseDTO(AuthNotificationMessage.VerifySuccessfully, StatusCodeEnum.Created, true));
         }
 
         /// <summary>

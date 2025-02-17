@@ -2,6 +2,7 @@
 using Azure.Core;
 using BLL.Interface;
 using Common.DTO;
+using Common.Enum;
 using Common.Message.AuthMessage;
 using Common.Message.ValidationMessage;
 using DAL.Entities;
@@ -347,17 +348,17 @@ namespace BLL.Services
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.NotFound, false);
             }
             if (!Guid.TryParse(userId, out Guid userIdGuid))
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.NotFound, false);
             }
 
             var user = _unitofWork.User.FindAll(u => u.Id == userIdGuid);
             if (user == null)
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.NotFound, false);
             }
 
             var refreshTokenList = _unitofWork.RefreshToken.GetAll().Where(c => c.UserId == userIdGuid).ToList(); ;
@@ -365,7 +366,7 @@ namespace BLL.Services
             _unitofWork.RefreshToken.RemoveRange(refreshTokenList);
             _unitofWork.SaveChange();
 
-            return new ResponseDTO(AuthNotificationMessage.LogOut, 201, true);
+            return new ResponseDTO(AuthNotificationMessage.LogOut, StatusCodeEnum.OK, true);
         }
 
         /// <summary>
@@ -377,23 +378,23 @@ namespace BLL.Services
         {
             if (string.IsNullOrWhiteSpace(accessToken))
             {
-                return new ResponseDTO(AuthNotificationMessage.AccessTokenEmpty, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.AccessTokenEmpty, StatusCodeEnum.NotFound, false);
             }
             var userId = ExtractUserIdFromToken(accessToken);
             if (userId == null)
             {
-                return new ResponseDTO(AuthNotificationMessage.TokenExpired, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.TokenExpired, StatusCodeEnum.NotFound, false);
             }
             if (userId == AuthNotificationMessage.InvalidToken)
             {
-                return new ResponseDTO(AuthNotificationMessage.InvalidToken, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.InvalidToken, StatusCodeEnum.NotFound, false);
             }
             var user = GetUserByUserId(userId);
             if (user == null)
             {
-                return new ResponseDTO(AuthNotificationMessage.UserNotFound, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.UserNotFound, StatusCodeEnum.NotFound, false);
             }
-            return new ResponseDTO(AuthNotificationMessage.GetUserByTokenSuccess, 200, true, user);
+            return new ResponseDTO(AuthNotificationMessage.GetUserByTokenSuccess, StatusCodeEnum.OK, true, user);
         }
 
         public LocalUserDTO GetUserByUserId(string userId)

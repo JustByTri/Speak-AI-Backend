@@ -1,6 +1,7 @@
 ﻿
 using BLL.Interface;
 using Common.DTO;
+using Common.Enum;
 using Common.Message.AuthMessage;
 using Common.Message.EmailMessage;
 using Common.Message.ValidationMessage;
@@ -52,56 +53,56 @@ namespace BLL.Services
             var checkNullUserName = _validationHandle.CheckNull(model.UserName);
             if (!checkNullUserName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullUserName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullUserName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatUserName = _validationHandle.CheckFormatUserName(model.UserName);
             if (!checkFormatUserName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatUserName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatUserName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkUserNameAlreadyExists = _validationHandle.CheckUserNameAlreadyExists(model.UserName, userList);
             if (!checkUserNameAlreadyExists)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.UserNameAlreadyExists, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.UserNameAlreadyExists, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullFullName = _validationHandle.CheckNull(model.FullName);
             if (!checkNullFullName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullFullName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullFullName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatFullName = _validationHandle.CheckFormatFullName(model.FullName);
             if (!checkFormatFullName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatFullName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatFullName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullPassword = _validationHandle.CheckNull(model.Password);
             if (!checkNullPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatPassword = _validationHandle.CheckFormatPassword(model.Password);
             if (!checkFormatPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkConfirmPassword = _validationHandle.CheckConfirmPassword(model.Password, model.ConfirmedPassword);
             if (!checkConfirmPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongConfirmPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongConfirmPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
@@ -112,42 +113,42 @@ namespace BLL.Services
             var checkNullEmail = _validationHandle.CheckNull(model.Email);
             if (!checkNullEmail)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullEmail, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullEmail, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatEmail = _validationHandle.CheckFormatEmail(model.Email);
             if (!checkFormatEmail)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatEmail, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatEmail, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkEmailAlreadyExists = _validationHandle.CheckEmailAlreadyExists(model.Email, userList);
             if (!checkEmailAlreadyExists)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.EmailAlreadyExists, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.EmailAlreadyExists, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullBirthday = _validationHandle.CheckNull(model.Birthday);
             if (!checkNullBirthday)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullBirthday, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullBirthday, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatBirthday = _validationHandle.CheckFormatBirthday(model.Birthday);
             if (!checkFormatBirthday)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatBirthday, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatBirthday, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullGender = _validationHandle.CheckNull(model.Gender);
             if (!checkNullGender)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullGender, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullGender, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
@@ -158,7 +159,7 @@ namespace BLL.Services
 
            
 
-            var successfulResponse = new ResponseDTO("Check Validation Successfully", 200, true);
+            var successfulResponse = new ResponseDTO("Check Validation Successfully", StatusCodeEnum.OK, true);
             return successfulResponse;
         }
 
@@ -268,55 +269,55 @@ namespace BLL.Services
         {
             if (model.Email.IsNullOrEmpty())
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullEmail, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullEmail, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var user = _unitofWork.User.GetAll().FirstOrDefault(c => c.Email == model.Email);
             if (user == null)
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.BadRequest, false);
             }
 
             var checkUserVerifiedStatus = CheckUserVerifiedStatus(user.Id);
             if (!checkUserVerifiedStatus)
             {
-                return new ResponseDTO(AuthNotificationMessage.UserIsNotVerified, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.UserIsNotVerified, StatusCodeEnum.BadRequest, false);
             }
 
             var checkOtp = CheckOTP(user.Id, model.OTP);
             if (!checkOtp)
             {
-                return new ResponseDTO(AuthNotificationMessage.OtpInccorect, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.OtpInccorect, StatusCodeEnum.BadRequest, false);
             }
 
             var checkOTPExpired = CheckOTPExpired(user.Id);
             if (checkOTPExpired)
             {
-                return new ResponseDTO(AuthNotificationMessage.OtpExpired, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.OtpExpired, StatusCodeEnum.BadRequest, false);
             }
 
             var checkNullPassword = _validationHandle.CheckNull(model.Password);
             if (!checkNullPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
             var checkToken = _validationHandle.CheckNullToken(model.OTP);
             if (!checkToken)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullToken, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullToken, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatPassword = _validationHandle.CheckFormatPassword(model.Password);
             if (!checkFormatPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
-            var successfulResponse = new ResponseDTO("Check Validation Successfully", 200, true);
+            var successfulResponse = new ResponseDTO("Check Validation Successfully", StatusCodeEnum.OK, true);
             return successfulResponse;
         }
 
@@ -332,7 +333,7 @@ namespace BLL.Services
             var user = _unitofWork.User.FindAll(u => u.Email == model.Email).FirstOrDefault();
             if (user == null)
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.BadRequest, false);
             }
 
             user.PasswordHash = passwordHashedBytes;
@@ -343,7 +344,7 @@ namespace BLL.Services
 
             _unitofWork.SaveChangeAsync();
 
-            return new ResponseDTO(AuthNotificationMessage.PasswordUpdate, 201, true);
+            return new ResponseDTO(AuthNotificationMessage.PasswordUpdate, StatusCodeEnum.Created, true);
         }
 
         /// <summary>
@@ -356,12 +357,12 @@ namespace BLL.Services
             var user = _unitofWork.User.FindAll(u => u.Email == email).FirstOrDefault();
             if (user == null)
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.BadRequest, false);
             }
 
             if (!user.IsVerified)
             {
-                return new ResponseDTO(AuthNotificationMessage.UserIsNotVerified, 400, false);
+                return new ResponseDTO(AuthNotificationMessage.UserIsNotVerified, StatusCodeEnum.BadRequest, false);
             }
 
             var otp = _emailService.GenerateOTP();
@@ -373,7 +374,7 @@ namespace BLL.Services
 
             _emailService.SendOTPEmail(email, user.Username, otp.OTPCode, EmailSubject.ResetPassEmailSubject);
 
-            return new ResponseDTO(EmailNotificationMessage.SendOTPEmailSuccessfully + email, 201, true, otp);
+            return new ResponseDTO(EmailNotificationMessage.SendOTPEmailSuccessfully + email, StatusCodeEnum.Created, true, otp);
         }
 
         /// <summary>
@@ -617,7 +618,7 @@ namespace BLL.Services
 
             if (user == null)
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.BadRequest, false);
             }
 
             bool isChanged = false;
@@ -668,11 +669,11 @@ namespace BLL.Services
             if (isChanged)
             {
                 _unitofWork.SaveChangeAsync();
-                return new ResponseDTO(AuthNotificationMessage.UpdateProfileSuccessfully, 200, true);
+                return new ResponseDTO(AuthNotificationMessage.UpdateProfileSuccessfully, StatusCodeEnum.OK, true);
             }
             else
             {
-                return new ResponseDTO(AuthNotificationMessage.NothingChange, 200, true);
+                return new ResponseDTO(AuthNotificationMessage.NothingChange, StatusCodeEnum.OK, true);
             }
         }
         /// <summary>
@@ -687,18 +688,18 @@ namespace BLL.Services
             var checkNullUserId = _validationHandle.CheckNull(userDto.UserId);
             if (!checkNullUserId)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatUserName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatUserName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
             var parseUserid = ParseUserIdToGuid(userDto.UserId);
             if (parseUserid == Guid.Empty)
             {
-                return new ResponseDTO(ValidationErrorMessage.WrongFormatUserId, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.WrongFormatUserId, StatusCodeEnum.BadRequest, false);
             }
             var checkUserExist = CheckUserExistByUserId(parseUserid);
             if (!checkUserExist)
             {
-                return new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false);
+                return new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.BadRequest, false);
             }
 
 
@@ -706,7 +707,7 @@ namespace BLL.Services
 
             if (!checkNullUserName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullUserName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullUserName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
@@ -714,7 +715,7 @@ namespace BLL.Services
             var checkFormatUserName = _validationHandle.CheckFormatUserName(userDto.UserName);
             if (!checkFormatUserName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatUserName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatUserName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
@@ -722,48 +723,48 @@ namespace BLL.Services
             var checkUserNameAlreadyExists = _validationHandle.CheckUserNameAlreadyExists(userDto.UserName, userList);
             if (!checkUserNameAlreadyExists)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.UserNameAlreadyExists, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.UserNameAlreadyExists, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullFullName = _validationHandle.CheckNull(userDto.FullName);
             if (!checkNullFullName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullFullName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullFullName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatFullName = _validationHandle.CheckFormatFullName(userDto.FullName);
             if (!checkFormatFullName)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatFullName, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatFullName, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullPassword = _validationHandle.CheckNull(userDto.Password);
             if (!checkNullPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatPassword = _validationHandle.CheckFormatPassword(userDto.Password);
             if (!checkFormatPassword)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatPassword, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatPassword, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var email = _validationHandle.CheckEmailAlreadyExists(userDto.Email, userList);
             if (!email)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.EmailAlreadyExists, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.EmailAlreadyExists, StatusCodeEnum.BadRequest, false);
                 return response;
             }
             var checkNullPhoneNumber = _validationHandle.CheckNull(userDto.Phone);
             if (!checkNullPhoneNumber)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullPhoneNumber, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullPhoneNumber, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
@@ -772,35 +773,35 @@ namespace BLL.Services
             var checkNullEmail = _validationHandle.CheckNull(userDto.Email);
             if (!checkNullEmail)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullEmail, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullEmail, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatEmail = _validationHandle.CheckFormatEmail(userDto.Email);
             if (!checkFormatEmail)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatEmail, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatEmail, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkEmailAlreadyExists = _validationHandle.CheckEmailAlreadyExists(userDto.Email, userList);
             if (!checkEmailAlreadyExists)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.EmailAlreadyExists, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.EmailAlreadyExists, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkNullBirthday = _validationHandle.CheckNull(userDto.Birthday.ToString());
             if (!checkNullBirthday)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullBirthday, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullBirthday, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
             var checkFormatBirthday = _validationHandle.CheckFormatBirthday(userDto.Birthday.ToString());
             if (!checkFormatBirthday)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatBirthday, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.WrongFormatBirthday, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
@@ -808,12 +809,12 @@ namespace BLL.Services
             var checkNullAdress = _validationHandle.CheckNull(userDto.Address);
             if (!checkNullAdress)
             {
-                var response = new ResponseDTO(ValidationErrorMessage.NullAddress, 400, false);
+                var response = new ResponseDTO(ValidationErrorMessage.NullAddress, StatusCodeEnum.BadRequest, false);
                 return response;
             }
 
           
-            var successfulResponse = new ResponseDTO("Check Validation Successfully", 200, true);
+            var successfulResponse = new ResponseDTO("Check Validation Successfully", StatusCodeEnum.OK, true);
             return successfulResponse;
         }
 
@@ -844,6 +845,16 @@ namespace BLL.Services
             };
 
             return userResponseDTO;
+        }
+        public async Task<User> GetUserById(Guid userId)
+        {
+            return await _unitofWork.User.GetByIdAsync(userId);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            await _unitofWork.User.UpdateAsync(user);
+            await _unitofWork.SaveChangeAsync();
         }
     }
 }

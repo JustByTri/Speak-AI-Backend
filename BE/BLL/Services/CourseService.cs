@@ -1,5 +1,6 @@
 ﻿using BLL.Interface;
 using Common.DTO;
+using Common.Enum;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using DTO.DTO;
@@ -30,7 +31,7 @@ namespace BLL.Services
              
                     if (courseDto.MaxPoint % 1 != 0)
                     {
-                        return new ResponseDTO("Total course score must be an integer", 400, false);
+                        return new ResponseDTO("Total course score must be an integer", StatusCodeEnum.BadRequest, false);
                     }
                     int maxPoint = (int)courseDto.MaxPoint;
 
@@ -39,7 +40,7 @@ namespace BLL.Services
                     {
                         return new ResponseDTO(
                             $"The number of topics must be a divisor of {maxPoint}",
-                            400,
+                            StatusCodeEnum.BadRequest,
                             false
                         );
                     }
@@ -71,7 +72,7 @@ namespace BLL.Services
                         {
                             return new ResponseDTO(
                                 $"Number of exercises in the topic'{topicDto.TopicName}' must be the wish of {pointPerTopic}",
-                                400,
+                                StatusCodeEnum.BadRequest,
                                 false
                             );
                         }
@@ -110,11 +111,11 @@ namespace BLL.Services
                     }
 
                     await _unitOfWork.SaveChangeAsync();
-                    return new ResponseDTO("Create a successful course", 201, true);
+                    return new ResponseDTO("Create a successful course", StatusCodeEnum.Created, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
             public async Task<ResponseDTO> GetCourseByIdAsync(Guid courseId)
@@ -123,13 +124,13 @@ namespace BLL.Services
                 {
                     var course = await _unitOfWork.Course.GetByIdAsync(courseId);
                     if (course == null)
-                        return new ResponseDTO("Not Found ", 404, false);
+                        return new ResponseDTO("Not Found ", StatusCodeEnum.NotFound, false);
 
-                    return new ResponseDTO("Get Course Successfully", 200, true, course);
+                    return new ResponseDTO("Get Course Successfully", StatusCodeEnum.OK, true, course);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -139,7 +140,7 @@ namespace BLL.Services
                 {
                     var course = await _unitOfWork.Course.GetByIdAsync(courseId);
                     if (course == null)
-                        return new ResponseDTO("Not found course", 404, false);
+                        return new ResponseDTO("Not found course", StatusCodeEnum.NotFound, false);
 
                     course.CourseName = courseDto.CourseName;
                     course.Description = courseDto.Description;
@@ -151,11 +152,11 @@ namespace BLL.Services
                     await _unitOfWork.Course.UpdateAsync(course);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Update course successfully", 200, true);
+                    return new ResponseDTO("Update course successfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -165,7 +166,7 @@ namespace BLL.Services
                 {
                     var course = await _unitOfWork.Course.GetByIdAsync(courseId);
                     if (course == null)
-                        return new ResponseDTO("Not found course", 404, false);
+                        return new ResponseDTO("Not found course", StatusCodeEnum.NotFound, false);
 
                     course.IsDeleted = true;
                     course.UpdatedAt = DateTime.UtcNow;
@@ -173,11 +174,11 @@ namespace BLL.Services
                     await _unitOfWork.Course.UpdateAsync(course);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Delete successfully", 200, true);
+                    return new ResponseDTO("Delete successfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -188,13 +189,13 @@ namespace BLL.Services
                 {
                     var topic = await _unitOfWork.Topic.GetByIdAsync(topicId);
                     if (topic == null)
-                        return new ResponseDTO("Not found the topic", 404, false);
+                        return new ResponseDTO("Not found the topic", StatusCodeEnum.NotFound, false);
 
-                    return new ResponseDTO("Get topic successfully", 200, true, topic);
+                    return new ResponseDTO("Get topic successfully", StatusCodeEnum.OK, true, topic);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -204,7 +205,7 @@ namespace BLL.Services
                 {
                     var course = await _unitOfWork.Course.GetByIdAsync(courseId);
                     if (course == null)
-                        return new ResponseDTO("Not found the course", 404, false);
+                        return new ResponseDTO("Not found the course", StatusCodeEnum.NotFound, false);
 
                     var topic = new Topic
                     {
@@ -220,11 +221,11 @@ namespace BLL.Services
                     await _unitOfWork.Topic.AddAsync(topic);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Add successfully", 201, true);
+                    return new ResponseDTO("Add successfully", StatusCodeEnum.Created, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -234,7 +235,7 @@ namespace BLL.Services
                 {
                     var topic = await _unitOfWork.Topic.GetByIdAsync(topicId);
                     if (topic == null)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                     topic.TopicName = topicDto.TopicName;
                     topic.IsActive = topicDto.IsActive;
@@ -244,11 +245,11 @@ namespace BLL.Services
                     await _unitOfWork.Topic.UpdateAsync(topic);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Update topic successfully", 200, true);
+                    return new ResponseDTO("Update topic successfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -258,7 +259,7 @@ namespace BLL.Services
                 {
                     var topic = await _unitOfWork.Topic.GetByIdAsync(topicId);
                     if (topic == null)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                     topic.IsDeleted = true;
                     topic.UpdatedAt = DateTime.UtcNow;
@@ -266,11 +267,11 @@ namespace BLL.Services
                     await _unitOfWork.Topic.UpdateAsync(topic);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Delete topic successfully", 200, true);
+                    return new ResponseDTO("Delete topic successfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -280,13 +281,13 @@ namespace BLL.Services
                 {
                     var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
                     if (exercise == null || exercise.IsDeleted)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
-                    return new ResponseDTO("Get exercise successfully", 200, true, exercise);
+                    return new ResponseDTO("Get exercise successfully", StatusCodeEnum.OK, true, exercise);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -296,7 +297,7 @@ namespace BLL.Services
                 {
                     var topic = await _unitOfWork.Topic.GetByIdAsync(topicId);
                     if (topic == null || topic.IsDeleted)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                     var exercise = new Exercise
                     {
@@ -311,11 +312,11 @@ namespace BLL.Services
                     await _unitOfWork.Exercise.AddAsync(exercise);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Add exercise successfully", 201, true);
+                    return new ResponseDTO("Add exercise successfully",StatusCodeEnum.Created , true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -325,7 +326,7 @@ namespace BLL.Services
                 {
                     var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
                     if (exercise == null || exercise.IsDeleted)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                     exercise.Content  =  exerciseDto.Content;
                     exercise.UpdatedAt = DateTime.UtcNow;
@@ -333,11 +334,11 @@ namespace BLL.Services
                     await _unitOfWork.Exercise.UpdateAsync(exercise);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Update exercise successfully", 200, true);
+                    return new ResponseDTO("Update exercise successfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -347,7 +348,7 @@ namespace BLL.Services
                 {
                     var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
                     if (exercise == null || exercise.IsDeleted)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                     exercise.IsDeleted = true;
                     exercise.UpdatedAt = DateTime.UtcNow;
@@ -355,11 +356,11 @@ namespace BLL.Services
                     await _unitOfWork.Exercise.UpdateAsync(exercise);
                     await _unitOfWork.SaveChangeAsync();
 
-                    return new ResponseDTO("Delete exercise sucessfully", 200, true);
+                    return new ResponseDTO("Delete exercise sucessfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -371,7 +372,7 @@ namespace BLL.Services
                     var courseResponse = await GetCourseByIdAsync(courseId);
 
                     if (user == null || !courseResponse.IsSuccess)
-                        return new ResponseDTO("User or course not found", 404, false);
+                        return new ResponseDTO("User or course not found", StatusCodeEnum.NotFound, false);
 
                     var enrolledCourse = new EnrolledCourse
                     {
@@ -428,11 +429,11 @@ namespace BLL.Services
                     }
 
                     await _unitOfWork.SaveChangeAsync();
-                    return new ResponseDTO("Enrolled successfully", 201, true);
+                    return new ResponseDTO("Enrolled successfully", StatusCodeEnum.Created, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
             public async Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId)
@@ -441,7 +442,7 @@ namespace BLL.Services
                 {
                     var enrolledCourse = await _unitOfWork.EnrolledCourse.GetByIdAsync(enrolledCourseId);
                     if (enrolledCourse == null)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                     var course = await _unitOfWork.Course.GetByIdAsync(enrolledCourse.CourseId);
                     var topicsProgress = await _unitOfWork.TopicProgress.GetByEnrolledCourseAsync(enrolledCourseId);
@@ -466,11 +467,11 @@ namespace BLL.Services
                         }).ToList()
                     };
 
-                    return new ResponseDTO("Success", 200, true, enrolledCourseDetails);
+                    return new ResponseDTO("Success", StatusCodeEnum.OK, true, enrolledCourseDetails);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}",StatusCodeEnum.InteralServerError , false);
                 }
             }
 
@@ -481,7 +482,7 @@ namespace BLL.Services
                     var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
                     var exerciseProgress = await _unitOfWork.ExerciseProgress.GetByUserAndExerciseAsync(userId, exerciseId);
                     if (exercise == null || exerciseProgress == null)
-                        return new ResponseDTO("Not found", 404, false);
+                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
 
                   
                     exerciseProgress.ProgressPoints += earnedPoints;
@@ -503,11 +504,11 @@ namespace BLL.Services
                     await _unitOfWork.TopicProgress.UpdateAsync(topicProgress); 
 
                     await _unitOfWork.SaveChangeAsync();
-                    return new ResponseDTO("Updated successfully", 200, true);
+                    return new ResponseDTO("Updated successfully", StatusCodeEnum.OK, true);
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -516,12 +517,12 @@ namespace BLL.Services
                 try
                 {
                     var listCourse =  await _unitOfWork.Course.GetAllByListAsync(c => true && c.IsDeleted == false);
-                    return new ResponseDTO("Success", 200, true, listCourse);
+                    return new ResponseDTO("Success",StatusCodeEnum.OK , true, listCourse);
 
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
             }
 
@@ -554,13 +555,86 @@ namespace BLL.Services
                 try
                 {
                     var enrollCourse = await _unitOfWork.EnrolledCourse.GetEnrolledCourseByUserIdAsync(userId);
-                    return new ResponseDTO("Get EnrollCourse Successfully", 200, true, enrollCourse);
+                    return new ResponseDTO("Get EnrollCourse Successfully", StatusCodeEnum.OK, true, enrollCourse);
                 }
                 catch(Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
                 }
 
+            }
+            public async Task<ResponseDTO> GetCourseDetailAsync(Guid courseId)
+            {
+                try
+                {
+                    var courseQuery = _unitOfWork.Course
+                        .GetAll()
+                        .Where(c => c.Id == courseId && !c.IsDeleted);
+
+            
+                    courseQuery = courseQuery
+                        .Include(c => c.Topics.Where(t => !t.IsDeleted))  
+                        .ThenInclude(t => t.Exercises.Where(e => !e.IsDeleted)); 
+
+                    var course = await courseQuery.FirstOrDefaultAsync();
+
+                    if (course == null)
+                        return new ResponseDTO("Course not found", StatusCodeEnum.NotFound, false);
+
+                    var courseDetail = new CourseDTO
+                    {
+                        Id = course.Id,
+                        CourseName = course.CourseName,
+                        Description = course.Description,
+                        MaxPoint = course.MaxPoint,
+                        IsFree = course.IsFree,
+                        IsPremium = course.IsPremium,
+                        IsActive = course.IsActive,
+                        LevelId = course.LevelId,
+                        Topics = course.Topics
+                            .Select(t => new TopicDetailDTO
+                            {
+                                Id = t.Id,
+                                TopicName = t.TopicName,
+                                MaxPoint = t.MaxPoint,
+                                IsActive = t.IsActive,
+                                Exercises = t.Exercises
+                                    .Select(e => new ExerciseDetailDTO
+                                    {
+                                        Id = e.Id,
+                                        Content = e.Content,
+                                        MaxPoint = e.MaxPoint,
+                                        IsActive = e.IsActive
+                                    }).ToList()
+                            }).ToList()
+                    };
+
+                    return new ResponseDTO("Course details retrieved successfully", StatusCodeEnum.OK, true, courseDetail);
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
+                }
+            }
+            public async Task<ResponseDTO> CheckUserEnrollmentAsync(Guid userId, Guid courseId)
+            {
+                try
+                {
+                    var enrollment = await _unitOfWork.EnrolledCourse
+                        .GetByConditionAsync(ec =>
+                            ec.UserId == userId &&
+                            ec.CourseId == courseId);
+
+                    if (enrollment == null)
+                        return new ResponseDTO("User has not enrolled in this course", StatusCodeEnum.NotFound, false);
+
+                    return new ResponseDTO("User is enrolled in this course", StatusCodeEnum.OK, true,
+                        new { EnrolledCourseId = enrollment.Id });
+                }
+                catch (Exception ex)
+                {
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
+                }
             }
         }
     }

@@ -24,7 +24,8 @@ namespace DAL.IRepositories
         void UpdateRange(List<T> entity);
         void RemoveRange(List<T> entity);
         Task DeleteAsync(Guid id);
-
+        IQueryable<T> FindAllWithIncludes(Expression<Func<T, bool>>? expression = null, params Expression<Func<T, object>>[] includes);
+        Task<T> GetByConditionWithIncludesAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
         Task<T> GetByConditionAsync(Expression<Func<T, bool>> expression);
         T GetByCondition(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> FindProductAsync(Expression<Func<T, bool>> expression);
@@ -36,5 +37,6 @@ namespace DAL.IRepositories
         Task<IEnumerable<Exercise>> GetByTopicIdAsync(Guid topicId);
         Task<IEnumerable<ChatMessages>> GetByUserIdAsync(Guid userId);
         Task<IEnumerable<EnrolledCourse>> GetEnrolledCourseByUserIdAsync(Guid UserId);
+
     }
 }

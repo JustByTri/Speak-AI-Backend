@@ -35,5 +35,7 @@ namespace BLL.Interface
       
   
         Task<UserResponseDTO?> GetUserResponseDtoByUserId(Guid userId);
+        Task<User> GetUserById(Guid userId);
+        Task UpdateUser(User user);
     }
 }

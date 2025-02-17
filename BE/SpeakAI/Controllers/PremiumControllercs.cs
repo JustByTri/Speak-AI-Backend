@@ -17,14 +17,14 @@ namespace SpeakAI.Controllers
         public async Task<IActionResult> UpgradeToPremium(Guid userId)
         {
             var result = await _premiumService.UpgradeToPremium(userId);
-            return StatusCode(result.StatusCode, result);
+            return StatusCode(200, result);
         }
 
         [HttpPost("confirm-upgrade/{orderId}")]
         public async Task<IActionResult> ConfirmUpgrade(Guid orderId)
         {
             var result = await _premiumService.ConfirmPremiumUpgrade(orderId);
-            return StatusCode(result.StatusCode, result);
+            return StatusCode(200, result);
         }
 
         [HttpGet("check-access/{userId}")]

@@ -1,4 +1,5 @@
 ﻿using BLL.Interface;
+using Common.Enum;
 using Common.Message.AuthMessage;
 using Common.Message.EmailMessage;
 using Common.Message.GlobalMessage;
@@ -32,32 +33,32 @@ namespace Api_InnerShop.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, 400, false));
+                return BadRequest(new ResponseDTO(GlobalNotificationMessage.InvalidModel, StatusCodeEnum.BadRequest, false));
             }
 
             var parseUserId = _userService.ParseUserIdToGuid(userID);
             if (parseUserId == Guid.Empty)
             {
-                return BadRequest(new ResponseDTO(ValidationErrorMessage.WrongFormatUserId, 400, false));
+                return BadRequest(new ResponseDTO(ValidationErrorMessage.WrongFormatUserId, StatusCodeEnum.BadRequest, false));
             }
 
             var user = _userService.GetUserByUserID(parseUserId);
             if (user == null)
             {
-                return BadRequest(new ResponseDTO(ValidationErrorMessage.UserNotFound, 400, false));
+                return BadRequest(new ResponseDTO(ValidationErrorMessage.UserNotFound, StatusCodeEnum.BadRequest, false));
             }
 
             var checkUserVerifiedStatus = _userService.CheckUserVerifiedStatus(parseUserId);
             if (checkUserVerifiedStatus)
             {
-                return BadRequest(new ResponseDTO(AuthNotificationMessage.UserIsVerified, 400, false));
+                return BadRequest(new ResponseDTO(AuthNotificationMessage.UserIsVerified, StatusCodeEnum.BadRequest, false));
             }
 
             var otpDto = _emailService.GenerateOTP();
 
             _emailService.SendOTPEmail(user.Email, user.Username, otpDto.OTPCode, EmailSubject.VerifyEmailSubject);
             _userService.SetOtp(otpDto, parseUserId);
-            return Ok(new ResponseDTO(EmailNotificationMessage.SendOTPEmailSuccessfully + user.Email, 201, true, otpDto));
+            return Ok(new ResponseDTO(EmailNotificationMessage.SendOTPEmailSuccessfully + user.Email, StatusCodeEnum.OK, true, otpDto));
         }
     }   
 }

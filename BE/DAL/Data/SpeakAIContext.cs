@@ -47,7 +47,7 @@ namespace DAL.Data
             modelBuilder.Entity<UserLevel>().HasKey(u => u.Id); 
             modelBuilder.Entity<TopicProgress>().HasKey(u => u.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(u => u.Id);
-  
+            modelBuilder.Entity<Transaction>().HasKey(u => u.Id);
 
 
             modelBuilder.Entity<Course>()

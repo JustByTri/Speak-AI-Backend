@@ -1,5 +1,6 @@
 ﻿using BLL.Interface;
 using Common.DTO;
+using Common.Enum;
 using Common.Message.UserMessage;
 using DTO.DTO;
 using Microsoft.AspNetCore.Http;
@@ -29,10 +30,10 @@ namespace Api_InnerShop.Controllers
             var user = await _userService.GetUserResponseDtoByUserId(userId);
             if(user == null)
             {
-                return NotFound(new ResponseDTO(UserMessage.UserIdNotExist, 404, false, null));
+                return NotFound(new ResponseDTO(UserMessage.UserIdNotExist, StatusCodeEnum.NotFound, false, null));
             }
 
-            return Ok(new ResponseDTO(UserMessage.GetUserSuccessfully, 200, true, user));
+            return Ok(new ResponseDTO(UserMessage.GetUserSuccessfully, StatusCodeEnum.OK, true, user));
         }
     }
 }
