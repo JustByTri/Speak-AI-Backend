@@ -4,6 +4,8 @@ using DAL.GenericRepository.IRepository;
 using DAL.GenericRepository.Repository;
 using DAL.IRepositories;
 using DAL.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +50,10 @@ namespace DAL.UnitOfWork
         public IChatRepository ChatMessages { get; private set; }
         public IOrderRepository Order { get; private set; }
         public ITransactionRepository Transaction { get; private set; }
-
+        public async Task<IDbContextTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel)
+        {
+            return await _context.Database.BeginTransactionAsync(isolationLevel);
+        }
         public void Dispose()
         {
             _context.Dispose();

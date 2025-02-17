@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -483,38 +484,124 @@ namespace BLL.Services
 
             public async Task<ResponseDTO> SubmitExerciseAsync(Guid exerciseId, Guid userId, decimal earnedPoints)
             {
-                try
+                using (var transaction = await _unitOfWork.BeginTransactionAsync(System.Data.IsolationLevel.ReadCommitted))
                 {
-                    var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
-                    var exerciseProgress = await _unitOfWork.ExerciseProgress.GetByUserAndExerciseAsync(userId, exerciseId);
-                    if (exercise == null || exerciseProgress == null)
-                        return new ResponseDTO("Not found", StatusCodeEnum.NotFound, false);
+                    try
+                    {
+                        // Lấy Exercise và ExerciseProgress
+                        var exercise = await _unitOfWork.Exercise.GetByIdAsync(exerciseId);
+                        var exerciseProgress = await _unitOfWork.ExerciseProgress.GetByUserAndExerciseAsync(userId, exerciseId);
 
-                  
-                    exerciseProgress.ProgressPoints += earnedPoints;
-                    exerciseProgress.IsCompleted = (exerciseProgress.ProgressPoints >= exercise.MaxPoint);
-                    await _unitOfWork.ExerciseProgress.UpdateAsync(exerciseProgress);
+                        if (exercise == null || exerciseProgress == null)
+                            return new ResponseDTO("Exercise không tồn tại", StatusCodeEnum.NotFound, false);
 
-            
-                    var allExerciseProgressInTopic = await _unitOfWork.ExerciseProgress.GetByUserAndTopicAsyncz(userId, exercise.TopicId);
+                        // Cập nhật điểm và trạng thái
+                        exerciseProgress.ProgressPoints = Math.Min(exercise.MaxPoint, earnedPoints); 
+                        exerciseProgress.IsCompleted = exerciseProgress.ProgressPoints >= exercise.MaxPoint;
+                        exerciseProgress.UpdateAt = DateTime.UtcNow;
 
-                  
-                    var totalPoints = allExerciseProgressInTopic.Sum(ep => ep.ProgressPoints); 
+                        await _unitOfWork.ExerciseProgress.UpdateAsync(exerciseProgress);
 
-                  
-                    var topicProgress = await _unitOfWork.TopicProgress.GetByUserAndTopicAsync(userId, exercise.TopicId);
-                    var topic = await _unitOfWork.Topic.GetByIdAsync(exercise.TopicId);
+                        var allExerciseProgressInTopic = await _unitOfWork.ExerciseProgress.GetByUserAndTopicAsyncz(userId, exercise.TopicId);
 
-                    topicProgress.ProgressPoints = totalPoints;
-                    topicProgress.IsCompleted = (totalPoints >= topic.MaxPoint);
-                    await _unitOfWork.TopicProgress.UpdateAsync(topicProgress); 
+                        var topicExercises = await _unitOfWork.ExerciseProgress
+                       .GetAllByListAsync(ep =>
+                           ep.UserId == userId &&
+                           ep.Exercise.TopicId == exercise.TopicId
+                       );
 
-                    await _unitOfWork.SaveChangeAsync();
-                    return new ResponseDTO("Updated successfully", StatusCodeEnum.OK, true);
-                }
-                catch (Exception ex)
-                {
-                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
+                        decimal totalTopicPoints = topicExercises.Sum(ep => ep.ProgressPoints);
+                        var topic = await _unitOfWork.Topic.GetByIdAsync(exercise.TopicId);
+
+                        // Cập nhật TopicProgress
+                        var topicProgress = await _unitOfWork.TopicProgress
+                            .GetByConditionAsync(tp =>
+                                tp.UserId == userId &&
+                                tp.TopicId == exercise.TopicId
+                            );
+
+                        if (topicProgress != null)
+                        {
+                            topicProgress.ProgressPoints = totalTopicPoints;
+                            topicProgress.IsCompleted = totalTopicPoints >= topic.MaxPoint;
+                            topicProgress.UpdatedAt = DateTime.UtcNow;
+                            await _unitOfWork.TopicProgress.UpdateAsync(topicProgress);
+                        }
+                        var enrolledCourse = await _unitOfWork.EnrolledCourse
+                      .GetByConditionWithIncludesAsync(
+                          ec => ec.UserId == userId && ec.CourseId == topic.CourseId,
+                          includes: ec => ec.Course 
+                      );
+
+                        if (enrolledCourse != null)
+                        {
+                            // Lấy tất cả Topic trong Course
+                            var courseTopics = await _unitOfWork.Topic
+                                .GetAllByListAsync(t =>
+                                    t.CourseId == enrolledCourse.CourseId &&
+                                    !t.IsDeleted
+                                );
+
+                            // Kiểm tra tất cả Topic đã hoàn thành
+                            bool allTopicsCompleted = true;
+                            decimal totalCoursePoints = 0;
+
+                            foreach (var courseTopic in courseTopics)
+                            {
+                                var tp = await _unitOfWork.TopicProgress
+                                    .GetByConditionAsync(t =>
+                                        t.UserId == userId &&
+                                        t.TopicId == courseTopic.Id
+                                    );
+
+                                if (tp == null || !tp.IsCompleted)
+                                {
+                                    allTopicsCompleted = false;
+                                }
+                                totalCoursePoints += tp?.ProgressPoints ?? 0;
+                            }
+
+                            // Cập nhật EnrolledCourse
+                            enrolledCourse.ProgressPoints = Math.Min(totalCoursePoints, enrolledCourse.Course.MaxPoint);
+                            enrolledCourse.IsCompleted = allTopicsCompleted;
+                            enrolledCourse.UpdatedAt = DateTime.UtcNow;
+
+                            await _unitOfWork.EnrolledCourse.UpdateAsync(enrolledCourse);
+
+                        }
+                        var responseData = new SubmitExerciseResponseDTO
+                        {
+                            // Exercise Progress
+                            ExerciseId = exerciseId,
+                            ExerciseEarnedPoints = exerciseProgress.ProgressPoints,
+                            IsExerciseCompleted = exerciseProgress.IsCompleted,
+
+                            // Topic Progress
+                            TopicId = exercise.TopicId,
+                            TopicTotalPoints = totalTopicPoints,
+                            IsTopicCompleted = topicProgress?.IsCompleted ?? false, // Xử lý null
+
+                            // Enrolled Course
+                            CourseId = topic.CourseId,
+                            CourseTotalPoints = enrolledCourse?.ProgressPoints ?? 0,
+                            IsCourseCompleted = enrolledCourse?.IsCompleted ?? false
+                        };
+
+                        await _unitOfWork.SaveChangeAsync();
+                        await transaction.CommitAsync();
+
+                        return new ResponseDTO(
+                 "Cập nhật điểm thành công",
+                 StatusCodeEnum.OK,
+                 true,
+                 responseData 
+             );
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        return new ResponseDTO($"Lỗi: {ex.Message}", StatusCodeEnum.InteralServerError, false);
+                    }
                 }
             }
 
