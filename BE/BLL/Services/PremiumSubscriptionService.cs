@@ -76,14 +76,14 @@ namespace BLL.Services
                     return new ResponseDTO("Order not found", StatusCodeEnum.NotFound, false);
                 }
 
-            
                 order.User.IsPremium = true;
+           
+                order.User.PremiumExpiredTime = DateTime.UtcNow.AddDays(30);
                 order.PaymentStatus = "Completed";
                 order.OrderStatus = "Completed";
 
                 await _unitOfWork.SaveChangeAsync();
 
-         
                 _emailService.SendPremiumConfirmationEmail(order.User.Email, order.User.Username);
                 _emailService.SendPremiumPurchaseReceiptEmail(
                     order.User.Email,
