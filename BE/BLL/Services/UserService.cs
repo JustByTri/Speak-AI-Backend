@@ -833,7 +833,8 @@ namespace BLL.Services
             {
                 return null;
             }
-
+            var userlevel = await _unitofWork.UserLevel.FindAll(u => u.Id == userId).FirstOrDefaultAsync();
+         
             var userResponseDTO = new UserResponseDTO
             {
                 UserId = user.Id,
@@ -841,7 +842,15 @@ namespace BLL.Services
                 Email = user.Email,
                 FullName = user.FullName,
                 Birthday = user.Birthday,
-                Gender = user.Gender
+                Gender = user.Gender,
+                IsPremium = user.IsPremium,
+                PremiumExpiredTime = user.PremiumExpiredTime,
+                IsVerified = user.IsVerified,
+                LevelName = userlevel?.LevelName ?? "0", 
+                Point = userlevel?.Point ?? 0
+
+
+
             };
 
             return userResponseDTO;
