@@ -370,9 +370,15 @@ namespace BLL.Services
                 {
                     var user = await _unitOfWork.User.GetByIdAsync(userId);
                     var courseResponse = await GetCourseByIdAsync(courseId);
-
+                    
                     if (user == null || !courseResponse.IsSuccess)
                         return new ResponseDTO("User or course not found", StatusCodeEnum.NotFound, false);
+
+                    var existingEnrollment = await _unitOfWork.EnrolledCourse
+             .GetByConditionAsync(e => e.UserId == userId && e.CourseId == courseId);
+
+                    if (existingEnrollment != null)
+                        return new ResponseDTO("User have enrolled this course", StatusCodeEnum.BadRequest, false);
 
                     var enrolledCourse = new EnrolledCourse
                     {
