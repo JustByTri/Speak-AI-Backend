@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SpeakAI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ai")]
     [ApiController]
     public class AIController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace SpeakAI.Controllers
         {
             _aiService = aIService;
         }
-        [HttpPost("start-topic")]
+        [HttpPost("start")]
         public async Task<IActionResult> StartTopic([FromBody] StartTopicRequestDTO request)
         {
             try
@@ -33,7 +33,7 @@ namespace SpeakAI.Controllers
                 return StatusCode(500, "Failed to start topic");
             }
         }
-        [HttpPost("process")]
+        [HttpPost("conversations/{conversationId}/messages")]
         public async Task<IActionResult> ProcessConversation([FromBody] ConversationProcessRequestDTO request)
         {
             try

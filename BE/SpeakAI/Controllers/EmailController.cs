@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api_InnerShop.Controllers
 {
-    [Route("api/email-management")]
+    [Route("api/emails")]
     [ApiController]
     public class EmailController : ControllerBase
     {
@@ -28,8 +28,8 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        [HttpPost("send-verify-email")]
-        public IActionResult SendVerifiedEmail(string userID)
+        [HttpPost("verify")]
+        public IActionResult SendVerificationEmai(string userID)
         {
             if (!ModelState.IsValid)
             {

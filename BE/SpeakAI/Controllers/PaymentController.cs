@@ -11,7 +11,7 @@ using System;
 
 namespace Api_InnerShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/payments")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace Api_InnerShop.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpPost("create-request-payment")]
+        [HttpPost("requests")]
         public async Task<IActionResult> CreatePaymentRequest([FromBody] PaymentRequestDTO request)
         {
             if (!ModelState.IsValid)
@@ -51,7 +51,7 @@ namespace Api_InnerShop.Controllers
             ));
         }
 
-        [HttpPost("handle-response-payment")]
+        [HttpPost("handle-response")]
         public async Task<IActionResult> HandleResponse([FromBody] PaymentResponseDTO responseInfo)
         {
             if (!ModelState.IsValid)

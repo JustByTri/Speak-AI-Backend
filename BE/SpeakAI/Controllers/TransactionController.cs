@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SpeakAI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/transactions")]
     [ApiController]
     [Authorize]
     public class TransactionController : ControllerBase
@@ -29,7 +29,7 @@ namespace SpeakAI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("get-all-transactions")]
+        [HttpGet]
         public IActionResult GetAllTransactions([FromQuery] TransactionParameters parameters)
         {
             var response = _transactionService.GetAllTransactions(parameters);
@@ -42,7 +42,7 @@ namespace SpeakAI.Controllers
             ));
         }
 
-        [HttpGet("get-trans-user/{userId}")]
+        [HttpGet("users/{userId}")]
         public async Task<IActionResult> GetTransOfUser([Required]Guid  userId, [FromQuery] TransactionParameters parameters)
         {
             if (!ModelState.IsValid)
