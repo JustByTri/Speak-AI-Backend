@@ -63,6 +63,9 @@ namespace BLL.Interface
         /// <returns></returns>
      
         Task<IEnumerable<Course>> SearchCourses(string keyword);
-       
+        Task<ResponseDTO> GetCourseDetailAsync(Guid courseId);
+        Task<ResponseDTO> CheckUserEnrollmentAsync(Guid userId, Guid courseId);
+
+
     }
 }

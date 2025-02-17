@@ -1,4 +1,5 @@
 ﻿using BLL.Interface;
+using Common.Enum;
 using DAL.Entities;
 using DAL.UnitOfWork;
 using DTO.DTO;
@@ -31,20 +32,20 @@ namespace BLL.Services
                 var user = await _unitOfWork.User.FindAll(u => u.Id == userId).FirstOrDefaultAsync();
                 if (user == null)
                 {
-                    return new ResponseDTO("User not found", 400, false);
+                    return new ResponseDTO("User not found", StatusCodeEnum.NotFound, false);
                 }
 
                 if (user.IsPremium)
                 {
-                    return new ResponseDTO("User is already premium", 400, false);
+                    return new ResponseDTO("User is already premium", StatusCodeEnum.Created, false);
                 }
 
-                // Tạo order cho việc nâng cấp Premium
+                
                 var order = new Order
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    TotalAmount = 100, // Giá subscription Premium
+                    TotalAmount = 100, 
                     OrderStatus = "Pending",
                     OrderDate = DateTime.UtcNow,
                     PaymentStatus = "Pending"
@@ -53,11 +54,11 @@ namespace BLL.Services
                 await _unitOfWork.Order.AddAsync(order);
                 await _unitOfWork.SaveChangeAsync();
 
-                return new ResponseDTO("Premium upgrade order created", 200, true, order.Id);
+                return new ResponseDTO("Premium upgrade order created", StatusCodeEnum.Created, true, order.Id);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
             }
         }
 
@@ -72,7 +73,7 @@ namespace BLL.Services
 
                 if (order == null)
                 {
-                    return new ResponseDTO("Order not found", 400, false);
+                    return new ResponseDTO("Order not found", StatusCodeEnum.NotFound, false);
                 }
 
             
@@ -91,11 +92,11 @@ namespace BLL.Services
                     order.Id.ToString()
                 );
 
-                return new ResponseDTO("Premium upgrade successful", 200, true);
+                return new ResponseDTO("Premium upgrade successful", StatusCodeEnum.Created, true);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO($"Error: {ex.Message}", 500, false);
+                return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
             }
         }
 

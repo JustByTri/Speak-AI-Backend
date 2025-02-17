@@ -178,5 +178,6 @@ namespace DAL.Repositories
             return await _context.ChatMessages.Where(tp => tp.UserId == userId)
                 .ToListAsync();
         }
+
     }
 }

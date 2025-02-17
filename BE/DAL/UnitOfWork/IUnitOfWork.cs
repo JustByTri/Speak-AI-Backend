@@ -1,4 +1,5 @@
-﻿using DAL.IRepositories;
+﻿using DAL.GenericRepository.IRepository;
+using DAL.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace DAL.UnitOfWork
         IRefreshTokenRepository RefreshToken { get; }
         IChatRepository ChatMessages { get; }
         IOrderRepository Order { get; }
+        ITransactionRepository Transaction { get; }
         void Dispose();
         Task<bool> SaveChangeAsync();
         bool SaveChange();

@@ -1,5 +1,7 @@
 ﻿using DAL.Data;
 using DAL.Entities;
+using DAL.GenericRepository.IRepository;
+using DAL.GenericRepository.Repository;
 using DAL.IRepositories;
 using DAL.Repositories;
 using System;
@@ -29,6 +31,7 @@ namespace DAL.UnitOfWork
             RefreshToken = new RefreshTokenRepository(_context);  
             ChatMessages = new ChatRepository(_context);
             Order = new OrderRepository(_context);
+            Transaction = new TransactionRepository(_context);
         }
 
         public ICourseRepository Course { get; private set; }
@@ -44,6 +47,7 @@ namespace DAL.UnitOfWork
         public IRefreshTokenRepository RefreshToken { get; private set; }
         public IChatRepository ChatMessages { get; private set; }
         public IOrderRepository Order { get; private set; }
+        public ITransactionRepository Transaction { get; private set; }
 
         public void Dispose()
         {
