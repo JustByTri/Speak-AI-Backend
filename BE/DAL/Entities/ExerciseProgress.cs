@@ -15,6 +15,7 @@ namespace DAL.Entities
         public Guid EnrolledCourseId { get; set; }
         public Guid ExerciseId { get; set; }
         public Guid UserId { get; set; }
+        public DateTime? UpdateAt { get; set; }
 
         // Navigation properties
         public virtual EnrolledCourse EnrolledCourse { get; set; }
