@@ -32,7 +32,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="loginRequestDTO"></param>
         /// <returns></returns>
-        [HttpPost("tokens")]
+        [HttpPost("login")]
         public IActionResult Login(LoginRequestDTO loginRequestDTO)
         {
             if (!ModelState.IsValid)
