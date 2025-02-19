@@ -535,14 +535,14 @@ namespace BLL.Services
 
                         if (enrolledCourse != null)
                         {
-                            // Lấy tất cả Topic trong Course
+                         
                             var courseTopics = await _unitOfWork.Topic
                                 .GetAllByListAsync(t =>
                                     t.CourseId == enrolledCourse.CourseId &&
                                     !t.IsDeleted
                                 );
 
-                            // Kiểm tra tất cả Topic đã hoàn thành
+                          
                             bool allTopicsCompleted = true;
                             decimal totalCoursePoints = 0;
 
@@ -561,7 +561,7 @@ namespace BLL.Services
                                 totalCoursePoints += tp?.ProgressPoints ?? 0;
                             }
 
-                            // Cập nhật EnrolledCourse
+                           
                             enrolledCourse.ProgressPoints = Math.Min(totalCoursePoints, enrolledCourse.Course.MaxPoint);
                             enrolledCourse.IsCompleted = allTopicsCompleted;
                             enrolledCourse.UpdatedAt = DateTime.UtcNow;

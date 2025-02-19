@@ -68,20 +68,13 @@ namespace BLL.Services
 
                 var accessToken = CreateToken(user, jwtTokenId);
 
-                var localUserDTO = new LocalUserDTO
-                {
-                    UserId = user.Id,
-                    Email = user.Email,
-                    UserName = user.Username,
-                    FullName = user.FullName,
-                    Status = user.Status
-                };
+            
 
                 // Trả về đối tượng LoginResponseDTO
                 return new LoginResponseDTO
                 {
                     AccessToken = accessToken,
-                    User = localUserDTO,
+  
                     RefreshToken = refreshToken
                 };
             }
@@ -195,11 +188,14 @@ namespace BLL.Services
 
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.FullName.ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, user.FullName.ToString()),
               
                 new Claim(JwtRegisteredClaimNames.Jti, jwtId),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddSeconds(45).ToString(), ClaimValueTypes.Integer64)
+                new Claim("Guid Id", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddSeconds(45).ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email.ToString()),
+                new Claim (JwtRegisteredClaimNames.GivenName, user.Username.ToString()),
+
             };
             var key = _configuration.GetSection("ApiSetting")["Secret"];
             var securityKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(key ?? ""));
