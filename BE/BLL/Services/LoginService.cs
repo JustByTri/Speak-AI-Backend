@@ -23,17 +23,18 @@ namespace BLL.Services
     public class LoginService : ILoginService
     {
         private readonly IUnitOfWork _unitofWork;
-     
+        private readonly IGoogleAuthService _googleAuthService;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LoginService(IUnitOfWork unitOfWork, IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IGoogleAuthService googleAuthService)
         {
             _unitofWork = unitOfWork;
 
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _googleAuthService=googleAuthService;
         }
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace BLL.Services
                 new Claim(JwtRegisteredClaimNames.Name, user.FullName.ToString()),
               
                 new Claim(JwtRegisteredClaimNames.Jti, jwtId),
-                new Claim("Guid Id", user.Id.ToString()),
+                new Claim("Id", user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddSeconds(45).ToString(), ClaimValueTypes.Integer64),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email.ToString()),
                 new Claim (JwtRegisteredClaimNames.GivenName, user.Username.ToString()),
@@ -444,6 +445,11 @@ namespace BLL.Services
             {
                 return AuthNotificationMessage.InvalidToken;
             }
+        }
+        public async Task<ResponseDTO> SignInWithGoogle(GoogleAuthTokenDTO googleAuthToken)
+        {
+            var response = await _googleAuthService.GoogleSignIn(googleAuthToken);
+            return response;
         }
     }
 }
