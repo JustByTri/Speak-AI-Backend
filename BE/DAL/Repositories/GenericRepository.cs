@@ -51,7 +51,6 @@ namespace DAL.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
-
         public async Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
@@ -177,6 +176,10 @@ namespace DAL.Repositories
         {
             return await _context.ChatMessages.Where(tp => tp.UserId == userId)
                 .ToListAsync();
+        }
+        public async Task<T> GetByEmailAsync(string email)
+        {
+            return await _dbSet.FirstOrDefaultAsync(e => EF.Property<string>(e, "Email") == email);
         }
 
     }

@@ -13,6 +13,7 @@ namespace DAL.IRepositories
     {
         T GetById(string id);
         Task<T> GetByIdAsync(Guid id);
+        Task<T> GetByEmailAsync(string email);
         IQueryable<T> GetAll();
         IQueryable<T> FindAll(Expression<Func<T, bool>> expression);
         IEnumerable<T> FindAllAsync(Expression<Func<T, bool>> expression);

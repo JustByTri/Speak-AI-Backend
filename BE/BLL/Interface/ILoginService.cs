@@ -11,5 +11,6 @@ namespace BLL.Interface
         ResponseDTO Logout(string userid);
         ResponseDTO GetUserByAccessToken(string accessToken);
         LocalUserDTO GetUserByUserId(string userId);
+        Task<ResponseDTO> SignInWithGoogle(GoogleAuthTokenDTO googleAuthToken);
     }
 }

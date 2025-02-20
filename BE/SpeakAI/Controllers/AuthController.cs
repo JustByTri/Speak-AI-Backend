@@ -46,6 +46,16 @@ namespace Api_InnerShop.Controllers
             }
             return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, StatusCodeEnum.NotFound, false));
         }
+        [HttpPost("signin-google")]
+        public async Task<IActionResult> SignInGoogle([FromBody] GoogleAuthTokenDTO googleAuthToken)
+        {
+            var response = await _loginService.SignInWithGoogle(googleAuthToken);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, StatusCodeEnum.NotFound, false));
+        }
         /// <summary>
         /// Generates a new access token using a valid refresh token
         /// </summary>
