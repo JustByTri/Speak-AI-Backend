@@ -1,7 +1,7 @@
 ﻿namespace Common.Constant.Payment
 {
     public static class PaymentConst
-    {        
+    {
         // Payment method
         public const string VnPay = "VnPay";
 
@@ -10,6 +10,12 @@
         public const string UnPaidStatus = "Chưa thanh toán";
         public const string PaidStatus = "Đã thanh toán";
         public const string CancelStatus = "Huỷ";
+
+        // voucher
+        public const string VoucherApplied = "Voucher đã áp dụng";
+        public const string VoucherInvalid = "Voucher không hợp lệ";
+        public const string VoucherExpired = "Voucher đã hết hạn";
+        public const string VoucherNotEligible = "Không đủ điều kiện sử dụng voucher";
 
         // Unset
         public const string UnSet = "None";

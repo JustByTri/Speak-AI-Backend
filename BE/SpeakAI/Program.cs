@@ -7,6 +7,8 @@ using BLL.Services;
 using BLL.Services.BLL.Services;
 using Common.Config;
 using DAL.Data;
+using DAL.IRepositories;
+using DAL.Repositories;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -43,6 +45,17 @@ namespace SpeakAI
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAIService, AIService>();
             builder.Services.AddScoped<IPremiumSubscriptionService, PremiumSubscriptionService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
+            builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IVoucherService, VoucherService>();
+            builder.Services.AddHostedService<VoucherBackgroundService>();
+            builder.Services.AddLogging();
+
+
+
+
             builder.Services.AddScoped<IPaymentService,PaymentService>();
             builder.Services.AddScoped<ITransactionService,TransactionService>();
             builder.Services.AddScoped<IValidationHandleService,ValidationHandleService>();
@@ -50,6 +63,7 @@ namespace SpeakAI
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<IJwtProvider, JwtProvider>();
             builder.Services.Configure<GoogleAuthConfig>(builder.Configuration.GetSection("Google"));
+
             builder.Services.AddScoped<ChatHub>();
             builder.Services.AddSignalR();
             builder.Services.AddHttpContextAccessor();
@@ -69,10 +83,10 @@ namespace SpeakAI
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-          
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
 
             app.UseHttpsRedirection();
 

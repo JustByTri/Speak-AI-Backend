@@ -30,10 +30,11 @@ namespace DAL.UnitOfWork
             EnrolledCourse = new EnrolledCourseRepository(_context);
             TopicProgress = new TopicProgressRepository(_context);
             ExerciseProgress = new ExerciseProgressRepository(_context);
-            RefreshToken = new RefreshTokenRepository(_context);  
+            RefreshToken = new RefreshTokenRepository(_context);
             ChatMessages = new ChatRepository(_context);
             Order = new OrderRepository(_context);
             Transaction = new TransactionRepository(_context);
+            Voucher = new VoucherRepository(_context);
         }
 
         public ICourseRepository Course { get; private set; }
@@ -50,10 +51,15 @@ namespace DAL.UnitOfWork
         public IChatRepository ChatMessages { get; private set; }
         public IOrderRepository Order { get; private set; }
         public ITransactionRepository Transaction { get; private set; }
+
+        public IVoucherRepository Voucher { get; private set; }
+
+
         public async Task<IDbContextTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel)
         {
             return await _context.Database.BeginTransactionAsync(isolationLevel);
         }
+
         public void Dispose()
         {
             _context.Dispose();

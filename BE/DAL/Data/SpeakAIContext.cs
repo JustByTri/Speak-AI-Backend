@@ -26,13 +26,18 @@ namespace DAL.Data
         public DbSet<EnrolledCourse> EnrolledCourses { get; set; }
         public DbSet<TopicProgress> TopicProgresses { get; set; }
         [NotNull]
-        public DbSet<ExerciseProgress> ExerciseProgresses { get; set; } 
+        public DbSet<ExerciseProgress> ExerciseProgresses { get; set; }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Order > Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }    
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<ChatMessages> ChatMessages { get; set; }
+
+
+        public DbSet<Voucher> Vouchers { get; set; }
+
+        public DbSet<PaymentHistory> PaymentHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -41,10 +46,10 @@ namespace DAL.Data
             modelBuilder.Entity<Course>().HasKey(c => c.Id);
             modelBuilder.Entity<User>().HasKey(u => u.Id);
             modelBuilder.Entity<EnrolledCourse>().HasKey(u => u.Id);
-            modelBuilder.Entity<ExerciseProgress>().HasKey(u => u.Id);  
+            modelBuilder.Entity<ExerciseProgress>().HasKey(u => u.Id);
             modelBuilder.Entity<Exercise>().HasKey(u => u.Id);
             modelBuilder.Entity<Topic>().HasKey(u => u.Id);
-            modelBuilder.Entity<UserLevel>().HasKey(u => u.Id); 
+            modelBuilder.Entity<UserLevel>().HasKey(u => u.Id);
             modelBuilder.Entity<TopicProgress>().HasKey(u => u.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(u => u.Id);
             modelBuilder.Entity<Transaction>().HasKey(u => u.Id);
@@ -86,7 +91,7 @@ namespace DAL.Data
                 .Property(ul => ul.Point)
                 .HasPrecision(18, 2);
             // Cấu hình User và UserLevel
-    
+
             // Cấu hình Course và Level
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.Level)
@@ -160,11 +165,58 @@ namespace DAL.Data
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Order>()
              .Property(o => o.TotalAmount)
-             .HasPrecision(18, 2); 
+             .HasPrecision(18, 2);
 
             modelBuilder.Entity<OrderDetail>()
                 .Property(od => od.TotalPrice)
                 .HasPrecision(18, 2);
+
+
+            // Cấu hình Voucher 
+            modelBuilder.Entity<Voucher>()
+                .HasKey(v => v.VoucherId);  // Đặt khóa chính cho Voucher
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.VoucherCode)
+                .IsRequired()  // Đảm bảo VoucherCode là bắt buộc
+                .HasMaxLength(50);  // Giới hạn độ dài VoucherCode
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.Description)
+                .HasMaxLength(200);  // Giới hạn độ dài mô tả
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.DiscountPercentage)
+                .HasPrecision(18, 2);  // Thiết lập độ chính xác cho DiscountPercentage
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.IsActive)
+                .HasDefaultValue(true);  // Thiết lập giá trị mặc định cho IsActive
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.StartDate)
+                .HasColumnType("datetime");  // Thiết lập kiểu dữ liệu cho StartDate
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.EndDate)
+                .HasColumnType("datetime");  // Thiết lập kiểu dữ liệu cho EndDate
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.MinPurchaseAmount)
+                .HasPrecision(18, 2);  // Thiết lập độ chính xác cho MinPurchaseAmount
+
+            modelBuilder.Entity<Voucher>()
+                .Property(v => v.VoucherType)
+                .HasMaxLength(50);  // Giới hạn độ dài VoucherType
+
+            modelBuilder.Entity<Voucher>()
+                .HasOne(v => v.User)  // Liên kết Voucher với User
+                .WithMany(u => u.Voucher)  // User có nhiều Voucher
+                .HasForeignKey(v => v.UserId)  // Khóa ngoại là UserId trong Voucher
+                .OnDelete(DeleteBehavior.SetNull);  // Khi User bị xóa, UserId trong Voucher sẽ được đặt là NULL
+
+
+
 
             modelBuilder.Entity<Transaction>()
                 .Property(t => t.Amount)
@@ -173,7 +225,7 @@ namespace DAL.Data
        .HasOne(t => t.User)
        .WithMany(u => u.Transactions)
        .HasForeignKey(t => t.UserId)
-       .OnDelete(DeleteBehavior.NoAction); 
+       .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.Order)
@@ -187,7 +239,7 @@ namespace DAL.Data
          LevelName = "A0,A1",
          MinPoint = 0,
          MaxPoint = 100,
-    
+
      },
      new Level
      {
@@ -195,7 +247,7 @@ namespace DAL.Data
          LevelName = "B1,B2",
          MinPoint = 101,
          MaxPoint = 200,
-   
+
      },
      new Level
      {
@@ -203,7 +255,7 @@ namespace DAL.Data
          LevelName = "C1,B2",
          MinPoint = 201,
          MaxPoint = 300,
-     
+
      }
  );
         }

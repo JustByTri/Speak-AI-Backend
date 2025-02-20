@@ -57,6 +57,14 @@ namespace BLL.IService
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<Transaction>> GetAllPaidTransactions();
-       Transaction? GetLastTransOfUser(Guid userId);
+        Transaction? GetLastTransOfUser(Guid userId);
+
+        /// <summary>
+        /// Get transaction by transaction ID
+        /// </summary>
+        /// <param name="transactionId"></param>
+        /// <returns></returns>
+        Task<Transaction?> GetTransactionById(Guid transactionId);
+
     }
 }

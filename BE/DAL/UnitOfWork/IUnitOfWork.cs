@@ -24,9 +24,15 @@ namespace DAL.UnitOfWork
         IChatRepository ChatMessages { get; }
         IOrderRepository Order { get; }
         ITransactionRepository Transaction { get; }
+
+        IVoucherRepository Voucher { get; }
+
         Task<IDbContextTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel);
+
         void Dispose();
         Task<bool> SaveChangeAsync();
+
+
         bool SaveChange();
     }
 
