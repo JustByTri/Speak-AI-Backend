@@ -1,5 +1,6 @@
 ﻿using DAL.GenericRepository.IRepository;
 using DAL.IRepositories;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,11 @@ namespace DAL.UnitOfWork
         IChatRepository ChatMessages { get; }
         IOrderRepository Order { get; }
         ITransactionRepository Transaction { get; }
+
         IVoucherRepository Voucher { get; }
+
+        Task<IDbContextTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel);
+
         void Dispose();
         Task<bool> SaveChangeAsync();
 

@@ -1,14 +1,17 @@
-
+﻿
 using BLL.Hubs;
 using BLL.Interface;
 using BLL.IService;
 using BLL.Service;
 using BLL.Services;
 using BLL.Services.BLL.Services;
+using Common.Config;
 using DAL.Data;
 using DAL.IRepositories;
 using DAL.Repositories;
 using DAL.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using Service.IService;
 using Service.Service;
@@ -22,11 +25,17 @@ namespace SpeakAI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+    .AddCookie();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
@@ -45,6 +54,15 @@ namespace SpeakAI
             builder.Services.AddLogging();
 
 
+
+
+            builder.Services.AddScoped<IPaymentService,PaymentService>();
+            builder.Services.AddScoped<ITransactionService,TransactionService>();
+            builder.Services.AddScoped<IValidationHandleService,ValidationHandleService>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+            builder.Services.Configure<GoogleAuthConfig>(builder.Configuration.GetSection("Google"));
 
             builder.Services.AddScoped<ChatHub>();
             builder.Services.AddSignalR();

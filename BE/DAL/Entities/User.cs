@@ -25,6 +25,7 @@ namespace DAL.Entities
         public bool IsVerified { get; set; }
         public Guid? UserLevelId { get; set; }
         public bool IsAdmin { get; set; } = false;
+        public bool IsLocked { get; set; } = false;
 
         // Navigation properties
         public virtual ICollection<UserLevel> UserLevel { get; set; }

@@ -32,7 +32,7 @@ namespace Api_InnerShop.Controllers
         /// </summary>
         /// <param name="loginRequestDTO"></param>
         /// <returns></returns>
-        [HttpPost("tokens")]
+        [HttpPost("login")]
         public IActionResult Login(LoginRequestDTO loginRequestDTO)
         {
             if (!ModelState.IsValid)
@@ -43,6 +43,16 @@ namespace Api_InnerShop.Controllers
             if (result != null)
             {
                 return Ok(new ResponseDTO(AuthNotificationMessage.LoginSuccessfully, StatusCodeEnum.Created, true, result));
+            }
+            return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, StatusCodeEnum.NotFound, false));
+        }
+        [HttpPost("signin-google")]
+        public async Task<IActionResult> SignInGoogle([FromBody] GoogleAuthTokenDTO googleAuthToken)
+        {
+            var response = await _loginService.SignInWithGoogle(googleAuthToken);
+            if (response.IsSuccess)
+            {
+                return Ok(response);
             }
             return BadRequest(new ResponseDTO(AuthNotificationMessage.LoginFailed, StatusCodeEnum.NotFound, false));
         }

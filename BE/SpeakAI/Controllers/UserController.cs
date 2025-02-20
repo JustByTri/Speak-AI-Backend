@@ -6,6 +6,7 @@ using DTO.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api_InnerShop.Controllers
 {
@@ -25,6 +26,7 @@ namespace Api_InnerShop.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet("{userId}")]
+        [SwaggerOperation(Summary = "Hello")]
         public async Task<IActionResult> GetUserByUserId(Guid userId)
         {
             var user = await _userService.GetUserResponseDtoByUserId(userId);

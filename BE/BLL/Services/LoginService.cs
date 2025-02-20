@@ -23,17 +23,18 @@ namespace BLL.Services
     public class LoginService : ILoginService
     {
         private readonly IUnitOfWork _unitofWork;
-     
+        private readonly IGoogleAuthService _googleAuthService;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LoginService(IUnitOfWork unitOfWork, IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IGoogleAuthService googleAuthService)
         {
             _unitofWork = unitOfWork;
 
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _googleAuthService=googleAuthService;
         }
 
         /// <summary>
@@ -68,20 +69,13 @@ namespace BLL.Services
 
                 var accessToken = CreateToken(user, jwtTokenId);
 
-                var localUserDTO = new LocalUserDTO
-                {
-                    UserId = user.Id,
-                    Email = user.Email,
-                    UserName = user.Username,
-                    FullName = user.FullName,
-                    Status = user.Status
-                };
+            
 
                 // Trả về đối tượng LoginResponseDTO
                 return new LoginResponseDTO
                 {
                     AccessToken = accessToken,
-                    User = localUserDTO,
+  
                     RefreshToken = refreshToken
                 };
             }
@@ -195,11 +189,14 @@ namespace BLL.Services
 
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.FullName.ToString()),
+                new Claim(JwtRegisteredClaimNames.Name, user.FullName.ToString()),
               
                 new Claim(JwtRegisteredClaimNames.Jti, jwtId),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddSeconds(45).ToString(), ClaimValueTypes.Integer64)
+                new Claim("Id", user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Exp, DateTime.Now.AddSeconds(45).ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email.ToString()),
+                new Claim (JwtRegisteredClaimNames.GivenName, user.Username.ToString()),
+
             };
             var key = _configuration.GetSection("ApiSetting")["Secret"];
             var securityKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(key ?? ""));
@@ -448,6 +445,11 @@ namespace BLL.Services
             {
                 return AuthNotificationMessage.InvalidToken;
             }
+        }
+        public async Task<ResponseDTO> SignInWithGoogle(GoogleAuthTokenDTO googleAuthToken)
+        {
+            var response = await _googleAuthService.GoogleSignIn(googleAuthToken);
+            return response;
         }
     }
 }
