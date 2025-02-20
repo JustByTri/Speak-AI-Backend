@@ -196,6 +196,7 @@ namespace BLL.Services
                     Status = true,
                     Otp = null,
                     OtpExpiredTime = null,
+                    IsLocked = false
                 
                 };
                 var userLevell = new UserLevel
