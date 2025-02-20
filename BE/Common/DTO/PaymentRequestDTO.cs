@@ -10,6 +10,13 @@ namespace Common.DTO
     {
         public Guid UserId { get; set; }
         public string PaymentMethod { get; set; } = null!;
-        public double TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
+
+        public string? VoucherCode { get; set; } // Thêm thuộc tính này
+
+
+
+
+
     }
 }

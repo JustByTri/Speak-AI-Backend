@@ -6,6 +6,8 @@ using BLL.Service;
 using BLL.Services;
 using BLL.Services.BLL.Services;
 using DAL.Data;
+using DAL.IRepositories;
+using DAL.Repositories;
 using DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Service.IService;
@@ -34,10 +36,15 @@ namespace SpeakAI
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAIService, AIService>();
             builder.Services.AddScoped<IPremiumSubscriptionService, PremiumSubscriptionService>();
-            builder.Services.AddScoped<IPaymentService,PaymentService>();
-            builder.Services.AddScoped<ITransactionService,TransactionService>();
-            builder.Services.AddScoped<IValidationHandleService,ValidationHandleService>();
-            builder.Services.AddScoped<IVnPayService, VnPayService>();  
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
+            builder.Services.AddScoped<IValidationHandleService, ValidationHandleService>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IVoucherService, VoucherService>();
+            builder.Services.AddHostedService<VoucherBackgroundService>();
+            builder.Services.AddLogging();
+
+
 
             builder.Services.AddScoped<ChatHub>();
             builder.Services.AddSignalR();
@@ -58,10 +65,10 @@ namespace SpeakAI
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-          
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
 
             app.UseHttpsRedirection();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ namespace DAL.Entities
 {
     public class User : BaseEntity
     {
-       
         public string Username { get; set; }
         public string Email { get; set; }
         public string FullName { get; set; }
@@ -32,6 +32,8 @@ namespace DAL.Entities
         public virtual ICollection<TopicProgress> TopicProgresses { get; set; }
         public virtual ICollection<ExerciseProgress> ExerciseProgresses { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
-        public virtual ICollection<Order > Order { get; set; }
+        public virtual ICollection<Order> Order { get; set; }
+
+        public virtual ICollection<Voucher> Voucher { get; set; }
     }
 }

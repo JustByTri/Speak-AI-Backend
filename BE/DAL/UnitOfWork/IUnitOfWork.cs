@@ -23,8 +23,11 @@ namespace DAL.UnitOfWork
         IChatRepository ChatMessages { get; }
         IOrderRepository Order { get; }
         ITransactionRepository Transaction { get; }
+        IVoucherRepository Voucher { get; }
         void Dispose();
         Task<bool> SaveChangeAsync();
+
+
         bool SaveChange();
     }
 

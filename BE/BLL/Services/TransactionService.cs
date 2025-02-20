@@ -23,7 +23,7 @@ namespace BLL.Service
                                  )
         {
             _unitOfWork = unitOfWork;
-  
+
         }
 
         public async Task AddNewTransaction(Transaction transaction)
@@ -80,7 +80,7 @@ namespace BLL.Service
         public async Task<ResponseDTO> GetTransOfUser(Guid userId, TransactionParameters parameters)
         {
             var transactions = await _unitOfWork.Transaction.GetTransOfUser(userId, parameters);
-            
+
             var transactionDtos = transactions.Select(t => new TransactionDTO
             {
                 TransactionId = t.TransactionId,
@@ -91,12 +91,12 @@ namespace BLL.Service
                 Amount = (double)t.Amount,
                 Status = t.Status,
                 Email = t.User?.Email ?? string.Empty,
-              
+
             }).ToList();
 
             var mappedResponse = new PaginationResponseDTO<TransactionDTO>
             {
-               
+
                 PageSize = transactions.PageSize,
                 CurrentPage = transactions.CurrentPage,
                 TotalPages = transactions.TotalPages,
@@ -116,7 +116,13 @@ namespace BLL.Service
         }
         public Transaction? GetLastTransOfUser(Guid userId)
         {
-            return  _unitOfWork.Transaction.GetLastTransactionOfUser(userId);
+            return _unitOfWork.Transaction.GetLastTransactionOfUser(userId);
+        }
+
+
+        public async Task<Transaction?> GetTransactionById(Guid transactionId)
+        {
+            return await _unitOfWork.Transaction.GetByIdAsync(transactionId);
         }
     }
 }
