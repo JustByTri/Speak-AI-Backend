@@ -78,8 +78,11 @@ namespace SpeakAI
                     });
             });
 
+            //builder.Services.AddDbContext<SpeakAIContext>(options =>
+            //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<SpeakAIContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("DAL")));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
