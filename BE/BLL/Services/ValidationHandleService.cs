@@ -16,7 +16,7 @@ namespace BLL.Services
         public bool CheckNull(string field)
         {
             var check = true;
-            if (field.IsNullOrEmpty())
+            if (field == null)
             {
                 check = false;
                 return check;
@@ -207,7 +207,7 @@ namespace BLL.Services
         
         public bool CheckGuidEmpty(Guid field)
         {
-            if (field == Guid.Empty || field.ToString().IsNullOrEmpty())
+            if (field == Guid.Empty )
             {
                 return false;
             }

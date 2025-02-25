@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,15 +33,34 @@ namespace DAL.Data
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<ChatMessages> ChatMessages { get; set; }
 
-
         public DbSet<Voucher> Vouchers { get; set; }
 
         public DbSet<PaymentHistory> PaymentHistories { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure primary keys
+            // 🔥 Cấu hình COLLATION mặc định cho toàn bộ các bảng và cột
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                // Đặt collation cho tất cả các cột string
+                foreach (var property in entityType.GetProperties()
+                    .Where(p => p.ClrType == typeof(string) && p.GetColumnType() == null))
+                {
+                    property.SetCollation("utf8mb4_unicode_ci");
+                }
+
+                // Đặt collation cho các cột GUID (CHAR(36))
+                foreach (var property in entityType.GetProperties()
+                    .Where(p => p.ClrType == typeof(Guid) || p.ClrType == typeof(Guid?)))
+                {
+                    property.SetColumnType("char(36)");
+                    property.SetCollation("utf8mb4_unicode_ci");
+                }
+            }
+
+            // Cấu hình các bảng và khóa chính
             modelBuilder.Entity<Course>().HasKey(c => c.Id);
             modelBuilder.Entity<User>().HasKey(u => u.Id);
             modelBuilder.Entity<EnrolledCourse>().HasKey(u => u.Id);
@@ -54,10 +72,10 @@ namespace DAL.Data
             modelBuilder.Entity<RefreshToken>().HasKey(u => u.Id);
             modelBuilder.Entity<Transaction>().HasKey(u => u.Id);
 
-
+            // Cấu hình các cột decimal
             modelBuilder.Entity<Course>()
-      .Property(c => c.MaxPoint)
-      .HasPrecision(18, 2);
+                .Property(c => c.MaxPoint)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<EnrolledCourse>()
                 .Property(ec => ec.ProgressPoints)
@@ -90,30 +108,26 @@ namespace DAL.Data
             modelBuilder.Entity<UserLevel>()
                 .Property(ul => ul.Point)
                 .HasPrecision(18, 2);
-            // Cấu hình User và UserLevel
 
-            // Cấu hình Course và Level
+            // Cấu hình quan hệ giữa các bảng
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.Level)
                 .WithMany(l => l.Courses)
                 .HasForeignKey(c => c.LevelId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Cấu hình Topic và Course
             modelBuilder.Entity<Topic>()
                 .HasOne(t => t.Course)
                 .WithMany(c => c.Topics)
                 .HasForeignKey(t => t.CourseId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Cấu hình Exercise và Topic
             modelBuilder.Entity<Exercise>()
                 .HasOne(e => e.Topic)
                 .WithMany(t => t.Exercises)
                 .HasForeignKey(e => e.TopicId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Cấu hình EnrolledCourse với User và Course
             modelBuilder.Entity<EnrolledCourse>()
                 .HasOne(ec => ec.User)
                 .WithMany(u => u.EnrolledCourses)
@@ -126,7 +140,6 @@ namespace DAL.Data
                 .HasForeignKey(ec => ec.CourseId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Cấu hình TopicProgress
             modelBuilder.Entity<TopicProgress>()
                 .HasOne(tp => tp.User)
                 .WithMany(u => u.TopicProgresses)
@@ -145,7 +158,6 @@ namespace DAL.Data
                 .HasForeignKey(tp => tp.EnrolledCourseId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Cấu hình ExerciseProgress
             modelBuilder.Entity<ExerciseProgress>()
                 .HasOne(ep => ep.User)
                 .WithMany(u => u.ExerciseProgresses)
@@ -163,101 +175,124 @@ namespace DAL.Data
                 .WithMany()
                 .HasForeignKey(ep => ep.EnrolledCourseId)
                 .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Order>()
-             .Property(o => o.TotalAmount)
-             .HasPrecision(18, 2);
+                .Property(o => o.TotalAmount)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<OrderDetail>()
                 .Property(od => od.TotalPrice)
                 .HasPrecision(18, 2);
 
-
-            // Cấu hình Voucher 
             modelBuilder.Entity<Voucher>()
-                .HasKey(v => v.VoucherId);  // Đặt khóa chính cho Voucher
+                .HasKey(v => v.VoucherId);
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.VoucherCode)
-                .IsRequired()  // Đảm bảo VoucherCode là bắt buộc
-                .HasMaxLength(50);  // Giới hạn độ dài VoucherCode
+                .IsRequired()
+                .HasMaxLength(50);
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.Description)
-                .HasMaxLength(200);  // Giới hạn độ dài mô tả
+                .HasMaxLength(200);
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.DiscountPercentage)
-                .HasPrecision(18, 2);  // Thiết lập độ chính xác cho DiscountPercentage
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.IsActive)
-                .HasDefaultValue(true);  // Thiết lập giá trị mặc định cho IsActive
+                .HasDefaultValue(true);
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.StartDate)
-                .HasColumnType("datetime");  // Thiết lập kiểu dữ liệu cho StartDate
+                .HasColumnType("datetime");
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.EndDate)
-                .HasColumnType("datetime");  // Thiết lập kiểu dữ liệu cho EndDate
+                .HasColumnType("datetime");
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.MinPurchaseAmount)
-                .HasPrecision(18, 2);  // Thiết lập độ chính xác cho MinPurchaseAmount
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<Voucher>()
                 .Property(v => v.VoucherType)
-                .HasMaxLength(50);  // Giới hạn độ dài VoucherType
+                .HasMaxLength(50);
 
             modelBuilder.Entity<Voucher>()
-                .HasOne(v => v.User)  // Liên kết Voucher với User
-                .WithMany(u => u.Voucher)  // User có nhiều Voucher
-                .HasForeignKey(v => v.UserId)  // Khóa ngoại là UserId trong Voucher
-                .OnDelete(DeleteBehavior.SetNull);  // Khi User bị xóa, UserId trong Voucher sẽ được đặt là NULL
-
-
-
+                .HasOne(v => v.User)
+                .WithMany(u => u.Voucher)
+                .HasForeignKey(v => v.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Transaction>()
                 .Property(t => t.Amount)
                 .HasPrecision(18, 2);
+
             modelBuilder.Entity<Transaction>()
-       .HasOne(t => t.User)
-       .WithMany(u => u.Transactions)
-       .HasForeignKey(t => t.UserId)
-       .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(t => t.User)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.Order)
                 .WithMany(o => o.Transactions)
                 .HasForeignKey(t => t.OrderId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ChatMessages>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .HasColumnType("char(36)")
+                      .HasCharSet("utf8mb4")
+                      .HasCollation("utf8mb4_unicode_ci");
+
+                entity.Property(e => e.UserId)
+                      .HasColumnType("char(36)")
+                      .HasCharSet("utf8mb4")
+                      .HasCollation("utf8mb4_unicode_ci");
+
+                entity.Property(e => e.TopicId)
+                      .HasColumnType("int");
+
+                entity.Property(e => e.Message)
+                      .HasColumnType("longtext")
+                      .HasCharSet("utf8mb4");
+
+                entity.Property(e => e.IsBot)
+                      .HasColumnType("tinyint(1)");
+
+                entity.Property(e => e.Timestamp)
+                      .HasColumnType("datetime(6)");
+            });
+
             modelBuilder.Entity<Level>().HasData(
-     new Level
-     {
-         LevelId = 1,
-         LevelName = "A0,A1",
-         MinPoint = 0,
-         MaxPoint = 100,
-
-     },
-     new Level
-     {
-         LevelId = 2,
-         LevelName = "B1,B2",
-         MinPoint = 101,
-         MaxPoint = 200,
-
-     },
-     new Level
-     {
-         LevelId = 3,
-         LevelName = "C1,B2",
-         MinPoint = 201,
-         MaxPoint = 300,
-
-     }
- );
+                new Level
+                {
+                    LevelId = 1,
+                    LevelName = "A0,A1",
+                    MinPoint = 0,
+                    MaxPoint = 100,
+                },
+                new Level
+                {
+                    LevelId = 2,
+                    LevelName = "B1,B2",
+                    MinPoint = 101,
+                    MaxPoint = 200,
+                },
+                new Level
+                {
+                    LevelId = 3,
+                    LevelName = "C1,B2",
+                    MinPoint = 201,
+                    MaxPoint = 300,
+                }
+            );
         }
     }
 }

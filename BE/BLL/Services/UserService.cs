@@ -268,7 +268,7 @@ namespace BLL.Services
         /// <returns></returns>
         public ResponseDTO CheckValidationForgotPassword(ForgotPasswordModelDTO model)
         {
-            if (model.Email.IsNullOrEmpty())
+            if (model.Email == null)
             {
                 var response = new ResponseDTO(ValidationErrorMessage.NullEmail, StatusCodeEnum.BadRequest, false);
                 return response;
