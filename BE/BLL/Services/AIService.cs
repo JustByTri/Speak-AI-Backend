@@ -9,7 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace BLL.Services
 {
     public class AIService : IAIService
@@ -22,8 +23,9 @@ namespace BLL.Services
         private List<(string Message, bool IsBot)> _conversationHistory = new List<(string, bool)>();
         private readonly string _deploymentName = "gpt-4";
         private readonly AzureOpenAIClient _openAIClient;
-
-        public AIService() {
+        private readonly IMemoryCache _memoryCache; 
+        public AIService(IMemoryCache memoryCache) {
+            _memoryCache = memoryCache;
             _topicTemplates = new Dictionary<int, TopicTemplateDTO>
             {
                 [1] = new TopicTemplateDTO { InitialPrompt = "Daily routines", FollowUpQuestions = new List<string>(), CharacterRole = "friendly roommate" },
@@ -31,36 +33,27 @@ namespace BLL.Services
                 [3] = new TopicTemplateDTO { InitialPrompt = "Tech innovations", FollowUpQuestions = new List<string>(), CharacterRole = "tech enthusiast" },
                 [4] = new TopicTemplateDTO { InitialPrompt = "Career development", FollowUpQuestions = new List<string>(), CharacterRole = "career coach" }
             };
-            string openAIEndpoint = "https://benns-m5xr241b-swedencentral.cognitiveservices.azure.com/";
-            string openAIApiKey = "FIzCm76QUqt9Djb7nmlpimVxVoowphtvfjYuZQ7yAqBcfPaH5wZTJQQJ99BAACfhMk5XJ3w3AAAAACOGWDM6";
+            string openAIEndpoint = "https://thinh-m7sehog5-eastus2.cognitiveservices.azure.com/";
+            string openAIApiKey = "4aWPGteXTHDJ6FPTzIFhzxaQWEmnSrhelCn5YziXfbzV0RIQe2IwJQQJ99BCACHYHv6XJ3w3AAAAACOGXj5W";
             _openAIClient = new AzureOpenAIClient(new Uri(openAIEndpoint), new AzureKeyCredential(openAIApiKey));
         }
         public async Task<ConversationResponseDTO> ProcessConversationAsync(string userMessage)
         {
-                  
-       
-
-
-
         _conversationTurnCount++;
             int turnsRemaining = MaxTurns - _conversationTurnCount;
-
-        
-
-
-
-
             return await GenerateBotResponse(userMessage, turnsRemaining);
-
-
         }
         private async Task<ConversationResponseDTO> GenerateBotResponse(string userMessage, int turnsRemaining)
         {
-            // 1. Cache Layer Optimization
-            var cacheKey = $"{_currentTopicId}:{userMessage.Trim().ToLowerInvariant()}";
+         
+            var cacheKey = $"{_currentTopicId}:{userMessage.Trim().ToLowerInvariant()}:{GetLastExchange(2).GetHashCode()}";
+            if (_memoryCache.TryGetValue(cacheKey, out ConversationResponseDTO cachedResponse))
+            {
+                cachedResponse.TurnsRemaining = turnsRemaining; 
+                return cachedResponse;
+            }
 
 
-            // 2. Optimized System Prompt
             var systemPrompt = $@"
 🎭 **Role**: {_characterRole}
 📌 **Topic**: {_topicTemplates[_currentTopicId].InitialPrompt}
@@ -76,7 +69,7 @@ namespace BLL.Services
             var chatMessages = new ChatMessage[]
             {
         ChatMessage.CreateSystemMessage(systemPrompt),
-        ChatMessage.CreateUserMessage(userMessage[..Math.Min(userMessage.Length, 200)]) // Limit input size
+        ChatMessage.CreateUserMessage(userMessage[..Math.Min(userMessage.Length, 200)]) 
             };
 
             
@@ -86,10 +79,11 @@ namespace BLL.Services
                 MaxOutputTokenCount = 70,
                 FrequencyPenalty = 0.25f,
                 PresencePenalty = 0.15f,
-                TopP = 0.85f
+                TopP = 0.85f,
+               
             };
 
-            // 5. Async Timeout Handling
+       
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
 
             try
@@ -109,7 +103,16 @@ namespace BLL.Services
                     TurnsRemaining = turnsRemaining
                 };
 
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
+                };
+                _memoryCache.Set(cacheKey, result, cacheOptions);
 
+            
+                _conversationHistory.Add((userMessage, false));
+                _conversationHistory.Add((processBotResponse, true));
 
                 return result;
             }
@@ -149,7 +152,7 @@ namespace BLL.Services
             _currentTopicId = topicId;
             _conversationTurnCount = 0;
 
-
+            var cacheKey = $"StartTopic:{topicId}";
             var template = _topicTemplates[_currentTopicId];
             _characterRole = template.CharacterRole ?? "conversation partner";
 
@@ -184,7 +187,7 @@ Create a natural introduction that:
                 var response = await _openAIClient.GetChatClient(_deploymentName)
                     .CompleteChatAsync(chatMessages, chatOptions);
 
-                return new ConversationResponseDTO
+                var result = new ConversationResponseDTO
                 {
                     IsComplete = false,
                     BotResponse = response?.Value?.Content?.FirstOrDefault()?.Text ?? scenarioPrompt,
@@ -192,13 +195,23 @@ Create a natural introduction that:
                     TurnsRemaining = MaxTurns,
                     ScenarioPrompt = scenarioPrompt
                 };
+
+          
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                    SlidingExpiration = TimeSpan.FromMinutes(5)
+                };
+                _memoryCache.Set(cacheKey, result, cacheOptions);
+
+                return result;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error starting conversation: {ex.Message}", ex);
             }
         }
-        private async Task<string> GenerateScenarioPromptAsync(int topicId)
+            private async Task<string> GenerateScenarioPromptAsync(int topicId)
         {
             var topic = GetTopicById(topicId);
 

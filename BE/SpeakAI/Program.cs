@@ -66,6 +66,7 @@ namespace SpeakAI
 
             builder.Services.AddScoped<ChatHub>();
             builder.Services.AddSignalR();
+            builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options =>
             {
