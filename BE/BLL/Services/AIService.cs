@@ -61,7 +61,8 @@ namespace BLL.Services
 - Respond as human {_characterRole} in 1-2 short sentences
 - Stay on topic: {_topicTemplates[_currentTopicId].InitialPrompt}
 - Use casual language with emotional expressions
-
+- Block sensitive words 
+- Do not speak any language other than English
 🔄 **Last Context**:
 {GetLastExchange(2)}";
 
@@ -120,6 +121,7 @@ namespace BLL.Services
             {
                 return GetFallbackResponse();
             }
+
         }
         private string GetLastExchange(int count)
         {
