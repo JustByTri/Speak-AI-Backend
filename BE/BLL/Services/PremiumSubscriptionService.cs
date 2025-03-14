@@ -46,9 +46,7 @@ namespace BLL.Services
                     Id = Guid.NewGuid(),
                     UserId = userId,
                     TotalAmount = 100, 
-                    OrderStatus = "Pending",
                     OrderDate = DateTime.UtcNow,
-                    PaymentStatus = "Pending"
                 };
 
                 await _unitOfWork.Order.AddAsync(order);
@@ -79,8 +77,7 @@ namespace BLL.Services
                 order.User.IsPremium = true;
            
                 order.User.PremiumExpiredTime = DateTime.UtcNow.AddDays(30);
-                order.PaymentStatus = "Completed";
-                order.OrderStatus = "Completed";
+
 
                 await _unitOfWork.SaveChangeAsync();
 

@@ -5,15 +5,14 @@ using DAL.Entities;
 public interface IVoucherService
 {
 
-    Task<Voucher> GetVoucherById(string voucherId);
-    Task<Voucher> GetVoucherByCode(string voucherCode); // Lấy voucher theo mã
-    Task<List<Voucher>> GetAllVouchers();  // Lấy tất cả vouchers
-    Task<Voucher> AddVoucherFromDTO(VoucherDTO voucherDTO);  // Thêm voucher (trả về voucher mới)
-    Task UpdateVoucherFromDTO(string voucherId, VoucherDTO voucherDTO);  // Cập nhật voucher
-    Task RemoveVoucher(string voucherId);  // Xóa voucher
+    Task<Voucher> GetVoucherById(Guid voucherId);
+    Task<Voucher> GetVoucherByCode(string voucherCode); 
+    Task<List<Voucher>> GetAllVouchers();  
+    Task<Voucher> AddVoucherFromDTO(VoucherDTO voucherDTO); 
+    Task UpdateVoucherFromDTO(Guid voucherId, VoucherDTO voucherDTO);  
+    Task RemoveVoucher(Guid voucherId);  
 
-
-    Task<bool> DisableExpiredOrDepletedVouchersAsync(); // vô hiệu hoá Voucher
+    Task<bool> DisableExpiredOrDepletedVouchersAsync(); 
 
     Task CheckAndDisableVouchersAsync();
 

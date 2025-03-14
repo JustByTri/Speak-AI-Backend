@@ -20,7 +20,9 @@ public class Transaction : BaseEntity
     public virtual User User { get; set; }
     public virtual Order Order { get; set; }
 
-    // 🆕 Cập nhật lại để có thể lưu cả VoucherId & VoucherCode
-    public string? VoucherId { get; set; }
-    public string? VoucherCode { get; set; } // 🆕 Thêm dòng này
+   public Guid? VoucherId { get; set; }
+    public Voucher Voucher { get; set; }
+    public string? VoucherName { get; set; }
+
+    
 }

@@ -16,7 +16,7 @@ namespace BLL.Services
     public class AIService : IAIService
     {
         private int _conversationTurnCount = 0;
-        private const int MaxTurns = 3;
+        private int MaxTurns = 3;
         private int _currentTopicId;
         private string _characterRole = "default role";
         private readonly Dictionary<int, TopicTemplateDTO> _topicTemplates;

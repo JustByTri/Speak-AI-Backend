@@ -22,12 +22,11 @@ namespace BLL.Hubs
             _unitOfWork = unitOfWork;
         }
         public async Task<string> SendMessage(ChatHubDTO chatHubDTO)
-        {
+        { 
            
             var userId = await _unitOfWork.User.GetByIdAsync(chatHubDTO.UserId);
             _aiService.SetCurrentTopic(chatHubDTO.TopicId);
             var response = await _aiService.ProcessConversationAsync(chatHubDTO.Message);
-
             return response.BotResponse;
         }
     }

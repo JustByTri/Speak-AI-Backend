@@ -12,15 +12,7 @@ namespace Service.IService
         /// <param name="paymentInfo">Thông tin thanh toán</param>
         /// <param name="context">Context HTTP</param>
         /// <returns>URL thanh toán</returns>
-
-        /// <summary>
-        /// Apply voucher before processing payment
-        /// </summary>
-        /// <param name="paymentInfo">Thông tin thanh toán</param>
-        /// <param name="voucherCode">Mã voucher</param>
-        /// <returns>Thông tin thanh toán sau khi áp dụng voucher</returns>
-        Task<PaymentRequestDTO> ApplyVoucherAsync(PaymentRequestDTO paymentInfo, string voucherCode);
-
+    
         /// <summary>
         /// Create Payment Request To VnPay with Voucher Applied
         /// </summary>

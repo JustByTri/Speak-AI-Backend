@@ -86,7 +86,7 @@ namespace SpeakAI
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("DAL")));
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+        
 
             app.UseSwagger();
             app.UseSwaggerUI();

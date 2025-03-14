@@ -72,7 +72,7 @@ namespace DAL.GenericRepository.Repository
             var existingTransaction = await _peakAIContext.Transactions.FindAsync(tranId);
             if (existingTransaction == null) return false;
 
-            // Update properties (example):
+       
             existingTransaction.Status = transaction.Status;
             existingTransaction.Amount = transaction.Amount;
 

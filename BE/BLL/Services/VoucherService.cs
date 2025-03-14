@@ -21,7 +21,7 @@ namespace BLL.Services
             _logger = logger;
         }
 
-        public async Task<Voucher> GetVoucherById(string voucherId)
+        public async Task<Voucher> GetVoucherById(Guid voucherId)
         {
             return await _unitOfWork.Voucher.GetVoucherById(voucherId);
         }
@@ -43,13 +43,13 @@ namespace BLL.Services
             return await _unitOfWork.Voucher.GetVoucherByCode(voucherDTO.VoucherCode);
         }
 
-        public async Task UpdateVoucherFromDTO(string voucherId, VoucherDTO voucherDTO)
+        public async Task UpdateVoucherFromDTO(Guid voucherId, VoucherDTO voucherDTO)
         {
             await _unitOfWork.Voucher.UpdateVoucherFromDTO(voucherId, voucherDTO);
             await _unitOfWork.SaveChangeAsync();
         }
 
-        public async Task RemoveVoucher(string voucherId)
+        public async Task RemoveVoucher(Guid voucherId)
         {
             await _unitOfWork.Voucher.RemoveVoucher(voucherId);
             await _unitOfWork.SaveChangeAsync();
