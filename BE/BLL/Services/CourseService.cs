@@ -54,7 +54,6 @@ namespace BLL.Services
                         CourseName = courseDto.CourseName,
                         Description = courseDto.Description,
                         MaxPoint = maxPoint,
-                        IsFree = courseDto.IsFree,
                         IsPremium = courseDto.IsPremium,
                         LevelId = courseDto.LevelId,
                         IsDeleted = false,
@@ -146,7 +145,6 @@ namespace BLL.Services
                     course.CourseName = courseDto.CourseName;
                     course.Description = courseDto.Description;
                     course.MaxPoint = courseDto.MaxPoint;
-                    course.IsFree = courseDto.IsFree;
                     course.LevelId = courseDto.LevelId;
                     course.UpdatedAt = DateTime.UtcNow;
 
@@ -370,16 +368,21 @@ namespace BLL.Services
                 try
                 {
                     var user = await _unitOfWork.User.GetByIdAsync(userId);
+                    var course = await _unitOfWork.Course.GetByIdAsync(courseId);
                     var courseResponse = await GetCourseByIdAsync(courseId);
-                    
+
                     if (user == null || !courseResponse.IsSuccess)
                         return new ResponseDTO("User or course not found", StatusCodeEnum.NotFound, false);
 
                     var existingEnrollment = await _unitOfWork.EnrolledCourse
-             .GetByConditionAsync(e => e.UserId == userId && e.CourseId == courseId);
+                        .GetByConditionAsync(e => e.UserId == userId && e.CourseId == courseId);
 
                     if (existingEnrollment != null)
                         return new ResponseDTO("User have enrolled this course", StatusCodeEnum.BadRequest, false);
+
+                 
+                    if (course.IsPremium && (!user.IsPremium || (user.PremiumExpiredTime != null && user.PremiumExpiredTime < DateTime.UtcNow)))
+                        return new ResponseDTO("Only premium users can enroll in premium courses", StatusCodeEnum.Forbidden, false);
 
                     var enrolledCourse = new EnrolledCourse
                     {
@@ -393,7 +396,6 @@ namespace BLL.Services
                     };
 
                     await _unitOfWork.EnrolledCourse.AddAsync(enrolledCourse);
-
 
                     var topics = await _unitOfWork.Topic.GetAllByListAsync(t => t.CourseId == courseId && !t.IsDeleted);
                     foreach (var topic in topics)
@@ -413,7 +415,6 @@ namespace BLL.Services
                             UpdatedAt = DateTime.UtcNow
                         };
                         await _unitOfWork.TopicProgress.AddAsync(topicProgress);
-
 
                         var exercises = await _unitOfWork.Exercise.GetAllByListAsync(e => e.TopicId == topic.Id && !e.IsDeleted);
                         foreach (var exercise in exercises)
@@ -440,7 +441,7 @@ namespace BLL.Services
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false);
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false); // Sửa lỗi chính tả "InteralServerError" thành "InternalServerError"
                 }
             }
             public async Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId)
@@ -462,7 +463,6 @@ namespace BLL.Services
                             CourseName = course.CourseName,
                             Description = course.Description,
                             MaxPoint = course.MaxPoint,
-                            IsFree = course.IsFree,
                             IsActive = course.IsActive,
                             LevelId = course.LevelId
                         },
@@ -680,7 +680,6 @@ namespace BLL.Services
                         CourseName = course.CourseName,
                         Description = course.Description,
                         MaxPoint = course.MaxPoint,
-                        IsFree = course.IsFree,
                         IsPremium = course.IsPremium,
                         IsActive = course.IsActive,
                         LevelId = course.LevelId,

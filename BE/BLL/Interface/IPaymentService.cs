@@ -23,11 +23,11 @@ namespace Service.IService
         /// <returns></returns>
         Task<bool> HandlePaymentResponse(PaymentResponseDTO response);
 
-        Task<(bool isSuccess, string message, decimal discountAmount)> ApplyVoucher(ApplyVoucherRequest request);
+        //Task<(bool isSuccess, string message, decimal discountAmount)> ApplyVoucher(ApplyVoucherRequest request);
 
-        Task<PaymentHistory?> GetPaymentByTransactionId(string transactionId);
-        Task SavePaymentHistory(string transactionId, decimal amount, string status);
-        Task UpgradeUserToPremium(string userId, string package);
+        //Task<PaymentHistory?> GetPaymentByTransactionId(string transactionId);
+        //Task SavePaymentHistory(string transactionId, decimal amount, string status);
+        //Task UpgradeUserToPremium(string userId, string package);
 
 
 

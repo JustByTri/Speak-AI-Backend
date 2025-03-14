@@ -26,7 +26,7 @@ namespace DAL.Repositories
         }
 
         // Lấy voucher theo VoucherId
-        public async Task<Voucher> GetVoucherById(string voucherId)
+        public async Task<Voucher> GetVoucherById(Guid voucherId)
         {
             return await _dbSet.FirstOrDefaultAsync(v => v.VoucherId == voucherId);
         }
@@ -45,7 +45,7 @@ namespace DAL.Repositories
 
             var voucher = new Voucher
             {
-                VoucherId = Guid.NewGuid().ToString(), // Tạo GUID mới
+                VoucherId = Guid.NewGuid(), 
                 VoucherCode = voucherDTO.VoucherCode,
                 Description = voucherDTO.Description,
                 DiscountPercentage = voucherDTO.DiscountPercentage ?? 0,
@@ -60,7 +60,6 @@ namespace DAL.Repositories
                 DiscountAmount = 0,
                 MinPurchaseAmount = 0,
                 VoucherType = "Discount",
-                UserId = null,
                 Status = "Active" // Gán giá trị mặc định cho Status
             };
 
@@ -70,7 +69,7 @@ namespace DAL.Repositories
 
 
         // Cập nhật voucher từ DTO
-        public async Task UpdateVoucherFromDTO(string voucherId, VoucherDTO voucherDTO)
+        public async Task UpdateVoucherFromDTO(Guid voucherId, VoucherDTO voucherDTO)
         {
             if (voucherDTO == null) throw new ArgumentNullException(nameof(voucherDTO));
 
@@ -90,7 +89,7 @@ namespace DAL.Repositories
         }
 
         // Xóa voucher
-        public async Task RemoveVoucher(string voucherId)
+        public async Task RemoveVoucher(Guid voucherId)
         {
             var voucher = await _dbSet.FindAsync(voucherId);
             if (voucher != null)

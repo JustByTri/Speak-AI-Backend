@@ -30,7 +30,6 @@ namespace DAL.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<ChatMessages> ChatMessages { get; set; }
 
         public DbSet<Voucher> Vouchers { get; set; }
@@ -180,10 +179,6 @@ namespace DAL.Data
                 .Property(o => o.TotalAmount)
                 .HasPrecision(18, 2);
 
-            modelBuilder.Entity<OrderDetail>()
-                .Property(od => od.TotalPrice)
-                .HasPrecision(18, 2);
-
             modelBuilder.Entity<Voucher>()
                 .HasKey(v => v.VoucherId);
 
@@ -223,7 +218,6 @@ namespace DAL.Data
             modelBuilder.Entity<Voucher>()
                 .HasOne(v => v.User)
                 .WithMany(u => u.Voucher)
-                .HasForeignKey(v => v.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Transaction>()

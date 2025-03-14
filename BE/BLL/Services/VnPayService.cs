@@ -7,11 +7,11 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using Common.DTO;
-using DAL.Repositories;
+using DAL.UnitOfWork;
 using System.Threading.Tasks;
-using DAL.IRepositories;
-using BLL.Services;
 using Microsoft.Extensions.Logging;
+using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Service
 {
@@ -20,20 +20,25 @@ namespace Service.Service
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private readonly IConfiguration _configuration;
         private readonly IVoucherService _voucherService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<VnPayService> _logger;
-        public VnPayService(IConfiguration configuration, IVoucherService voucherService, ILogger<VnPayService> logger)
+
+        public VnPayService(IConfiguration configuration,
+                           IVoucherService voucherService,
+                           IUnitOfWork unitOfWork,
+                           ILogger<VnPayService> logger)
         {
             _configuration = configuration;
             _voucherService = voucherService;
+            _unitOfWork = unitOfWork;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
         }
 
-        public async Task<PaymentRequestDTO> ApplyVoucherAsync(PaymentRequestDTO paymentInfo, string voucherCode)
+        public async Task<decimal> ApplyVoucherAsync(decimal totalPrice, string voucherCode)
         {
             if (string.IsNullOrWhiteSpace(voucherCode))
             {
-                return paymentInfo; // Không áp dụng voucher nếu không có mã
+                return totalPrice;
             }
 
             _logger.LogInformation($"Checking voucher: {voucherCode}");
@@ -45,30 +50,35 @@ namespace Service.Service
                 throw new Exception("Voucher không hợp lệ hoặc đã hết hạn.");
             }
 
-            if (!voucher.IsVoucherValid(paymentInfo.TotalPrice, DateTime.UtcNow))
+            if (!voucher.IsVoucherValid(totalPrice, DateTime.UtcNow))
             {
                 throw new Exception("Voucher không hợp lệ hoặc đã hết hạn.");
             }
 
-            decimal discount = voucher.CalculateDiscount(paymentInfo.TotalPrice);
-            paymentInfo.TotalPrice -= discount;
+            decimal discount = voucher.CalculateDiscount(totalPrice);
+            totalPrice -= discount;
             voucher.RemainingQuantity--;
 
-            _logger.LogInformation($"Applied discount: {discount}, New total: {paymentInfo.TotalPrice}, Remaining: {voucher.RemainingQuantity}");
-            return paymentInfo;
+            _logger.LogInformation($"Applied discount: {discount}, New total: {totalPrice}, Remaining: {voucher.RemainingQuantity}");
+            return totalPrice;
         }
-
-
-
-
-
 
         public async Task<string> CreatePaymentUrl(PaymentRequestDTO paymentInfo, string voucherCode, HttpContext context)
         {
-            // Áp dụng voucher trước khi tạo URL thanh toán
+            var order = await _unitOfWork.Order
+                .FindAll(o => o.Id == paymentInfo.OrderId)
+                .FirstOrDefaultAsync();
+
+            if (order == null )
+            {
+                throw new Exception("Order không tồn tại hoặc không ở trạng thái Pending.");
+            }
+
+            decimal totalPrice = order.TotalAmount;
+
             if (!string.IsNullOrEmpty(voucherCode))
             {
-                paymentInfo = await ApplyVoucherAsync(paymentInfo, voucherCode);
+                totalPrice = await ApplyVoucherAsync(totalPrice, voucherCode);
             }
 
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]!);
@@ -79,7 +89,7 @@ namespace Service.Service
             AddRequestData("vnp_Version", _configuration["Vnpay:Version"]!);
             AddRequestData("vnp_Command", _configuration["Vnpay:Command"]!);
             AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]!);
-            AddRequestData("vnp_Amount", ((int)(paymentInfo.TotalPrice * 100)).ToString()); // Giá trị đã được trừ giảm giá
+            AddRequestData("vnp_Amount", ((int)(totalPrice * 100000)).ToString());
             AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
             AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]!);
             AddRequestData("vnp_IpAddr", GetIpAddress(context));
@@ -163,8 +173,7 @@ namespace Service.Service
                     throw new ArgumentException("UserId không hợp lệ.");
                 }
 
-                // Xác định giá gói Premium
-                decimal price = GetPremiumPackagePrice(premiumPackage);
+                decimal price = 100000;
                 if (price <= 0)
                 {
                     _logger.LogWarning($"Gói Premium không hợp lệ: {premiumPackage}");
@@ -173,16 +182,21 @@ namespace Service.Service
 
                 _logger.LogInformation($"Giá của gói {premiumPackage} là {price} VND.");
 
-                // Tạo request thanh toán
+                var order = new Order
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = parsedUserId,
+                    TotalAmount = price,
+                    OrderDate = DateTime.UtcNow,
+                };
+                await _unitOfWork.Order.AddAsync(order);
+                await _unitOfWork.SaveChangeAsync();
+
                 var paymentRequest = new PaymentRequestDTO
                 {
-                    UserId = parsedUserId,
-                    TotalPrice = price,
-                    PaymentMethod = "VNPay",
-
+                    OrderId = order.Id
                 };
 
-                // Gọi VNPay để tạo URL thanh toán
                 string paymentUrl = await CreatePaymentUrl(paymentRequest, null, context);
 
                 _logger.LogInformation($"URL thanh toán tạo thành công: {paymentUrl}");
@@ -195,31 +209,6 @@ namespace Service.Service
             }
         }
 
-        /// <summary>
-        /// Lấy giá gói Premium dựa trên tên gói
-        /// </summary>
-        private decimal GetPremiumPackagePrice(string premiumPackage)
-        {
-            var priceList = new Dictionary<string, decimal>
-    {
-        { "silver", 100000 }, // 100k VND
-        { "gold", 200000 },   // 200k VND
-        { "platinum", 500000 } // 500k VND
-    };
-
-            if (string.IsNullOrWhiteSpace(premiumPackage))
-            {
-                throw new ArgumentException("Tên gói Premium không hợp lệ.");
-            }
-
-            premiumPackage = premiumPackage.Trim().ToLower();
-
-            if (!priceList.ContainsKey(premiumPackage))
-            {
-                throw new ArgumentException($"Gói Premium không hợp lệ. Chỉ chấp nhận: {string.Join(", ", priceList.Keys)}");
-            }
-
-            return priceList[premiumPackage];
-        }
+      
     }
 }

@@ -8,11 +8,8 @@ namespace Common.DTO
 {
     public class PaymentRequestDTO
     {
-        public Guid UserId { get; set; }
-        public string PaymentMethod { get; set; } = null!;
-        public decimal TotalPrice { get; set; }
-
-        public string? VoucherCode { get; set; } // Thêm thuộc tính này
+        public Guid OrderId { get; set; } 
+        public string? VoucherCode { get; set; }
 
 
 

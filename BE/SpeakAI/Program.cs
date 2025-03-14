@@ -66,6 +66,7 @@ namespace SpeakAI
 
             builder.Services.AddScoped<ChatHub>();
             builder.Services.AddSignalR();
+            builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options =>
             {
@@ -85,7 +86,7 @@ namespace SpeakAI
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("DAL")));
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+        
 
             app.UseSwagger();
             app.UseSwaggerUI();

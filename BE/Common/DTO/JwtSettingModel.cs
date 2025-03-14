@@ -20,12 +20,12 @@
         /// <summary>
         /// The issuer of the token.
         /// </summary>
-        public static string Issuer { get; set; } = "https://localhost:7155"; // Thay đổi cho phù hợp
+        public static string Issuer { get; set; } = "https://localhost:7155"; 
 
         /// <summary>
         /// The audience of the token.
         /// </summary>
-        public static string Audience { get; set; } = "https://localhost:3000"; // Thay đổi cho phù hợp
+        public static string Audience { get; set; } = "http://localhost:5232"; 
     }
 }
 

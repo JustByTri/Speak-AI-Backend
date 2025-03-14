@@ -66,7 +66,7 @@ namespace API.Controllers
 
         // Lấy voucher theo VoucherId
         [HttpGet("id/{voucherId}")]
-        public async Task<IActionResult> GetVoucherById(string voucherId)
+        public async Task<IActionResult> GetVoucherById(Guid voucherId)
         {
             var voucher = await _voucherService.GetVoucherById(voucherId);
             if (voucher == null)
@@ -79,7 +79,7 @@ namespace API.Controllers
 
         // Cập nhật voucher từ DTO
         [HttpPut("{voucherId}")]
-        public async Task<IActionResult> UpdateVoucher(string voucherId, [FromBody] VoucherDTO voucherDTO)
+        public async Task<IActionResult> UpdateVoucher(Guid voucherId, [FromBody] VoucherDTO voucherDTO)
         {
             if (voucherDTO == null)
                 return BadRequest("Dữ liệu không hợp lệ.");
@@ -90,16 +90,13 @@ namespace API.Controllers
 
         // Xóa voucher
         [HttpDelete("{voucherId}")]
-        public async Task<ActionResult> RemoveVoucher(string voucherId)
+        public async Task<ActionResult> RemoveVoucher(Guid voucherId)
         {
             await _voucherService.RemoveVoucher(voucherId);
             return NoContent();
         }
 
-        /// <summary>
-        /// Áp dụng voucher cho người dùng.
-        /// </summary>
-
+    
 
     }
 }
