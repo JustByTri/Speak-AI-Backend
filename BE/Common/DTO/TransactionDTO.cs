@@ -9,6 +9,7 @@ namespace Common.DTO
     public class TransactionDTO
     {
         public Guid TransactionId { get; set; }
+        public Guid OrderId { get; set; }
         public string TransactionNumber { get; set; } = null!;
         public string PaymentMethod { get; set; } = null!;
         public string TransactionInfo { get; set; } = null!;

@@ -12,5 +12,6 @@ namespace BLL.Interface
         Task<ConversationResponseDTO> ProcessConversationAsync(string userMessage);
         Task<ConversationResponseDTO> StartTopicAsync(int topicId);
         void SetCurrentTopic(int topicId);
+        Task<ConversationResponseDTO> EndConversationAsync(); 
     }
 }

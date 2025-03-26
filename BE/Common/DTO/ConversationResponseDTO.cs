@@ -20,6 +20,10 @@ namespace DAL.Entities
         public byte[] AudioData { get; set; }
         public string TranslatedResponse { get; set; }
         public string ResponseText { get; set; }
+        public string Summary { get; set; } 
+        public string Strengths { get; set; } 
+        public string Weaknesses { get; set; } 
+        public string Improvements { get; set; } 
 
     }
 }
