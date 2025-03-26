@@ -12,7 +12,6 @@ namespace Common.DTO
         public string CourseName { get; set; }
         public string Description { get; set; }
         public decimal MaxPoint { get; set; }
-        public bool IsFree { get; set; }
         public bool IsPremium { get; set; }
         public bool IsActive { get; set; }
         public int LevelId { get; set; }

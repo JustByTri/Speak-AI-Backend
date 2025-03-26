@@ -35,7 +35,7 @@ namespace DAL.GenericRepository.IRepository
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        Task<PagedList<Transaction>> GetTransactionsPagedList(TransactionParameters parameters);
+        Task<PagedList<TransactionDTO>> GetTransactionsPagedList(TransactionParameters parameters);
 
         /// <summary>
         /// get trans of user with pagination

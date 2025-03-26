@@ -275,6 +275,79 @@ Keep the scenario concise (1-2 sentences) and end with a question.
 
             _currentTopicId = topicId;
         }
+        public async Task<ConversationResponseDTO> EndConversationAsync()
+        {
+            if (_conversationHistory.Count == 0)
+            {
+                return new ConversationResponseDTO
+                {
+                    IsComplete = true,
+                    BotResponse = "No conversation to summarize yet!",
+                    CurrentTopic = _currentTopicId,
+                    TurnsRemaining = 0
+                };
+            }
+
+            var summaryPrompt = $@"
+You are an English language coach. Based on this conversation history:
+{GetLastExchange(_conversationHistory.Count / 2)}
+
+Provide:
+1. A short summary of the conversation (1-2 sentences).
+2. User's strengths in English (e.g., vocabulary, grammar, fluency).
+3. User's weaknesses in English (e.g., sentence structure, word choice).
+4. Suggestions for improvement (e.g., practice specific skills).
+Keep each part concise and use casual, encouraging language.
+";
+
+            var chatMessages = new ChatMessage[]
+            {
+        ChatMessage.CreateSystemMessage(summaryPrompt)
+            };
+
+            var chatOptions = new ChatCompletionOptions
+            {
+                Temperature = 0.3f,
+                MaxOutputTokenCount = 200
+            };
+
+            try
+            {
+                var response = await _openAIClient.GetChatClient(_deploymentName)
+                    .CompleteChatAsync(chatMessages, chatOptions);
+
+                var evaluationText = response?.Value?.Content?.FirstOrDefault()?.Text ?? "Hmm, I couldn’t evaluate this time.";
+                var parts = evaluationText.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+                var result = new ConversationResponseDTO
+                {
+                    IsComplete = true,
+                    BotResponse = "Thanks for chatting! Here’s your summary and feedback:",
+                    CurrentTopic = _currentTopicId,
+                    TurnsRemaining = 0,
+                    Summary = parts.Length > 0 ? parts[0] : "We talked a bit!",
+                    Strengths = parts.Length > 1 ? parts[1] : "You tried hard!",
+                    Weaknesses = parts.Length > 2 ? parts[2] : "Nothing major noticed.",
+                    Improvements = parts.Length > 3 ? parts[3] : "Keep practicing!"
+                };
+
+                // Reset conversation state
+                _conversationTurnCount = 0;
+                _conversationHistory.Clear();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return new ConversationResponseDTO
+                {
+                    IsComplete = true,
+                    BotResponse = "Oops, something went wrong while summarizing!",
+                    CurrentTopic = _currentTopicId,
+                    TurnsRemaining = 0
+                };
+            }
+        }
 
     }
 }

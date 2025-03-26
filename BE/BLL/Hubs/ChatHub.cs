@@ -29,5 +29,11 @@ namespace BLL.Hubs
             var response = await _aiService.ProcessConversationAsync(chatHubDTO.Message);
             return response.BotResponse;
         }
+        public async Task<string> EndConversation()
+        {
+            var response = await _aiService.EndConversationAsync();
+            await Clients.Caller.SendAsync("ReceiveEvaluation", response);
+            return response.BotResponse;
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace SpeakAI.Controllers
 {
     [Route("api/transactions")]
     [ApiController]
-    [Authorize]
+   
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;

@@ -66,5 +66,27 @@ namespace SpeakAI.Controllers
                 return StatusCode(500, new { error = "Internal server error", details = ex.Message });
             }
         }
+        [HttpPost("conversations/end")]
+        public async Task<IActionResult> EndConversation()
+        {
+            try
+            {
+                var response = await _aiService.EndConversationAsync();
+                return Ok(new
+                {
+                    response.IsComplete,
+                    response.BotResponse,
+                    response.Summary,
+                    response.Strengths,
+                    response.Weaknesses,
+                    response.Improvements,
+                    response.TurnsRemaining
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Failed to end conversation", details = ex.Message });
+            }
+        }
     }
 }

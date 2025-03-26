@@ -42,13 +42,15 @@ namespace BLL.Service
             var transactionDtos = transactions.Select(t => new TransactionDTO
             {
                 TransactionId = t.TransactionId,
-                TransactionNumber = t.TransactionReference,
+                TransactionNumber = t.TransactionNumber,
                 PaymentMethod = t.PaymentMethod,
-                TransactionInfo = t.TransactionType,
+                TransactionInfo = t.TransactionInfo,
+                UserId = t.UserId,
                 TransactionDate = t.TransactionDate,
+                OrderId = t.OrderId,
                 Amount = (double)t.Amount,
                 Status = t.Status,
-                Email = t.User?.Email ?? string.Empty,
+                Email = t.Email
             }).ToList();
 
             var mappedResponse = new PaginationResponseDTO<TransactionDTO>
@@ -56,13 +58,14 @@ namespace BLL.Service
                 PageSize = transactions.PageSize,
                 CurrentPage = transactions.CurrentPage,
                 TotalPages = transactions.TotalPages,
-                Items = transactionDtos
+                Items = transactions.ToList()
             };
 
             return new ResponseDTO(
                 GeneralMessage.GetSuccess,
                 StatusCodeEnum.OK,
                 true,
+                
                 mappedResponse
             );
         }

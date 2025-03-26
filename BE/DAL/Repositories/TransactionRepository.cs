@@ -23,16 +23,29 @@ namespace DAL.GenericRepository.Repository
             return await _peakAIContext.Transactions.Where(t => t.Status == PaymentConst.PaidStatus).ToListAsync();
         }
 
-        public async Task<PagedList<Transaction>> GetTransactionsPagedList(TransactionParameters parameters)
+        public async Task<PagedList<TransactionDTO>> GetTransactionsPagedList(TransactionParameters parameters)
         {
-            var trans = _peakAIContext.Transactions.Include(t => t.User).Include(t => t.OrderId).Where(t => t.Status != PaymentConst.CancelStatus);
+            var trans = _peakAIContext.Transactions
+                .Include(t => t.User)
+                .Where(t => t.Status != PaymentConst.CancelStatus)
+                .Select(t => new TransactionDTO
+                {
+                    TransactionId = t.Id,
+                    TransactionDate = t.TransactionDate,
+                    Status = t.Status,
+                    OrderId = t.OrderId, 
+                    UserId = t.UserId 
+                });
 
             if (parameters.Status != null)
             {
                 trans = trans.Where(u => u.Status.ToLower() == parameters.Status.ToLower());
             }
 
-            return await PagedList<Transaction>.ToPagedList(trans.OrderByDescending(p => p.TransactionDate), parameters.PageNumber, parameters.PageSize);
+            return await PagedList<TransactionDTO>.ToPagedList(
+                trans.OrderByDescending(p => p.TransactionDate),
+                parameters.PageNumber,
+                parameters.PageSize);
         }
 
         public async Task<Transaction?> GetUnPaidTransactionOfUser(Guid userId)
