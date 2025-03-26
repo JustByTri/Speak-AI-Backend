@@ -30,10 +30,9 @@ namespace SpeakAI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllTransactions([FromQuery] TransactionParameters parameters)
+        public async Task<IActionResult> GetAllTransactions([FromQuery] TransactionParameters parameters)
         {
-            var response = _transactionService.GetAllTransactions(parameters);
-
+            var response = await _transactionService.GetAllTransactions(parameters);
             return Ok(new ResponseDTO(
                 GeneralMessage.GetSuccess,
                 StatusCodeEnum.OK,
@@ -41,9 +40,8 @@ namespace SpeakAI.Controllers
                 response
             ));
         }
-
         [HttpGet("users/{userId}")]
-        public async Task<IActionResult> GetTransOfUser([Required]Guid  userId, [FromQuery] TransactionParameters parameters)
+        public async Task<IActionResult> GetTransOfUser([Required] Guid userId, [FromQuery] TransactionParameters parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +55,7 @@ namespace SpeakAI.Controllers
 
             if (user != null)
             {
-                var response = _transactionService.GetTransOfUser(userId, parameters);
+                var response = await _transactionService.GetTransOfUser(userId, parameters);
 
                 if (response != null)
                 {
@@ -68,10 +66,16 @@ namespace SpeakAI.Controllers
                         response
                     ));
                 }
+             
+                return NotFound(new ResponseDTO(
+                    "No transactions found for the user.",
+                    StatusCodeEnum.NotFound
+                ));
             }
 
-            return StatusCode(404, new ResponseDTO(
-                GeneralMessage.NotFound,
+            
+            return NotFound(new ResponseDTO(
+                "User not found.",
                 StatusCodeEnum.NotFound
             ));
         }

@@ -26,16 +26,16 @@ namespace DAL.GenericRepository.Repository
         public async Task<PagedList<TransactionDTO>> GetTransactionsPagedList(TransactionParameters parameters)
         {
             var trans = _peakAIContext.Transactions
-                .Include(t => t.User)
-                .Where(t => t.Status != PaymentConst.CancelStatus)
-                .Select(t => new TransactionDTO
-                {
-                    TransactionId = t.Id,
-                    TransactionDate = t.TransactionDate,
-                    Status = t.Status,
-                    OrderId = t.OrderId, 
-                    UserId = t.UserId 
-                });
+      .Include(t => t.User)
+      .Where(t => t.Status != PaymentConst.CancelStatus)
+      .Select(t => new TransactionDTO
+      {
+          TransactionId = t.Id,
+          TransactionDate = t.TransactionDate,
+          Status = t.Status,
+          OrderId = t.OrderId,
+          UserId = t.UserId
+      });
 
             if (parameters.Status != null)
             {
@@ -60,7 +60,10 @@ namespace DAL.GenericRepository.Repository
 
         public async Task<PagedList<Transaction>> GetTransOfUser(Guid userId, TransactionParameters parameters)
         {
-            var trans = _peakAIContext.Transactions.Include(t => t.User).Include(t => t.OrderId).Where(t => t.UserId == userId && t.Status != PaymentConst.CancelStatus);
+            var trans = _peakAIContext.Transactions
+                .Include(t => t.User)
+                .Include(t => t.Order)
+                .Where(t => t.UserId == userId && t.Status != PaymentConst.CancelStatus);
 
             if (parameters.Status != null)
             {
@@ -68,7 +71,7 @@ namespace DAL.GenericRepository.Repository
             }
 
             return await PagedList<Transaction>.ToPagedList(trans.OrderByDescending(p => p.TransactionDate), parameters.PageNumber, parameters.PageSize);
-        }   
+        }
         public async Task<bool> UpdateAsync(Transaction entity)
         {
             _dbSet.Update(entity);

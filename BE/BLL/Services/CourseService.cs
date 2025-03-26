@@ -441,7 +441,7 @@ namespace BLL.Services
                 }
                 catch (Exception ex)
                 {
-                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false); // Sửa lỗi chính tả "InteralServerError" thành "InternalServerError"
+                    return new ResponseDTO($"Error: {ex.Message}", StatusCodeEnum.InteralServerError, false); 
                 }
             }
             public async Task<ResponseDTO> GetEnrolledCourseDetailsAsync(Guid enrolledCourseId)
