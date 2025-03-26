@@ -48,7 +48,7 @@ namespace BLL.Service
                 UserId = t.UserId,
                 TransactionDate = t.TransactionDate,
                 OrderId = t.OrderId,
-                Amount = (double)t.Amount,
+                Amount =t.Amount,
                 Status = t.Status,
                 Email = t.Email
             }).ToList();
@@ -65,8 +65,9 @@ namespace BLL.Service
                 GeneralMessage.GetSuccess,
                 StatusCodeEnum.OK,
                 true,
-                
-                mappedResponse
+              mappedResponse
+
+
             );
         }
 
@@ -83,7 +84,6 @@ namespace BLL.Service
         public async Task<ResponseDTO> GetTransOfUser(Guid userId, TransactionParameters parameters)
         {
             var transactions = await _unitOfWork.Transaction.GetTransOfUser(userId, parameters);
-
             var transactionDtos = transactions.Select(t => new TransactionDTO
             {
                 TransactionId = t.TransactionId,
@@ -94,12 +94,10 @@ namespace BLL.Service
                 Amount = (double)t.Amount,
                 Status = t.Status,
                 Email = t.User?.Email ?? string.Empty,
-
             }).ToList();
 
             var mappedResponse = new PaginationResponseDTO<TransactionDTO>
             {
-
                 PageSize = transactions.PageSize,
                 CurrentPage = transactions.CurrentPage,
                 TotalPages = transactions.TotalPages,
@@ -107,11 +105,11 @@ namespace BLL.Service
             };
 
             return new ResponseDTO(
-       GeneralMessage.GetSuccess,
-       StatusCodeEnum.OK,
-       true,
-       mappedResponse
-   );
+                GeneralMessage.GetSuccess,
+                StatusCodeEnum.OK,
+                true,
+                mappedResponse
+            );
         }
         public async Task<bool> UpdateTransaction(Guid tranId, Transaction transaction)
         {
