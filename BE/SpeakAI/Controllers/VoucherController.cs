@@ -21,6 +21,18 @@ namespace API.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        // Lấy voucher theo VoucherId
+        [HttpGet("id/{voucherId}")]
+        public async Task<IActionResult> GetVoucherById(Guid voucherId)
+        {
+            var voucher = await _voucherService.GetVoucherById(voucherId);
+            if (voucher == null)
+                return NotFound("Voucher không tồn tại.");
+            return Ok(voucher);
+        }
+
+
+
         // Lấy voucher theo mã
         [HttpGet("{voucherCode}")]
         public async Task<ActionResult<Voucher>> GetVoucherByCode(string voucherCode)
@@ -64,15 +76,7 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetVoucherByCode), new { voucherCode = newVoucher.VoucherCode }, newVoucher);
         }
 
-        // Lấy voucher theo VoucherId
-        [HttpGet("id/{voucherId}")]
-        public async Task<IActionResult> GetVoucherById(Guid voucherId)
-        {
-            var voucher = await _voucherService.GetVoucherById(voucherId);
-            if (voucher == null)
-                return NotFound("Voucher không tồn tại.");
-            return Ok(voucher);
-        }
+
 
 
 
@@ -96,7 +100,7 @@ namespace API.Controllers
             return NoContent();
         }
 
-    
+
 
     }
 }

@@ -19,33 +19,31 @@ namespace DAL.Repositories
             _context = speakAIContext;
         }
 
-        // Lấy voucher theo mã
+
         public async Task<Voucher> GetVoucherByCode(string voucherCode)
         {
             return await _dbSet.FirstOrDefaultAsync(v => v.VoucherCode == voucherCode);
         }
 
-        // Lấy voucher theo VoucherId
         public async Task<Voucher> GetVoucherById(Guid voucherId)
         {
             return await _dbSet.FirstOrDefaultAsync(v => v.VoucherId == voucherId);
         }
 
-        // Lấy tất cả voucher
+
         public async Task<List<Voucher>> GetAllVouchers()
         {
             return await _dbSet.ToListAsync();
         }
 
-        // Thêm voucher từ DTO
-        // Thêm voucher từ DTO
+
         public async Task AddVoucherFromDTO(VoucherDTO voucherDTO)
         {
             if (voucherDTO == null) throw new ArgumentNullException(nameof(voucherDTO));
 
             var voucher = new Voucher
             {
-                VoucherId = Guid.NewGuid(), 
+                VoucherId = Guid.NewGuid(),
                 VoucherCode = voucherDTO.VoucherCode,
                 Description = voucherDTO.Description,
                 DiscountPercentage = voucherDTO.DiscountPercentage ?? 0,
