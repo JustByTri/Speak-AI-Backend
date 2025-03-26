@@ -78,47 +78,49 @@ namespace BLL.Services
             await _unitOfWork.SaveChangeAsync();
         }
 
-        public async Task<bool> DisableExpiredOrDepletedVouchersAsync()
+        public async Task<List<Voucher>> CheckAndDisableVouchersAsync()
         {
             _logger.LogInformation("Checking for expired or depleted vouchers...");
 
             var vouchers = await _unitOfWork.Voucher.GetAllVouchers();
-            var now = DateTime.UtcNow;
-            var updatedVouchers = new List<Voucher>();
+            var now = DateTime.UtcNow.AddHours(7);
+
+            var expiredVouchers = new List<Voucher>();
 
             foreach (var voucher in vouchers)
             {
                 if (voucher.EndDate <= now || voucher.RemainingQuantity <= 0)
                 {
-                    if (voucher.IsActive)
+                    if (voucher.IsActive) // Chỉ cập nhật nếu voucher đang hoạt động
                     {
                         voucher.IsActive = false;
-                        updatedVouchers.Add(voucher);
+                        voucher.Status = false;
+                        expiredVouchers.Add(voucher);
                     }
                 }
             }
 
-            if (updatedVouchers.Any())
+            if (expiredVouchers.Any())
             {
-                foreach (var voucher in updatedVouchers)
+                foreach (var voucher in expiredVouchers)
                 {
                     await _unitOfWork.Voucher.UpdateVoucherStatusAsync(voucher);
                 }
                 await _unitOfWork.SaveChangeAsync();
 
-                _logger.LogInformation($"{updatedVouchers.Count} vouchers have been disabled.");
-                return true;
+                _logger.LogInformation($"{expiredVouchers.Count} vouchers have been disabled.");
             }
 
-            _logger.LogInformation("No vouchers were disabled.");
-            return false;
+            return expiredVouchers; // Trả về danh sách voucher hết hạn hoặc hết số lượng
         }
 
 
-        public async Task CheckAndDisableVouchersAsync()
-        {
-            await DisableExpiredOrDepletedVouchersAsync();
-        }
+
+
+
+
+
+
 
 
 

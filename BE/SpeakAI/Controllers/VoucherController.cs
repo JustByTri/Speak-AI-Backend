@@ -64,16 +64,7 @@ namespace API.Controllers
             return Ok(vouchers);
         }
 
-        // ✅ API để kiểm tra và vô hiệu hóa voucher thủ công
-        [HttpGet("check-and-disable")]
-        public async Task<IActionResult> CheckAndDisableVouchers()
-        {
-            _logger.LogInformation("API request received to check and disable vouchers.");
 
-            await _voucherService.CheckAndDisableVouchersAsync();
-
-            return Ok(new { message = "Voucher check completed." });
-        }
 
         [HttpPost]
         public async Task<IActionResult> AddVoucher([FromBody] VoucherDTO voucherDTO)
@@ -117,6 +108,25 @@ namespace API.Controllers
             return Ok(new { message = "Voucher deleted successfully" });
         }
 
+        // ✅ API để kiểm tra và vô hiệu hóa voucher thủ công
+        [HttpGet("check-and-disable")]
+        public async Task<IActionResult> CheckAndDisableVouchers()
+        {
+            _logger.LogInformation("API request received to check and disable vouchers.");
+
+            var disabledVouchers = await _voucherService.CheckAndDisableVouchersAsync();
+
+            if (!disabledVouchers.Any())
+            {
+                return Ok(new { message = "No vouchers were disabled." });
+            }
+
+            return Ok(new
+            {
+                message = $"{disabledVouchers.Count} vouchers have been disabled.",
+                disabledVouchers
+            });
+        }
 
 
 

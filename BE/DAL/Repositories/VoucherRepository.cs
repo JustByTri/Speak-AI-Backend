@@ -19,7 +19,6 @@ namespace DAL.Repositories
             _context = speakAIContext;
         }
 
-
         public async Task<Voucher> GetVoucherByCode(string voucherCode)
         {
             return await _dbSet.FirstOrDefaultAsync(v => v.VoucherCode == voucherCode);
@@ -35,7 +34,6 @@ namespace DAL.Repositories
         {
             return await _dbSet.ToListAsync();
         }
-
 
         public async Task AddVoucherFromDTO(VoucherDTO voucherDTO)
         {
@@ -61,8 +59,6 @@ namespace DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-
-
         public async Task UpdateVoucher(Guid voucherId, UpdateVoucherDTO updateDTO)
         {
             if (updateDTO == null) throw new ArgumentNullException(nameof(updateDTO));
@@ -74,6 +70,7 @@ namespace DAL.Repositories
             existingVoucher.Description = updateDTO.Description;
             existingVoucher.DiscountPercentage = updateDTO.DiscountPercentage;
             existingVoucher.IsActive = updateDTO.IsActive;
+            existingVoucher.RemainingQuantity = updateDTO.RemainingQuantity;
 
             if (updateDTO.StartDate != default(DateTime))
             {
@@ -84,8 +81,6 @@ namespace DAL.Repositories
             {
                 existingVoucher.EndDate = updateDTO.EndDate;
             }
-
-            // ✅ Chỉ cập nhật Status nếu có giá trị hợp lệ
             existingVoucher.Status = updateDTO.Status;
 
             _dbSet.Update(existingVoucher);
