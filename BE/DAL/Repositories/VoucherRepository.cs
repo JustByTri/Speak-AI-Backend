@@ -50,50 +50,55 @@ namespace DAL.Repositories
                 IsActive = voucherDTO.IsActive,
                 StartDate = voucherDTO.StartDate,
                 EndDate = voucherDTO.EndDate,
-
-                //  Gán RemainingQuantity từ DTO (đây là phần bị thiếu)
                 RemainingQuantity = voucherDTO.RemainingQuantity,
-
-                // Giá trị mặc định
                 DiscountAmount = 0,
                 MinPurchaseAmount = 0,
                 VoucherType = "Discount",
-                Status = "Active" // Gán giá trị mặc định cho Status
+                Status = voucherDTO.Status,
             };
 
             await _dbSet.AddAsync(voucher);
-            await _context.SaveChangesAsync(); // Lưu vào DB
+            await _context.SaveChangesAsync();
         }
 
 
-        // Cập nhật voucher từ DTO
-        public async Task UpdateVoucherFromDTO(Guid voucherId, VoucherDTO voucherDTO)
+
+        public async Task UpdateVoucher(Guid voucherId, UpdateVoucherDTO updateDTO)
         {
-            if (voucherDTO == null) throw new ArgumentNullException(nameof(voucherDTO));
+            if (updateDTO == null) throw new ArgumentNullException(nameof(updateDTO));
 
             var existingVoucher = await _dbSet.FindAsync(voucherId);
             if (existingVoucher == null) throw new KeyNotFoundException("Voucher không tồn tại");
 
-            // Cập nhật dữ liệu
-            existingVoucher.Description = voucherDTO.Description;
-            existingVoucher.DiscountPercentage = voucherDTO.DiscountPercentage ?? existingVoucher.DiscountPercentage;
-            existingVoucher.IsActive = voucherDTO.IsActive;
-            existingVoucher.StartDate = voucherDTO.StartDate;
-            existingVoucher.EndDate = voucherDTO.EndDate;
-            existingVoucher.Status = existingVoucher.Status ?? "Active"; // Đảm bảo Status có giá trị hợp lệ
+            existingVoucher.VoucherCode = updateDTO.VoucherCode;
+            existingVoucher.Description = updateDTO.Description;
+            existingVoucher.DiscountPercentage = updateDTO.DiscountPercentage;
+            existingVoucher.IsActive = updateDTO.IsActive;
+
+            if (updateDTO.StartDate != default(DateTime))
+            {
+                existingVoucher.StartDate = updateDTO.StartDate;
+            }
+
+            if (updateDTO.EndDate != default(DateTime))
+            {
+                existingVoucher.EndDate = updateDTO.EndDate;
+            }
+
+            // ✅ Chỉ cập nhật Status nếu có giá trị hợp lệ
+            existingVoucher.Status = updateDTO.Status;
 
             _dbSet.Update(existingVoucher);
-            await _context.SaveChangesAsync(); // Lưu vào DB
+            await _context.SaveChangesAsync();
         }
 
-        // Xóa voucher
         public async Task RemoveVoucher(Guid voucherId)
         {
             var voucher = await _dbSet.FindAsync(voucherId);
             if (voucher != null)
             {
                 _dbSet.Remove(voucher);
-                await _context.SaveChangesAsync(); // Lưu vào DB
+                await _context.SaveChangesAsync();
             }
         }
 

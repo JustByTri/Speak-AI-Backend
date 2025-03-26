@@ -12,18 +12,19 @@ public class Voucher
     public bool IsActive { get; set; }
     public decimal MinPurchaseAmount { get; set; }
     public string VoucherType { get; set; }
-    
+
     public User User { get; set; }
-    public Guid? UserId { get; set; }   
-    public string Status { get; set; } = "Active";
+    public Guid? UserId { get; set; }
+    //public string Status { get; set; } = "Active";
+    public bool Status { get; set; }
 
 
     public int RemainingQuantity { get; set; }
 
-    
 
 
-    
+
+
     public bool IsVoucherValid(decimal purchaseAmount, DateTime currentDate)
     {
         bool isValid = IsActive &&

@@ -13,7 +13,7 @@ namespace DAL.IRepositories
 
         Task<List<Voucher>> GetAllVouchers();
         Task AddVoucherFromDTO(VoucherDTO voucherDTO);
-        Task UpdateVoucherFromDTO(Guid voucherId, VoucherDTO voucherDTO);
+        Task UpdateVoucher(Guid voucherId, UpdateVoucherDTO updateDTO);
 
         Task RemoveVoucher(Guid voucherId);
 
