@@ -43,21 +43,22 @@ namespace Api_InnerShop.Controllers
 
             var response = await _paymentService.CreatePaymentRequest(request, HttpContext);
 
-            if (!string.IsNullOrEmpty(response))
+            if (response == null)
             {
-                return Ok(new ResponseDTO(
-                    GeneralMessage.GetSuccess,
-                    StatusCodeEnum.Created,
-                    true,
-                    response
+                return StatusCode(500, new ResponseDTO(
+                    GeneralMessage.BadRequest,
+                    StatusCodeEnum.InteralServerError
                 ));
             }
 
-            return StatusCode(500, new ResponseDTO(
-                GeneralMessage.BadRequest,
-                StatusCodeEnum.InteralServerError
+            return StatusCode(response.StatusCode, new ResponseDTO(
+                response.Message,
+                (StatusCodeEnum)response.StatusCode,
+                response.IsSuccess,
+                response.Result
             ));
         }
+
 
         [HttpPost("handle-response")]
         public async Task<IActionResult> HandleResponse([FromBody] PaymentResponseDTO responseInfo)

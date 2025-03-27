@@ -98,6 +98,7 @@ namespace BLL.Services
 
             var vouchers = await _unitOfWork.Voucher.GetAllVouchers();
             var now = DateTime.UtcNow.AddHours(7);
+            _logger.LogInformation($"Current system time (UTC+7): {now}");
 
             var expiredVouchers = new List<Voucher>();
 

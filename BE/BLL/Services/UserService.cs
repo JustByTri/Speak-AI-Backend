@@ -35,11 +35,7 @@ namespace BLL.Services
             _validationHandle = validationHandle;
             _emailService = emailService;
 
-
-
         }
-
-
 
         /// <summary>
         /// Check validation for all inputted fields of sign up customer function
@@ -107,9 +103,6 @@ namespace BLL.Services
             }
 
 
-
-
-
             var checkNullEmail = _validationHandle.CheckNull(model.Email);
             if (!checkNullEmail)
             {
@@ -152,13 +145,6 @@ namespace BLL.Services
                 return response;
             }
 
-
-
-
-
-
-
-
             var successfulResponse = new ResponseDTO("Check Validation Successfully", StatusCodeEnum.OK, true);
             return successfulResponse;
         }
@@ -173,8 +159,6 @@ namespace BLL.Services
             var result = false;
             var saltBytes = GenerateSalt();
             var passwordHashedBytes = GenerateHashedPassword(model.Password, saltBytes);
-
-
             var checkBirthDay = DateTime.TryParse(model.Birthday, out DateTime birthday);
             if (checkBirthDay)
             {
@@ -209,9 +193,6 @@ namespace BLL.Services
                     UserId = newuser.Id
 
                 };
-
-
-
                 await _unitofWork.User.AddAsync(newuser);
                 await _unitofWork.UserLevel.AddAsync(userLevell);
                 result = await _unitofWork.SaveChangeAsync();
@@ -450,7 +431,6 @@ namespace BLL.Services
 
         }
 
-
         /// <summary>
         /// Parse UserId from string to Guid
         /// </summary>
@@ -574,9 +554,6 @@ namespace BLL.Services
             return false;
         }
 
-
-
-
         /// <summary>
         /// view profile 
         /// </summary>
@@ -589,8 +566,6 @@ namespace BLL.Services
 
                 .FirstOrDefault();
 
-
-
             var viewProfileDto = new ViewProfileDTO
             {
                 UserName = user.Username,
@@ -599,9 +574,6 @@ namespace BLL.Services
                 Email = user.Email,
                 BirthDay = user.Birthday.ToString("yyyy-MM-dd"),
                 Gender = user.Gender
-
-
-
             };
 
             return viewProfileDto;
@@ -641,8 +613,6 @@ namespace BLL.Services
                 isChanged = true;
             }
 
-
-
             if (userDto.Email != user.Email)
             {
                 user.Email = userDto.Email;
@@ -663,9 +633,6 @@ namespace BLL.Services
                 user.PasswordHash = passwordHashedBytes;
                 isChanged = true;
             }
-
-
-
 
             if (isChanged)
             {
@@ -850,8 +817,6 @@ namespace BLL.Services
                 LevelName = userlevel?.LevelName ?? "0",
                 Point = userlevel?.Point ?? 0
 
-
-
             };
 
             return userResponseDTO;
@@ -906,9 +871,6 @@ namespace BLL.Services
 
             return true;
         }
-
-
-
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

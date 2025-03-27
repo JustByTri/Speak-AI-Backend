@@ -14,7 +14,7 @@ namespace Service.IService
         /// <param name="paymentInfo"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        Task<string> CreatePaymentRequest(PaymentRequestDTO paymentInfo, HttpContext context);
+        Task<PaymentResponseDTO> CreatePaymentRequest(PaymentRequestDTO paymentInfo, HttpContext context);
 
         /// <summary>
         /// Handle payment response from payment method

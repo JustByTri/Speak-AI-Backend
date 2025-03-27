@@ -108,7 +108,7 @@ namespace API.Controllers
             return Ok(new { message = "Voucher deleted successfully" });
         }
 
-        // ✅ API để kiểm tra và vô hiệu hóa voucher thủ công
+
         [HttpGet("check-and-disable")]
         public async Task<IActionResult> CheckAndDisableVouchers()
         {
