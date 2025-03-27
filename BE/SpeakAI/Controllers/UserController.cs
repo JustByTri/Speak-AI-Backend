@@ -57,7 +57,7 @@ namespace Api_InnerShop.Controllers
 
 
         [HttpPut("ban/{userId}")]
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> BanUser(Guid userId, [FromQuery] bool isBan)
         {
             var result = await _userService.BanUserAsync(userId, isBan);

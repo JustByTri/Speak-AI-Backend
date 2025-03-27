@@ -888,13 +888,19 @@ namespace BLL.Services
             if (!string.IsNullOrEmpty(updateUserProfileDto.Gender))
                 user.Gender = updateUserProfileDto.Gender;
 
+
             if (!string.IsNullOrEmpty(updateUserProfileDto.NewPassword))
             {
+                if (string.IsNullOrEmpty(updateUserProfileDto.ConfirmPassword) ||
+                    updateUserProfileDto.NewPassword != updateUserProfileDto.ConfirmPassword)
+                {
+                    throw new Exception("New password and confirm password do not match.");
+                }
+
                 CreatePasswordHash(updateUserProfileDto.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
             }
-
             _unitofWork.User.UpdateAsync(user);
             await _unitofWork.SaveChangeAsync();
 
@@ -908,7 +914,7 @@ namespace BLL.Services
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
-                passwordSalt = hmac.Key; // ✅ Tạo salt ngẫu nhiên
+                passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }

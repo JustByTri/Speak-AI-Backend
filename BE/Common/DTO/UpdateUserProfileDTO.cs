@@ -19,5 +19,7 @@ namespace Common.DTO
         public string Gender { get; set; }
 
         public string? NewPassword { get; set; }
+
+        public string? ConfirmPassword { get; set; }
     }
 }
