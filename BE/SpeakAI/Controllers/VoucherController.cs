@@ -110,23 +110,30 @@ namespace API.Controllers
 
 
         [HttpGet("check-and-disable")]
-        public async Task<IActionResult> CheckAndDisableVouchers()
+        public async Task<IActionResult> CheckAndDisable()
         {
-            _logger.LogInformation("API request received to check and disable vouchers.");
+            var expiredVouchers = await _voucherService.CheckAndDisableVouchersAsync();
 
-            var disabledVouchers = await _voucherService.CheckAndDisableVouchersAsync();
-
-            if (!disabledVouchers.Any())
+            if (!expiredVouchers.Any())
             {
-                return Ok(new { message = "No vouchers were disabled." });
+                return Ok(new
+                {
+                    message = "No vouchers were disabled."
+                });
             }
 
             return Ok(new
             {
-                message = $"{disabledVouchers.Count} vouchers have been disabled.",
-                disabledVouchers
+                message = "Expired vouchers have been disabled.",
+                disabledVouchers = expiredVouchers.Select(v => new
+                {
+                    v.VoucherCode,
+                    v.EndDate,
+                    v.RemainingQuantity
+                })
             });
         }
+
 
 
 
