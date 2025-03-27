@@ -48,10 +48,24 @@ namespace BLL.Services
             return await _unitOfWork.Voucher.GetVoucherByCode(voucherCode);
         }
 
-        public async Task<List<Voucher>> GetAllVouchers()
+        public async Task<List<VoucherResponseDTO>> GetAllVouchers()
         {
-            return await _unitOfWork.Voucher.GetAllVouchers();
+            var vouchers = await _unitOfWork.Voucher.GetAllVouchers();
+
+            return vouchers.Select(v => new VoucherResponseDTO
+            {
+                VoucherId = v.VoucherId,
+                VoucherCode = v.VoucherCode,
+                Description = v.Description,
+                DiscountPercentage = (decimal?)v.DiscountPercentage,
+                IsActive = v.IsActive,
+                StartDate = v.StartDate,
+                EndDate = v.EndDate,
+                Status = v.Status,
+                RemainingQuantity = v.RemainingQuantity
+            }).ToList();
         }
+
 
         public async Task<Voucher> AddVoucherFromDTO(VoucherDTO voucherDTO)
         {
@@ -91,7 +105,7 @@ namespace BLL.Services
             {
                 if (voucher.EndDate <= now || voucher.RemainingQuantity <= 0)
                 {
-                    if (voucher.IsActive) // Chỉ cập nhật nếu voucher đang hoạt động
+                    if (voucher.IsActive)
                     {
                         voucher.IsActive = false;
                         voucher.Status = false;
@@ -111,7 +125,7 @@ namespace BLL.Services
                 _logger.LogInformation($"{expiredVouchers.Count} vouchers have been disabled.");
             }
 
-            return expiredVouchers; // Trả về danh sách voucher hết hạn hoặc hết số lượng
+            return expiredVouchers;
         }
 
 

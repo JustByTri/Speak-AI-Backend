@@ -21,25 +21,25 @@ namespace BLL.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitofWork;
-    
+
         private readonly IValidationHandleService _validationHandle;
         private readonly IEmailService _emailService;
-     
+
         public UserService(IUnitOfWork unitOfWork,
-           
+
             IValidationHandleService validationHandle,
             IEmailService emailService)
         {
             _unitofWork = unitOfWork;
-           
+
             _validationHandle = validationHandle;
             _emailService = emailService;
-          
 
-           
+
+
         }
 
-  
+
 
         /// <summary>
         /// Check validation for all inputted fields of sign up customer function
@@ -106,9 +106,9 @@ namespace BLL.Services
                 return response;
             }
 
-          
 
-         
+
+
 
             var checkNullEmail = _validationHandle.CheckNull(model.Email);
             if (!checkNullEmail)
@@ -153,11 +153,11 @@ namespace BLL.Services
             }
 
 
-         
 
-       
 
-           
+
+
+
 
             var successfulResponse = new ResponseDTO("Check Validation Successfully", StatusCodeEnum.OK, true);
             return successfulResponse;
@@ -173,7 +173,7 @@ namespace BLL.Services
             var result = false;
             var saltBytes = GenerateSalt();
             var passwordHashedBytes = GenerateHashedPassword(model.Password, saltBytes);
-        
+
 
             var checkBirthDay = DateTime.TryParse(model.Birthday, out DateTime birthday);
             if (checkBirthDay)
@@ -181,7 +181,7 @@ namespace BLL.Services
                 var userLevel = Guid.NewGuid();
                 var newuser = new User
                 {
-                    Id = userLevel, 
+                    Id = userLevel,
                     Username = model.UserName,
                     PasswordSalt = saltBytes,
                     PasswordHash = passwordHashedBytes,
@@ -197,17 +197,17 @@ namespace BLL.Services
                     Otp = null,
                     OtpExpiredTime = null,
                     IsLocked = false
-                
+
                 };
                 var userLevell = new UserLevel
                 {
 
-                    Point = 0, 
-                    LevelName = "A0,A1", 
+                    Point = 0,
+                    LevelName = "A0,A1",
 
                     LevelId = 1,
                     UserId = newuser.Id
-                
+
                 };
 
 
@@ -216,7 +216,7 @@ namespace BLL.Services
                 await _unitofWork.UserLevel.AddAsync(userLevell);
                 result = await _unitofWork.SaveChangeAsync();
                 _emailService.SendWelcomeEmail(model.Email, model.UserName, EmailSubject.WelcomeEmailSubject);
-              
+
                 return result;
             }
             return result;
@@ -574,9 +574,9 @@ namespace BLL.Services
             return false;
         }
 
-        
 
-       
+
+
         /// <summary>
         /// view profile 
         /// </summary>
@@ -586,7 +586,7 @@ namespace BLL.Services
         {
             var user = _unitofWork.User.FindAll(u => u.Id == userId)
                 .Include(u => u.IsAdmin)
-              
+
                 .FirstOrDefault();
 
 
@@ -595,13 +595,13 @@ namespace BLL.Services
             {
                 UserName = user.Username,
                 FullName = user.FullName,
-            
+
                 Email = user.Email,
                 BirthDay = user.Birthday.ToString("yyyy-MM-dd"),
                 Gender = user.Gender
-               
-       
-              
+
+
+
             };
 
             return viewProfileDto;
@@ -641,7 +641,7 @@ namespace BLL.Services
                 isChanged = true;
             }
 
-          
+
 
             if (userDto.Email != user.Email)
             {
@@ -665,7 +665,7 @@ namespace BLL.Services
             }
 
 
-          
+
 
             if (isChanged)
             {
@@ -769,7 +769,7 @@ namespace BLL.Services
                 return response;
             }
 
-          
+
 
             var checkNullEmail = _validationHandle.CheckNull(userDto.Email);
             if (!checkNullEmail)
@@ -814,7 +814,7 @@ namespace BLL.Services
                 return response;
             }
 
-          
+
             var successfulResponse = new ResponseDTO("Check Validation Successfully", StatusCodeEnum.OK, true);
             return successfulResponse;
         }
@@ -835,7 +835,7 @@ namespace BLL.Services
                 return null;
             }
             var userlevel = await _unitofWork.UserLevel.FindAll(u => u.Id == userId).FirstOrDefaultAsync();
-         
+
             var userResponseDTO = new UserResponseDTO
             {
                 UserId = user.Id,
@@ -847,7 +847,7 @@ namespace BLL.Services
                 IsPremium = user.IsPremium,
                 PremiumExpiredTime = user.PremiumExpiredTime,
                 IsVerified = user.IsVerified,
-                LevelName = userlevel?.LevelName ?? "0", 
+                LevelName = userlevel?.LevelName ?? "0",
                 Point = userlevel?.Point ?? 0
 
 
@@ -866,5 +866,54 @@ namespace BLL.Services
             await _unitofWork.User.UpdateAsync(user);
             await _unitofWork.SaveChangeAsync();
         }
+
+
+        public async Task<bool> UpdateUserProfileAsync(Guid userId, UpdateUserProfileDTO updateUserProfileDto)
+        {
+            var user = await _unitofWork.User.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(updateUserProfileDto.FullName))
+                user.FullName = updateUserProfileDto.FullName;
+
+            if (!string.IsNullOrEmpty(updateUserProfileDto.Email))
+                user.Email = updateUserProfileDto.Email;
+
+            if (updateUserProfileDto.Birthday.HasValue)
+                user.Birthday = updateUserProfileDto.Birthday.Value;
+
+            if (!string.IsNullOrEmpty(updateUserProfileDto.Gender))
+                user.Gender = updateUserProfileDto.Gender;
+
+            _unitofWork.User.UpdateAsync(user);
+            await _unitofWork.SaveChangeAsync();
+
+            return true;
+        }
+
+
+        public async Task<bool> BanUserAsync(Guid userId, bool isBan)
+        {
+            var user = await _unitofWork.User.GetByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            user.IsLocked = isBan; // Nếu isBan = true -> khóa, false -> mở khóa
+            _unitofWork.User.UpdateAsync(user);
+            await _unitofWork.SaveChangeAsync();
+
+            return true;
+        }
+
+
+
+
+
+
+
+
     }
 }

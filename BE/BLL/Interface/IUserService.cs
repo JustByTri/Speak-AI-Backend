@@ -9,7 +9,7 @@ namespace BLL.Interface
 {
     public interface IUserService
     {
-      
+
         ResponseDTO CheckValidationSignUpCustomer(SignUpCustomerDTOResquest model);
         ResponseDTO CheckValidationForgotPassword(ForgotPasswordModelDTO model);
         ResponseDTO ResetPassword(ForgotPasswordModelDTO model);
@@ -18,7 +18,7 @@ namespace BLL.Interface
         byte[] GenerateSalt();
         byte[] GenerateHashedPassword(string password, byte[] saltBytes);
         User CheckUserExist(string email);
-     
+
         Guid ParseUserIdToGuid(string userId);
         User? GetUserByUserID(Guid userID);
         bool VerifyUser(Guid userId);
@@ -27,15 +27,18 @@ namespace BLL.Interface
         bool CheckOTPExpired(Guid userId);
         bool SetOtp(OtpCodeDTO otpDto, Guid parseUserId);
         bool CheckOTP(Guid parseUserId, string otpCode);
- 
- 
+
+
         ViewProfileDTO ViewProfile(Guid userId);
         ResponseDTO EditProfile(ProfileDTO userDto);
         ResponseDTO CheckValidationEditProfile(ProfileDTO userDto);
-      
-  
+
+
         Task<UserResponseDTO?> GetUserResponseDtoByUserId(Guid userId);
         Task<User> GetUserById(Guid userId);
         Task UpdateUser(User user);
+        Task<bool> UpdateUserProfileAsync(Guid userId, UpdateUserProfileDTO updateUserProfileDto);
+
+        Task<bool> BanUserAsync(Guid userId, bool isBan);
     }
 }

@@ -58,7 +58,7 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<Voucher>>> GetAllVouchers()
+        public async Task<ActionResult<List<VoucherResponseDTO>>> GetAllVouchers()
         {
             var vouchers = await _voucherService.GetAllVouchers();
             return Ok(vouchers);
