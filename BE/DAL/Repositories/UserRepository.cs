@@ -1,6 +1,7 @@
 ﻿using DAL.Data;
 using DAL.Entities;
 using DAL.IRepositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,18 @@ namespace DAL.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(SpeakAIContext speakAIContext) : base(speakAIContext) { }
+        private readonly SpeakAIContext _context;
+
+        public UserRepository(SpeakAIContext speakAIContext) : base(speakAIContext)
+        {
+            _context = speakAIContext;
+        }
+
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
     }
 }
 

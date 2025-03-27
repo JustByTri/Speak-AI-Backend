@@ -40,5 +40,7 @@ namespace BLL.Interface
         Task<bool> UpdateUserProfileAsync(Guid userId, UpdateUserProfileDTO updateUserProfileDto);
 
         Task<bool> BanUserAsync(Guid userId, bool isBan);
+
+        Task<IEnumerable<UserResponseDTO>> GetAllUsersAsync();
     }
 }

@@ -9,5 +9,7 @@ namespace DAL.IRepositories
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        Task<IEnumerable<User>> GetAllAsync();
+
     }
 }

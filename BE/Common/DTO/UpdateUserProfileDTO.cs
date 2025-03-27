@@ -17,5 +17,7 @@ namespace Common.DTO
         public DateTime? Birthday { get; set; }
 
         public string Gender { get; set; }
+
+        public string? NewPassword { get; set; }
     }
 }

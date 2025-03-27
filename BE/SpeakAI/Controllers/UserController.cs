@@ -70,6 +70,23 @@ namespace Api_InnerShop.Controllers
             return Ok(new ResponseDTO(message, StatusCodeEnum.OK, true, null));
         }
 
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        [HttpGet]
+        [SwaggerOperation(Summary = "Get all users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            if (users == null || !users.Any())
+            {
+                return NotFound(new ResponseDTO("No users found", StatusCodeEnum.NotFound, false, null));
+            }
+
+            return Ok(new ResponseDTO("Users retrieved successfully", StatusCodeEnum.OK, true, users));
+        }
+
+
 
     }
 }

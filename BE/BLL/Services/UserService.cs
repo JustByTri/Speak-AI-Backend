@@ -888,12 +888,30 @@ namespace BLL.Services
             if (!string.IsNullOrEmpty(updateUserProfileDto.Gender))
                 user.Gender = updateUserProfileDto.Gender;
 
+            if (!string.IsNullOrEmpty(updateUserProfileDto.NewPassword))
+            {
+                CreatePasswordHash(updateUserProfileDto.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+            }
+
             _unitofWork.User.UpdateAsync(user);
             await _unitofWork.SaveChangeAsync();
 
             return true;
         }
 
+
+
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key; // ✅ Tạo salt ngẫu nhiên
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            }
+        }
 
         public async Task<bool> BanUserAsync(Guid userId, bool isBan)
         {
@@ -907,6 +925,22 @@ namespace BLL.Services
 
             return true;
         }
+
+        public async Task<IEnumerable<UserResponseDTO>> GetAllUsersAsync()
+        {
+            var users = await _unitofWork.User.GetAllAsync();
+
+            return users.Select(user => new UserResponseDTO
+            {
+                UserId = user.Id,
+                UserName = user.Username,
+                FullName = user.FullName,
+                Email = user.Email,
+                Birthday = user.Birthday,
+                Gender = user.Gender
+            }).ToList();
+        }
+
 
 
 
