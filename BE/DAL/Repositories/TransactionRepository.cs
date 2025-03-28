@@ -34,7 +34,8 @@ namespace DAL.GenericRepository.Repository
           TransactionDate = t.TransactionDate,
           Status = t.Status,
           OrderId = t.OrderId,
-          UserId = t.UserId
+          UserId = t.UserId,
+          Amount = t.Amount,
       });
 
             if (parameters.Status != null)

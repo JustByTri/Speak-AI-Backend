@@ -43,7 +43,7 @@ namespace SpeakAI
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IAIService, AIService>();
+            builder.Services.AddSingleton<IAIService, AIService>();
             builder.Services.AddScoped<IPremiumSubscriptionService, PremiumSubscriptionService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
