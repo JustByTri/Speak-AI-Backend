@@ -50,7 +50,7 @@ namespace BLL.Service
                 OrderId = t.OrderId,
                 Amount =t.Amount,
                 Status = t.Status,
-                Email = t.Email
+            
             }).ToList();
 
             var mappedResponse = new PaginationResponseDTO<TransactionDTO>
@@ -91,7 +91,7 @@ namespace BLL.Service
                 PaymentMethod = t.PaymentMethod,
                 TransactionInfo = t.TransactionType,
                 TransactionDate = t.TransactionDate,
-                Amount = (double)t.Amount,
+                Amount = t.Amount,
                 Status = t.Status,
                 Email = t.User?.Email ?? string.Empty,
             }).ToList();

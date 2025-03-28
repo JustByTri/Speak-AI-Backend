@@ -6,6 +6,7 @@ using BLL.Interface;
 using Common.DTO;
 using DAL.Entities;
 using DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services
@@ -21,10 +22,26 @@ namespace BLL.Services
             _logger = logger;
         }
 
-        public async Task<Voucher> GetVoucherById(Guid voucherId)
+        public async Task<VoucherResponseDTO> GetVoucherById(Guid voucherId)
         {
-            return await _unitOfWork.Voucher.GetVoucherById(voucherId);
+            var voucher = await _unitOfWork.Voucher.GetVoucherById(voucherId);
+
+            if (voucher == null) return null;
+
+            return new VoucherResponseDTO
+            {
+                VoucherId = voucher.VoucherId,
+                VoucherCode = voucher.VoucherCode,
+                Description = voucher.Description,
+                DiscountPercentage = (decimal?)voucher.DiscountPercentage,
+                IsActive = voucher.IsActive,
+                StartDate = voucher.StartDate,
+                EndDate = voucher.EndDate,
+                Status = voucher.Status,
+                RemainingQuantity = voucher.RemainingQuantity
+            };
         }
+
 
         public async Task<Voucher> GetVoucherByCode(string voucherCode)
         {
@@ -43,11 +60,17 @@ namespace BLL.Services
             return await _unitOfWork.Voucher.GetVoucherByCode(voucherDTO.VoucherCode);
         }
 
-        public async Task UpdateVoucherFromDTO(Guid voucherId, VoucherDTO voucherDTO)
+        public async Task UpdateVoucherFromDTO(Guid voucherId, UpdateVoucherDTO updateDTO)
         {
-            await _unitOfWork.Voucher.UpdateVoucherFromDTO(voucherId, voucherDTO);
+            if (updateDTO == null) throw new ArgumentNullException(nameof(updateDTO));
+
+            await _unitOfWork.Voucher.UpdateVoucher(voucherId, updateDTO);
             await _unitOfWork.SaveChangeAsync();
         }
+
+
+
+
 
         public async Task RemoveVoucher(Guid voucherId)
         {
@@ -91,7 +114,7 @@ namespace BLL.Services
             return false;
         }
 
-        
+
         public async Task CheckAndDisableVouchersAsync()
         {
             await DisableExpiredOrDepletedVouchersAsync();

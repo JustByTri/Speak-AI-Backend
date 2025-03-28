@@ -21,19 +21,42 @@ namespace API.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // Lấy voucher theo mã
+        [HttpGet("id/{voucherId}")]
+        public async Task<IActionResult> GetVoucherById(Guid voucherId)
+        {
+            var voucher = await _voucherService.GetVoucherById(voucherId);
+            if (voucher == null)
+                return NotFound("Voucher không tồn tại.");
+            return Ok(voucher);
+        }
+
+
         [HttpGet("{voucherCode}")]
-        public async Task<ActionResult<Voucher>> GetVoucherByCode(string voucherCode)
+        public async Task<ActionResult<VoucherResponseDTO>> GetVoucherByCode(string voucherCode)
         {
             var voucher = await _voucherService.GetVoucherByCode(voucherCode);
             if (voucher == null)
             {
                 return NotFound();
             }
-            return Ok(voucher);
+
+            var response = new VoucherResponseDTO
+            {
+                VoucherId = voucher.VoucherId,
+                VoucherCode = voucher.VoucherCode,
+                Description = voucher.Description,
+                DiscountPercentage = (decimal?)voucher.DiscountPercentage,
+                IsActive = voucher.IsActive,
+                StartDate = voucher.StartDate,
+                EndDate = voucher.EndDate,
+                Status = voucher.Status,
+                RemainingQuantity = voucher.RemainingQuantity
+            };
+
+            return Ok(response);
         }
 
-        // Lấy tất cả vouchers
+
         [HttpGet]
         public async Task<ActionResult<List<Voucher>>> GetAllVouchers()
         {
@@ -52,51 +75,50 @@ namespace API.Controllers
             return Ok(new { message = "Voucher check completed." });
         }
 
-
-        // Thêm voucher từ DTO
         [HttpPost]
         public async Task<IActionResult> AddVoucher([FromBody] VoucherDTO voucherDTO)
         {
             if (voucherDTO == null)
-                return BadRequest("Dữ liệu không hợp lệ.");
+            {
+                return BadRequest("Voucher data is required.");
+            }
 
-            var newVoucher = await _voucherService.AddVoucherFromDTO(voucherDTO);
-            return CreatedAtAction(nameof(GetVoucherByCode), new { voucherCode = newVoucher.VoucherCode }, newVoucher);
-        }
-
-        // Lấy voucher theo VoucherId
-        [HttpGet("id/{voucherId}")]
-        public async Task<IActionResult> GetVoucherById(Guid voucherId)
-        {
-            var voucher = await _voucherService.GetVoucherById(voucherId);
-            if (voucher == null)
-                return NotFound("Voucher không tồn tại.");
-            return Ok(voucher);
+            await _voucherService.AddVoucherFromDTO(voucherDTO);
+            return CreatedAtAction(nameof(GetVoucherByCode), new { voucherCode = voucherDTO.VoucherCode }, voucherDTO);
         }
 
 
 
 
-        // Cập nhật voucher từ DTO
         [HttpPut("{voucherId}")]
-        public async Task<IActionResult> UpdateVoucher(Guid voucherId, [FromBody] VoucherDTO voucherDTO)
+        public async Task<IActionResult> UpdateVoucher(Guid voucherId, [FromBody] UpdateVoucherDTO updateDTO)
         {
-            if (voucherDTO == null)
+            if (updateDTO == null)
                 return BadRequest("Dữ liệu không hợp lệ.");
 
-            await _voucherService.UpdateVoucherFromDTO(voucherId, voucherDTO);
-            return NoContent(); // HTTP 204
+            await _voucherService.UpdateVoucherFromDTO(voucherId, updateDTO);
+
+            var updatedVoucher = await _voucherService.GetVoucherById(voucherId);
+            return Ok(updatedVoucher);
         }
 
-        // Xóa voucher
+
         [HttpDelete("{voucherId}")]
         public async Task<ActionResult> RemoveVoucher(Guid voucherId)
         {
+            var voucher = await _voucherService.GetVoucherById(voucherId);
+            if (voucher == null)
+            {
+                return NotFound(new { message = "Voucher not found" });
+            }
+
             await _voucherService.RemoveVoucher(voucherId);
-            return NoContent();
+
+            return Ok(new { message = "Voucher deleted successfully" });
         }
 
-    
+
+
 
     }
 }
