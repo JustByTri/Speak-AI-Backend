@@ -11,7 +11,7 @@ namespace DAL.Entities
     public class RefreshToken : BaseEntity
     {
        
-        public string JwtId { get; set; }
+        public string JwtId { get; set; } =  string.Empty;
         public string Refresh_Token { get; set; }
         public bool IsValid { get; set; }
         public DateTime ExpiredAt { get; set; }

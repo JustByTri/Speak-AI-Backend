@@ -33,8 +33,8 @@ namespace BLL.Services
                 [3] = new TopicTemplateDTO { InitialPrompt = "Tech innovations", FollowUpQuestions = new List<string>(), CharacterRole = "tech enthusiast" },
                 [4] = new TopicTemplateDTO { InitialPrompt = "Career development", FollowUpQuestions = new List<string>(), CharacterRole = "career coach" }
             };
-            string openAIEndpoint = "https://thinh-m7sehog5-eastus2.cognitiveservices.azure.com/";
-            string openAIApiKey = "4aWPGteXTHDJ6FPTzIFhzxaQWEmnSrhelCn5YziXfbzV0RIQe2IwJQQJ99BCACHYHv6XJ3w3AAAAACOGXj5W";
+            string openAIEndpoint = "w";
+            string openAIApiKey = "";
             _openAIClient = new AzureOpenAIClient(new Uri(openAIEndpoint), new AzureKeyCredential(openAIApiKey));
         }
         public async Task<ConversationResponseDTO> ProcessConversationAsync(string userMessage)
@@ -290,7 +290,7 @@ Keep the scenario concise (1-2 sentences) and end with a question.
 
             var summaryPrompt = $@"
 You are an English language coach. Based on this conversation history:
-{GetLastExchange(_conversationHistory.Count / 2)}
+{GetLastExchange(_conversationHistory.Count )}
 
 Provide:
 1. A short summary of the conversation (1-2 sentences).
@@ -322,7 +322,7 @@ Keep each part concise and use casual, encouraging language.
                 var result = new ConversationResponseDTO
                 {
                     IsComplete = true,
-                    BotResponse = "Thanks for chatting! Here’s your summary and feedback:",
+                    BotResponse = "Thanks for chatting! Here’s your summary and feedback:" ,
                     CurrentTopic = _currentTopicId,
                     TurnsRemaining = 0,
                     Summary = parts.Length > 0 ? parts[0] : "We talked a bit!",
@@ -331,7 +331,6 @@ Keep each part concise and use casual, encouraging language.
                     Improvements = parts.Length > 3 ? parts[3] : "Keep practicing!"
                 };
 
-                // Reset conversation state
                 _conversationTurnCount = 0;
                 _conversationHistory.Clear();
 

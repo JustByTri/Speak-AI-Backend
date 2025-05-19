@@ -4,7 +4,7 @@ using DAL.Entities;
 using DTO.DTO;
 
 
-namespace BLL.IService
+namespace BLL.Interface
 {
     public interface ITransactionService
     {

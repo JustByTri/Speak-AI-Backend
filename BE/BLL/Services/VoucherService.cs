@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BLL.Interface;
 using Common.DTO;
 using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

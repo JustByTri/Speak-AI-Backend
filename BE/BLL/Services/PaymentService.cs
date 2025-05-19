@@ -1,15 +1,13 @@
 ﻿using BLL.Interface;
-using BLL.IService;
 using Common.Constant.Payment;
 using Common.DTO;
 using Common.DTO.Payment;
-using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Service.IService;
+using Service.Interface;
 
-namespace Service.Service
+namespace Service.Services
 {
     public class PaymentService : IPaymentService
     {

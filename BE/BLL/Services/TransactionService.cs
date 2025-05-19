@@ -1,18 +1,13 @@
-﻿
-using BLL.IService;
-using Common.DTO;
-using Common.DTO.Query;
-
-using Common;
-using DAL.UnitOfWork;
-using DAL.Entities;
-using Common.Query;
+﻿using BLL.Interface;
 using Common.Constant.Message;
-using DTO.DTO;
+using Common.DTO;
 using Common.Enum;
+using Common.Query;
+using DAL.UnitOfWorks;
+using DTO.DTO;
 
 
-namespace BLL.Service
+namespace BLL.Services
 {
     public class TransactionService : ITransactionService
     {
@@ -50,7 +45,7 @@ namespace BLL.Service
                 OrderId = t.OrderId,
                 Amount =t.Amount,
                 Status = t.Status,
-                Email = t.Email
+            
             }).ToList();
 
             var mappedResponse = new PaginationResponseDTO<TransactionDTO>
@@ -91,7 +86,7 @@ namespace BLL.Service
                 PaymentMethod = t.PaymentMethod,
                 TransactionInfo = t.TransactionType,
                 TransactionDate = t.TransactionDate,
-                Amount = (double)t.Amount,
+                Amount = t.Amount,
                 Status = t.Status,
                 Email = t.User?.Email ?? string.Empty,
             }).ToList();

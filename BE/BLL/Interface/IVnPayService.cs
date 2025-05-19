@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Service.IService
+namespace Service.Interface
 {
     public interface IVnPayService
     {

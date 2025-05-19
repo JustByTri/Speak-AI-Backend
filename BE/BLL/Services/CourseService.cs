@@ -2,18 +2,11 @@
 using Common.DTO;
 using Common.Enum;
 using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using DTO.DTO;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BLL.Services
-{
+
     namespace BLL.Services
     {
         public class CourseService : ICourseService
@@ -730,6 +723,6 @@ namespace BLL.Services
             }
         }
     }
-}
+
        
     

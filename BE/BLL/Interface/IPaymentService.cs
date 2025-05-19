@@ -4,7 +4,7 @@ using Common.DTO.Payment;
 using DAL.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Service.IService
+namespace Service.Interface
 {
     public interface IPaymentService
     {

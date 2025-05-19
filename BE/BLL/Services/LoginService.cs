@@ -1,16 +1,12 @@
-﻿
-using Azure.Core;
-using BLL.Interface;
+﻿using BLL.Interface;
 using Common.DTO;
 using Common.Enum;
 using Common.Message.AuthMessage;
 using Common.Message.ValidationMessage;
 using DAL.Entities;
-
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using DTO.DTO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

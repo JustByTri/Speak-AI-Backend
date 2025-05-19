@@ -1,15 +1,12 @@
-﻿using Azure.Core;
-using BLL.Interface;
+﻿using BLL.Interface;
 using Common.Config;
-using Common.Constants;
 using Common.DTO;
 using Common.Enum;
 using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using DTO.DTO;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
-using System.Runtime;
 using System.Security.Claims;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
@@ -33,19 +30,25 @@ namespace BLL.Services
 
         public async Task<ResponseDTO> GoogleSignIn(GoogleAuthTokenDTO googleAuthToken)
         {
-
-
             Payload payload;
             try
             {
                 payload = await ValidateAsync(googleAuthToken.IdToken, new ValidationSettings
                 {
-                    Audience = new[] { _googleAuthConfig.ClientId }
+                    Audience = new[] { "1018910450198-m8sitc37vcjdg1qbe7d3cp00nca00840.apps.googleusercontent.com" },
+                    
                 });
+             
+            }
+            catch (InvalidJwtException ex)
+            {
+                Console.WriteLine($"JWT validation failed: {ex.Message}");
+                return new ResponseDTO("Failed to validate Google token.", StatusCodeEnum.BadRequest, false, ex.Message);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO("Failed to validate Google token.", StatusCodeEnum.BadRequest, false, ex.Message);
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+                return new ResponseDTO("Unexpected error during token validation.", StatusCodeEnum.InteralServerError, false, ex.Message);
             }
 
             var existingUser = await _unitOfWork.User.GetByEmailAsync(payload.Email);
@@ -54,26 +57,47 @@ namespace BLL.Services
                 return await GenerateTokensForUser(existingUser);
             }
 
-
             var newUser = new User
             {
                 Id = Guid.NewGuid(),
                 Username = $"{payload.GivenName} {payload.FamilyName}".Trim(),
+                FullName = payload.Name .Trim(),
+                Gender = "None",
+             IsLocked = false,
+             IsPremium = false,
                 PasswordHash = new byte[32],
                 PasswordSalt = new byte[32],
                 Email = payload.Email,
                 IsVerified = true,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Birthday = DateTime.UtcNow,
+                IsAdmin = false,
+                LastLogin= DateTime.UtcNow,
+                Status = true,
+                Otp = null,
+                OtpExpiredTime = null,
+                PremiumExpiredTime = null,
+                
+              
             };
+            var userLevell = new UserLevel
+            {
 
+                Point = 0,
+                LevelName = "A0,A1",
+
+                LevelId = 1,
+                UserId = newUser.Id
+
+            };
             await _unitOfWork.User.AddAsync(newUser);
+            await _unitOfWork.UserLevel.AddAsync(userLevell);
             await _unitOfWork.SaveChangeAsync();
-        
-                return await GenerateTokensForUser(newUser);
-            }
-            
 
-        
+            return await GenerateTokensForUser(newUser);
+        }
+
+
         private async Task<ResponseDTO> GenerateTokensForUser(User user)
         {
             // Generate tokens
@@ -81,7 +105,8 @@ namespace BLL.Services
             {
                 new Claim(JwtClaimTypes.UserId, user.Id.ToString()),
                 new Claim(JwtClaimTypes.Email, user.Email),
-                new Claim(JwtClaimTypes.Username, user.Username)
+                new Claim(JwtClaimTypes.Username, user.Username),
+            
             };
 
             var accessToken = _jwtProvider.GenerateAccessToken(claims);
