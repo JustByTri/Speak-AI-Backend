@@ -1,14 +1,7 @@
-﻿using Azure.Core;
-using BLL.Interface;
+﻿using BLL.Interface;
 using Common.DTO;
-using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Hubs
 {

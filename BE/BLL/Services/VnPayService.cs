@@ -1,19 +1,18 @@
-﻿using Common.DTO.Payment;
+﻿using Common.DTO;
+using Common.DTO.Payment;
+using DAL.Entities;
+using DAL.UnitOfWorks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Service.IService;
-using System.Net.Sockets;
+using Microsoft.Extensions.Logging;
+using Service.Interface;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
-using Common.DTO;
-using DAL.UnitOfWork;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 
-namespace Service.Service
+namespace Service.Services
 {
     public class VnPayService : IVnPayService
     {

@@ -1,7 +1,7 @@
 ﻿using BLL.Interface;
 using Common.Enum;
 using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using DTO.DTO;
 using Microsoft.EntityFrameworkCore;
 

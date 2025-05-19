@@ -3,15 +3,9 @@ using Common.DTO;
 using Common.DTO.Payment;
 using Common.Enum;
 using DAL.Data;
-using DAL.Entities;
 using DTO.DTO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Service.IService;
-using Service.Service;
-using System;
+using Service.Interface;
 
 namespace Api_InnerShop.Controllers
 {

@@ -7,7 +7,7 @@ using Common.Message.EmailMessage;
 using Common.Message.ValidationMessage;
 using Common.Template;
 using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using DTO.DTO;
 
 using Microsoft.AspNetCore.Http;

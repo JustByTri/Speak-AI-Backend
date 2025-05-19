@@ -1,15 +1,9 @@
 ﻿using BLL.Interface;
-using BLL.IService;
 using Common.Constant.Message;
-using Common.DTO;
-using Common.DTO.Query;
 using Common.Enum;
 using Common.Query;
 using DTO.DTO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service.IService;
 using System.ComponentModel.DataAnnotations;
 
 namespace SpeakAI.Controllers

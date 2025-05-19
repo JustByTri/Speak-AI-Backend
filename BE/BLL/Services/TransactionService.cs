@@ -1,18 +1,13 @@
-﻿
-using BLL.IService;
-using Common.DTO;
-using Common.DTO.Query;
-
-using Common;
-using DAL.UnitOfWork;
-using DAL.Entities;
-using Common.Query;
+﻿using BLL.Interface;
 using Common.Constant.Message;
-using DTO.DTO;
+using Common.DTO;
 using Common.Enum;
+using Common.Query;
+using DAL.UnitOfWorks;
+using DTO.DTO;
 
 
-namespace BLL.Service
+namespace BLL.Services
 {
     public class TransactionService : ITransactionService
     {

@@ -1,18 +1,12 @@
 ﻿using DAL.Data;
-using DAL.Entities;
 using DAL.GenericRepository.IRepository;
 using DAL.GenericRepository.Repository;
 using DAL.IRepositories;
 using DAL.Repositories;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 
-namespace DAL.UnitOfWork
+namespace DAL.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {

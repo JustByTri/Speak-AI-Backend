@@ -3,7 +3,7 @@ using Common.Config;
 using Common.DTO;
 using Common.Enum;
 using DAL.Entities;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using DTO.DTO;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Options;

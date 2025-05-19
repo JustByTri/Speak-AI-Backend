@@ -1,7 +1,7 @@
 ﻿using BLL.Interface;
 using Common.DTO;
 using Common.Template;
-using DAL.UnitOfWork;
+using DAL.UnitOfWorks;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
