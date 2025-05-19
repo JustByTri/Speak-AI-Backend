@@ -7,25 +7,34 @@ using BLL.Services;
 using BLL.Services.BLL.Services;
 using Common.Config;
 using DAL.Data;
-using DAL.IRepositories;
-using DAL.Repositories;
 using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using Service.IService;
 using Service.Service;
-
+using Serilog;
 namespace SpeakAI
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            Directory.CreateDirectory("logs");
+
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            
+
+            builder.Host.UseSerilog();
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -91,7 +100,7 @@ namespace SpeakAI
             app.UseSwagger();
             app.UseSwaggerUI();
 
-
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

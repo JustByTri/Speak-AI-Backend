@@ -1,7 +1,5 @@
-﻿using Azure.Core;
-using BLL.Interface;
+﻿using BLL.Interface;
 using Common.Config;
-using Common.Constants;
 using Common.DTO;
 using Common.Enum;
 using DAL.Entities;
@@ -9,7 +7,6 @@ using DAL.UnitOfWork;
 using DTO.DTO;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
-using System.Runtime;
 using System.Security.Claims;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
