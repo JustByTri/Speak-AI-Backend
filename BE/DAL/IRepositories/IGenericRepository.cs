@@ -20,6 +20,7 @@ namespace DAL.IRepositories
         Task<T> AddAsync(T entity);
         T Add(T entity);
         Task<T> UpdateAsync(T entity);
+        Task<T> GetByIdAsyncc(int id);
         bool Delete(T entity);
         Task<List<T>> GetAllByListAsync(Expression<Func<T, bool>> expression);
         void UpdateRange(List<T> entity);

@@ -9,6 +9,7 @@ namespace Common.DTO
     public class CreateExerciseDTO
     {
         public string Content { get; set; }
-       
+        public int TypeId { get; set; }
+        public List<CreateExerciseQuestionDTO> Questions { get; set; }
     }
 }
