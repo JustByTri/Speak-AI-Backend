@@ -31,21 +31,24 @@ namespace DAL.Data
 
         public DbSet<PaymentHistory> PaymentHistories { get; set; }
 
+        public DbSet<ExerciseQuestion> ExerciseQuestions { get; set; }
+        public DbSet<ExerciseAnswer> ExerciseAnswers { get; set; }
+        public DbSet<Types> Types { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 🔥 Cấu hình COLLATION mặc định cho toàn bộ các bảng và cột
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                // Đặt collation cho tất cả các cột string
+
                 foreach (var property in entityType.GetProperties()
                     .Where(p => p.ClrType == typeof(string) && p.GetColumnType() == null))
                 {
                     property.SetCollation("utf8mb4_unicode_ci");
                 }
 
-                // Đặt collation cho các cột GUID (CHAR(36))
+
                 foreach (var property in entityType.GetProperties()
                     .Where(p => p.ClrType == typeof(Guid) || p.ClrType == typeof(Guid?)))
                 {
@@ -54,7 +57,7 @@ namespace DAL.Data
                 }
             }
 
-            // Cấu hình các bảng và khóa chính
+
             modelBuilder.Entity<Course>().HasKey(c => c.Id);
             modelBuilder.Entity<User>().HasKey(u => u.Id);
             modelBuilder.Entity<EnrolledCourse>().HasKey(u => u.Id);
@@ -65,8 +68,14 @@ namespace DAL.Data
             modelBuilder.Entity<TopicProgress>().HasKey(u => u.Id);
             modelBuilder.Entity<RefreshToken>().HasKey(u => u.Id);
             modelBuilder.Entity<Transaction>().HasKey(u => u.Id);
+            modelBuilder.Entity<Order>().HasKey(u => u.Id);
+            modelBuilder.Entity<ChatMessages>().HasKey(u => u.Id);
+            modelBuilder.Entity<Voucher>().HasKey(v => v.VoucherId);
+            modelBuilder.Entity<PaymentHistory>().HasKey(ph => ph.Id);
+            modelBuilder.Entity<ExerciseQuestion>().HasKey(eq => eq.Id);
+            modelBuilder.Entity<ExerciseAnswer>().HasKey(ea => ea.Id);
+         
 
-            // Cấu hình các cột decimal
             modelBuilder.Entity<Course>()
                 .Property(c => c.MaxPoint)
                 .HasPrecision(18, 2);
@@ -103,7 +112,7 @@ namespace DAL.Data
                 .Property(ul => ul.Point)
                 .HasPrecision(18, 2);
 
-            // Cấu hình quan hệ giữa các bảng
+
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.Level)
                 .WithMany(l => l.Courses)

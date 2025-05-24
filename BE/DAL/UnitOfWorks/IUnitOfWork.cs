@@ -19,8 +19,12 @@ namespace DAL.UnitOfWorks
         IChatRepository ChatMessages { get; }
         IOrderRepository Order { get; }
         ITransactionRepository Transaction { get; }
-
+        IEnrolledCourseRepository EnrolledCourses { get; }
+        IExerciseQuestionRepository ExerciseQuestion { get; }
+        IExerciseAnswerRepository ExerciseAnswer { get; }
+        ITypeRepository Types { get; }
         IVoucherRepository Voucher { get; }
+
 
         Task<IDbContextTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel);
 

@@ -51,6 +51,10 @@ namespace DAL.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
+        public async Task<T> GetByIdAsyncc(int id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
         public async Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);

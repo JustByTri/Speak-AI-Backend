@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Common.DTO
 {
-    public class UpdateExerciseDTO
+    public class CreateExerciseQuestionDTO
     {
         public string Content { get; set; }
-        public int TypeId { get; set; }
+        public List<CreateExerciseAnswerDTO> Answers { get; set; } 
     }
 }

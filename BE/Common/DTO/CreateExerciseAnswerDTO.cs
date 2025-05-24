@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Common.DTO
 {
-    public class UpdateExerciseDTO
+    public class CreateExerciseAnswerDTO
     {
         public string Content { get; set; }
-        public int TypeId { get; set; }
+        public bool IsCorrect { get; set; } 
     }
 }

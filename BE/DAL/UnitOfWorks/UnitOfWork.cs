@@ -1,4 +1,5 @@
 ﻿using DAL.Data;
+using DAL.Entities;
 using DAL.GenericRepository.IRepository;
 using DAL.GenericRepository.Repository;
 using DAL.IRepositories;
@@ -21,7 +22,7 @@ namespace DAL.UnitOfWorks
             UserLevel = new UserLevelRepository(_context);
             Topic = new TopicRepository(_context);
             Exercise = new ExerciseRepository(_context);
-            EnrolledCourse = new EnrolledCourseRepository(_context);
+            EnrolledCourses = new EnrolledCourseRepository(_context);
             TopicProgress = new TopicProgressRepository(_context);
             ExerciseProgress = new ExerciseProgressRepository(_context);
             RefreshToken = new RefreshTokenRepository(_context);
@@ -29,6 +30,11 @@ namespace DAL.UnitOfWorks
             Order = new OrderRepository(_context);
             Transaction = new TransactionRepository(_context);
             Voucher = new VoucherRepository(_context);
+            ExerciseQuestion = new ExerciseQuestionRepository(_context);
+            ExerciseAnswer = new ExerciseAnswerRepository(_context);
+            Types = new TypeRepository(_context);
+            
+
         }
 
         public ICourseRepository Course { get; private set; }
@@ -45,8 +51,13 @@ namespace DAL.UnitOfWorks
         public IChatRepository ChatMessages { get; private set; }
         public IOrderRepository Order { get; private set; }
         public ITransactionRepository Transaction { get; private set; }
+        public IEnrolledCourseRepository EnrolledCourses { get; private set; }
 
         public IVoucherRepository Voucher { get; private set; }
+        public IExerciseQuestionRepository ExerciseQuestion { get; private set; }
+        public IExerciseAnswerRepository ExerciseAnswer { get; private set; }
+        public ITypeRepository Types { get; private set; }
+
 
 
         public async Task<IDbContextTransaction> BeginTransactionAsync(System.Data.IsolationLevel isolationLevel)
